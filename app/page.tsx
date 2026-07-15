@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ChatWidget } from "./ChatWidget";
+import { LeadForm } from "./LeadForm";
 
 export const metadata: Metadata = {
   title: "RETECH — IT Solutions That Move Business Forward",
@@ -46,7 +47,7 @@ export default function Home() {
           <a href="#approach">Approach</a>
           <a href="#contact">Contact</a>
         </nav>
-        <a className="nav-cta" href="mailto:sales@retech.id?subject=Konsultasi%20IT%20RETECH">
+        <a className="nav-cta" href="#contact">
           Let&apos;s talk <span aria-hidden="true">↗</span>
         </a>
       </header>
@@ -107,7 +108,7 @@ export default function Home() {
               <div className="service-tags">
                 {service.items.map((item) => <span key={item}>{item}</span>)}
               </div>
-              <a href="mailto:sales@retech.id?subject=Konsultasi%20Layanan%20RETECH" aria-label={`Discuss ${service.title}`}>
+              <a href="#contact" aria-label={`Discuss ${service.title}`}>
                 Discuss this service <span>↗</span>
               </a>
             </article>
@@ -132,12 +133,22 @@ export default function Home() {
 
       <section className="contact-section" id="contact">
         <div className="contact-glow" />
-        <span className="kicker">LET&apos;S BUILD WHAT&apos;S NEXT</span>
-        <h2>Ready to move your<br /><em>business forward?</em></h2>
-        <p>Ceritakan kebutuhan IT Anda. Tim RETECH siap membantu menemukan langkah terbaik berikutnya.</p>
-        <a className="button button-primary" href="mailto:sales@retech.id?subject=Konsultasi%20IT%20RETECH&body=Halo%20RETECH%2C%0A%0ASaya%20ingin%20berkonsultasi%20tentang...">
-          sales@retech.id <span>↗</span>
-        </a>
+        <div className="contact-inner">
+          <div className="contact-copy">
+            <span className="kicker">LET&apos;S BUILD WHAT&apos;S NEXT</span>
+            <h2>Ready to move your<br /><em>business forward?</em></h2>
+            <p>Ceritakan kebutuhan IT Anda. Inquiry akan tersimpan dengan aman dan tim RETECH akan menghubungi Anda untuk langkah berikutnya.</p>
+            <div className="contact-note"><span>01</span><p>Pilih layanan dan jelaskan kebutuhan Anda.</p></div>
+            <div className="contact-note"><span>02</span><p>Tim kami meninjau scope dan menghubungi Anda.</p></div>
+            <div className="contact-note"><span>03</span><p>Kami susun solusi serta estimasi yang relevan.</p></div>
+            <a className="contact-email" href="mailto:sales@retech.id">sales@retech.id <span>↗</span></a>
+          </div>
+          <div className="contact-form-card">
+            <span className="contact-form-label">PROJECT INQUIRY</span>
+            <h3>Ceritakan kebutuhan Anda.</h3>
+            <LeadForm source="contact" />
+          </div>
+        </div>
       </section>
 
       <footer>

@@ -1,8 +1,14 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { LeadForm } from "./LeadForm";
 
-type Message = { role: "agent" | "user"; text: string; email?: boolean };
+type Message = {
+  role: "agent" | "user";
+  text: string;
+  leadForm?: boolean;
+  initialNeed?: string;
+};
 
 const quickQuestions = ["Buat website", "Managed IT", "Remote support"];
 
@@ -18,12 +24,12 @@ function getAnswer(input: string): Message {
     return { role: "agent", text: "RETECH menyediakan remote support untuk membantu troubleshooting serta dukungan instalasi dan konfigurasi server. Jelaskan singkat kendalanya agar tim sales dapat mengarahkan penanganan." };
   }
   if (/harga|biaya|budget|quotation|proposal|estimasi|berapa/.test(text)) {
-    return { role: "agent", text: "Biaya bergantung pada scope, kompleksitas, dan target waktu. Kirim gambaran kebutuhan Anda ke sales@retech.id agar tim RETECH bisa menyiapkan estimasi yang tepat.", email: true };
+    return { role: "agent", text: "Biaya bergantung pada scope, kompleksitas, dan target waktu. Isi detail singkat di bawah agar tim RETECH dapat menyiapkan estimasi yang lebih tepat.", leadForm: true, initialNeed: input };
   }
   if (/halo|hai|hi|hello|pagi|siang|sore|malam/.test(text)) {
     return { role: "agent", text: "Halo! Saya asisten RETECH. Saya bisa membantu menjelaskan Website & Mobile Development, Managed IT Services, atau Remote Support. Apa yang sedang Anda butuhkan?" };
   }
-  return { role: "agent", text: "Saya belum punya informasi yang cukup untuk menjawab itu. Tim RETECH akan dengan senang hati membantu langsung melalui sales@retech.id.", email: true };
+  return { role: "agent", text: "Saya belum punya informasi yang cukup untuk menjawab itu. Isi form singkat berikut—tim RETECH akan menindaklanjuti langsung.", leadForm: true, initialNeed: input };
 }
 
 export function ChatWidget() {
@@ -56,16 +62,16 @@ export function ChatWidget() {
           </div>
           <div className="chat-messages" aria-live="polite">
             {messages.map((message, index) => (
-              <div className={`chat-message ${message.role}`} key={index}>
+              <div className={`chat-message ${message.role} ${message.leadForm ? "has-lead-form" : ""}`} key={index}>
                 <p>{message.text}</p>
-                {message.email && <a href={`mailto:sales@retech.id?subject=Pertanyaan%20dari%20Website%20RETECH&body=${encodeURIComponent(`Halo RETECH,\n\nSaya ingin bertanya tentang: ${messages[index - 1]?.text || "layanan RETECH"}`)}`}>Email sales@retech.id ↗</a>}
+                {message.leadForm && <LeadForm source="chatbot" compact initialNeed={message.initialNeed || messages[index - 1]?.text || ""} />}
               </div>
             ))}
           </div>
-          {messages.length < 3 && <div className="quick-questions">{quickQuestions.map((q) => <button key={q} onClick={() => send(q)}>{q}</button>)}</div>}
+          {messages.length < 3 && <div className="quick-questions">{quickQuestions.map((question) => <button key={question} onClick={() => send(question)}>{question}</button>)}</div>}
           <form onSubmit={submit} className="chat-input">
             <label className="sr-only" htmlFor="chat-question">Ask RETECH</label>
-            <input id="chat-question" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Tulis kebutuhan Anda..." />
+            <input id="chat-question" value={input} onChange={(event) => setInput(event.target.value)} placeholder="Tulis kebutuhan Anda..." />
             <button type="submit" aria-label="Send message">↑</button>
           </form>
         </section>
