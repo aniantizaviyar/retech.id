@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,33 @@ function escapeHtml(value: string) {
 }
 
 async function notifySales(lead: { name: string; phone: string; service: string; needs: string; source: string }) {
+  const subject = `Inquiry RETECH: ${lead.service} — ${lead.name}`;
+  const html = `<h2>Inquiry baru dari retech.id</h2><p><strong>Nama:</strong> ${escapeHtml(lead.name)}</p><p><strong>Telepon/WhatsApp:</strong> ${escapeHtml(lead.phone)}</p><p><strong>Layanan:</strong> ${escapeHtml(lead.service)}</p><p><strong>Kebutuhan:</strong><br>${escapeHtml(lead.needs).replace(/\n/g, "<br>")}</p><p><strong>Sumber:</strong> ${escapeHtml(lead.source)}</p>`;
+
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = Number(process.env.SMTP_PORT || "587");
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPassword = process.env.SMTP_PASSWORD;
+  const smtpFrom = process.env.LEAD_NOTIFICATION_FROM;
+  const smtpTo = process.env.LEAD_NOTIFICATION_TO;
+
+  if (smtpHost && smtpUser && smtpPassword && smtpFrom && smtpTo) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        requireTLS: smtpPort !== 465,
+        auth: { user: smtpUser, pass: smtpPassword },
+      });
+      await transporter.sendMail({ from: smtpFrom, to: smtpTo, replyTo: smtpFrom, subject, html });
+      return "sent" as const;
+    } catch (error) {
+      console.error("SMTP lead notification failed", error);
+      return "failed" as const;
+    }
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_NOTIFICATION_TO;
   const from = process.env.LEAD_NOTIFICATION_FROM;
@@ -37,8 +65,8 @@ async function notifySales(lead: { name: string; phone: string; service: string;
     body: JSON.stringify({
       from,
       to: [to],
-      subject: `Inquiry RETECH: ${lead.service} — ${lead.name}`,
-      html: `<h2>Inquiry baru dari retech.id</h2><p><strong>Nama:</strong> ${escapeHtml(lead.name)}</p><p><strong>Telepon/WhatsApp:</strong> ${escapeHtml(lead.phone)}</p><p><strong>Layanan:</strong> ${escapeHtml(lead.service)}</p><p><strong>Kebutuhan:</strong><br>${escapeHtml(lead.needs).replace(/\n/g, "<br>")}</p><p><strong>Sumber:</strong> ${escapeHtml(lead.source)}</p>`,
+      subject,
+      html,
     }),
   });
   return response.ok ? "sent" as const : "failed" as const;
