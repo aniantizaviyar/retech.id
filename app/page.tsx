@@ -39,7 +39,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="RETECH home">
-          <img src="/retech-logo.png" alt="RETECH Digital Solution" />
+          <img src="/retech-logo-transparent.png" alt="RETECH Digital Solution" />
         </a>
         <nav aria-label="Main navigation">
           <a href="#services">Services</a>
@@ -77,7 +77,7 @@ export default function Home() {
           <div className="orbit orbit-one" />
           <div className="orbit orbit-two" />
           <div className="hero-core">
-            <img src="/retech-logo.png" alt="" />
+            <img src="/retech-logo-transparent.png" alt="" />
           </div>
           <div className="floating-card card-top"><span>UPTIME</span><strong>Always on</strong></div>
           <div className="floating-card card-bottom"><span>SOLUTION</span><strong>Built to fit</strong></div>
@@ -141,7 +141,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <img src="/retech-logo.png" alt="RETECH Digital Solution" />
+        <img src="/retech-logo-transparent.png" alt="RETECH Digital Solution" />
         <p>PT. Retech Digital Solution<br />IT solutions that move business forward.</p>
         <div><a href="#services">Services</a><a href="#approach">Approach</a><a href="mailto:sales@retech.id">Email</a></div>
         <small>© {new Date().getFullYear()} RETECH. All rights reserved.</small>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://retech.id"),
   title: { default: "RETECH — PT. Retech Digital Solution", template: "%s | RETECH" },
   description: "Website & Mobile Development, Managed IT Services, Remote Support, dan Server Solutions untuk bisnis yang terus bergerak.",
-  icons: { icon: "/retech-logo.png", shortcut: "/retech-logo.png", apple: "/retech-logo.png" },
+  icons: { icon: "/retech-logo-transparent.png", shortcut: "/retech-logo-transparent.png", apple: "/retech-logo-transparent.png" },
   openGraph: {
     type: "website",
     locale: "id_ID",

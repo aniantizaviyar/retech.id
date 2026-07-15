@@ -32,7 +32,7 @@ main { min-height: 100vh; background: radial-gradient(circle at 72% 14%, rgba(24
   border-bottom: 1px solid var(--line);
 }
 .brand { width: 132px; height: 70px; display: flex; align-items: center; }
-.brand img { width: 100%; height: 100%; object-fit: contain; object-position: center; mix-blend-mode: screen; }
+.brand img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .site-header nav { display: flex; gap: 38px; color: var(--muted); font-size: 14px; }
 .site-header nav a, footer a { transition: color .25s ease; }
 .site-header nav a:hover, footer a:hover { color: var(--cyan); }
@@ -60,7 +60,7 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(105deg, var(--cya
 .orbit-one { inset: 0; animation: spin 32s linear infinite; border-style: dashed; }
 .orbit-two { inset: 16%; box-shadow: 0 0 50px rgba(24,201,237,.05); }
 .hero-core { width: 48%; aspect-ratio: 1; position: relative; z-index: 2; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #08151f; box-shadow: inset 10px 10px 24px #020910, inset -8px -8px 22px rgba(31,70,94,.26), 0 0 65px rgba(24,201,237,.08); }
-.hero-core img { width: 82%; height: 82%; object-fit: contain; object-position: center; mix-blend-mode: screen; }
+.hero-core img { width: 82%; height: 82%; object-fit: contain; object-position: center; }
 .floating-card { position: absolute; z-index: 3; min-width: 150px; padding: 16px 18px; border-radius: 16px; background: rgba(12,29,42,.9); border: 1px solid rgba(116,180,216,.15); backdrop-filter: blur(14px); box-shadow: 12px 12px 25px rgba(1,8,14,.65), -4px -4px 16px rgba(30,73,99,.19); }
 .floating-card span { display: block; color: var(--cyan); font-family: var(--font-geist-mono); font-size: 9px; letter-spacing: .15em; margin-bottom: 6px; }
 .floating-card strong { font-size: 14px; }
@@ -105,7 +105,7 @@ h2 { margin: 18px 0 0; font-size: clamp(42px, 4.2vw, 66px); line-height: 1.03; l
 .contact-section .button { min-width: 250px; }
 
 footer { width: min(1424px, calc(100% - 64px)); margin: 0 auto; padding: 52px 8px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 200px 1fr auto; align-items: center; gap: 35px; color: var(--muted); }
-footer img { width: 150px; height: 92px; object-fit: contain; object-position: center; mix-blend-mode: screen; }
+footer img { width: 150px; height: 92px; object-fit: contain; object-position: center; }
 footer p { font-size: 13px; line-height: 1.55; }
 footer div { display: flex; gap: 24px; font-size: 13px; }
 footer small { grid-column: 1/-1; padding-top: 26px; border-top: 1px solid var(--line); font-size: 11px; color: #547084; }
