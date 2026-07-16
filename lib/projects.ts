@@ -50,8 +50,9 @@ export const fallbackProjects: Project[] = [
       "Tim dapat membaca kondisi operasional dan memperbarui konten dari satu area kerja yang konsisten.",
     services: ["Web App", "Dashboard", "CMS", "Role-based Admin"],
     gallery: [
-      { src: "/case-studies/dashboard-cms/overview.png", alt: "Ringkasan metrik dashboard operasional" },
-      { src: "/case-studies/dashboard-cms/content-management.png", alt: "Tampilan pengelolaan konten CMS" },
+      { src: "/case-studies/dashboard-cms/news-cms.png", alt: "Pengelolaan artikel dan alur publikasi News CMS" },
+      { src: "/case-studies/dashboard-cms/analytics-dashboard.png", alt: "Dashboard analytics untuk metrik penggunaan dan pertumbuhan" },
+      { src: "/case-studies/dashboard-cms/shipment-cms.png", alt: "Pengelolaan shipment dan pembaruan status operasional" },
     ],
     featured: true,
     sortOrder: 2,

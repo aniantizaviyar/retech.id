@@ -51,7 +51,7 @@ values
     'RETECH membangun dashboard ringkas, modul pengelolaan konten, pencarian, pagination, dan kontrol data dalam satu sistem.',
     'Tim dapat membaca kondisi operasional dan memperbarui konten dari satu area kerja yang konsisten.',
     array['Web App','Dashboard','CMS','Role-based Admin'],
-    '[{"src":"/case-studies/dashboard-cms/overview.png","alt":"Ringkasan metrik dashboard operasional"},{"src":"/case-studies/dashboard-cms/content-management.png","alt":"Tampilan pengelolaan konten CMS"}]'::jsonb,
+    '[{"src":"/case-studies/dashboard-cms/news-cms.png","alt":"Pengelolaan artikel dan alur publikasi News CMS"},{"src":"/case-studies/dashboard-cms/analytics-dashboard.png","alt":"Dashboard analytics untuk metrik penggunaan dan pertumbuhan"},{"src":"/case-studies/dashboard-cms/shipment-cms.png","alt":"Pengelolaan shipment dan pembaruan status operasional"}]'::jsonb,
     true, true, 2
   ),
   (
