@@ -1,56 +1,55 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { ChatWidget } from "./ChatWidget";
 import { LeadForm } from "./LeadForm";
+import { ProjectCard } from "@/components/ProjectCard";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+import { getProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "RETECH — IT Solutions That Move Business Forward",
   description:
-    "PT. Retech Digital Solution menyediakan website & mobile application development, managed IT services, remote support, dan instalasi server.",
+    "PT. Retech Digital Solution membangun produk digital, mengelola infrastruktur IT, dan menangani deployment server untuk bisnis.",
 };
 
 const services = [
   {
     number: "01",
     eyebrow: "BUILD",
-    title: "Website & Mobile Application",
+    title: "Digital Product & Application Development",
     description:
-      "Produk digital yang cepat, aman, dan dibangun untuk bertumbuh bersama bisnis Anda.",
-    items: ["Website", "Company Profile", "CMS", "Android", "iOS", "Web App"],
+      "Dari company profile hingga aplikasi bisnis, kami merancang produk digital yang cepat, aman, dan siap bertumbuh.",
+    items: ["Company Profile", "CMS", "Web App", "Android", "iOS", "API Integration"],
+    value: "Launch faster. Work smarter.",
   },
   {
     number: "02",
-    eyebrow: "MANAGE",
-    title: "Managed IT Services",
+    eyebrow: "OPERATE",
+    title: "Managed Infrastructure & IT Operations",
     description:
-      "Operasional IT yang terjaga agar tim Anda dapat fokus pada bisnis, bukan gangguan teknis.",
-    items: ["Maintenance Server", "Monitoring", "Helpdesk", "Backup"],
+      "Kami menjaga server, jaringan, data, dan support harian agar operasional bisnis tetap stabil dan terukur.",
+    items: ["Server Maintenance", "Monitoring", "Infrastructure", "Helpdesk", "Backup & Restore"],
+    value: "Visibility, uptime, continuity.",
   },
   {
     number: "03",
-    eyebrow: "SUPPORT",
-    title: "Remote Support",
+    eyebrow: "DEPLOY",
+    title: "Remote IT & Server Deployment",
     description:
-      "Dukungan teknis responsif dan instalasi server yang dikonfigurasi sesuai kebutuhan.",
-    items: ["Remote Troubleshooting", "Server Installation", "Server Configuration"],
+      "Instalasi, konfigurasi, troubleshooting, dan hardening sistem oleh tim teknis tanpa menunggu kunjungan onsite.",
+    items: ["Remote Support", "Server Installation", "Configuration", "Migration", "Hardening"],
+    value: "Expert help, wherever you are.",
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const projects = (await getProjects()).filter((project) => project.featured).slice(0, 4);
+
   return (
     <main>
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="RETECH home">
-          <img src="/retech-logo-transparent.png" alt="RETECH Digital Solution" />
-        </a>
-        <nav aria-label="Main navigation">
-          <a href="#services">Services</a>
-          <a href="#approach">Approach</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        <a className="nav-cta" href="#contact">
-          Let&apos;s talk <span aria-hidden="true">↗</span>
-        </a>
-      </header>
+      <SiteHeader />
 
       <section className="hero" id="top">
         <div className="hero-copy">
@@ -65,12 +64,12 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#contact">Start a project <span>↗</span></a>
-            <a className="button button-secondary" href="#services">Explore services <span>↓</span></a>
+            <Link className="button button-secondary" href="/work">View our work <span>↘</span></Link>
           </div>
           <div className="trust-row">
-            <span>WEB &amp; MOBILE</span><i />
-            <span>MANAGED IT</span><i />
-            <span>REMOTE SUPPORT</span>
+            <span>DIGITAL PRODUCT</span><i />
+            <span>MANAGED OPERATIONS</span><i />
+            <span>SERVER DEPLOYMENT</span>
           </div>
         </div>
 
@@ -78,7 +77,7 @@ export default function Home() {
           <div className="orbit orbit-one" />
           <div className="orbit orbit-two" />
           <div className="hero-core">
-            <img src="/retech-logo-transparent.png" alt="" />
+            <Image src="/retech-logo-transparent.png" alt="" width={500} height={430} priority />
           </div>
           <div className="floating-card card-top"><span>UPTIME</span><strong>Always on</strong></div>
           <div className="floating-card card-bottom"><span>SOLUTION</span><strong>Built to fit</strong></div>
@@ -93,7 +92,7 @@ export default function Home() {
             <span className="kicker">WHAT WE DO</span>
             <h2>One partner.<br /><em>Every layer of IT.</em></h2>
           </div>
-          <p>Solusi menyeluruh yang dirancang untuk membuat teknologi lebih sederhana, stabil, dan bernilai bagi bisnis.</p>
+          <p>Tiga lini layanan yang menghubungkan pembangunan produk, stabilitas operasional, dan dukungan teknis menjadi satu solusi.</p>
         </div>
 
         <div className="service-grid">
@@ -105,6 +104,7 @@ export default function Home() {
               </div>
               <h3>{service.title}</h3>
               <p>{service.description}</p>
+              <strong className="service-value">{service.value}</strong>
               <div className="service-tags">
                 {service.items.map((item) => <span key={item}>{item}</span>)}
               </div>
@@ -116,6 +116,23 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="featured-work" id="work">
+        <div className="section-heading">
+          <div>
+            <span className="kicker">SELECTED WORK</span>
+            <h2>Built for real<br /><em>operations.</em></h2>
+          </div>
+          <div className="section-side-copy">
+            <p>Implementasi website, aplikasi bisnis, HRMS, dan monitoring yang dipilih dari sistem aktif.</p>
+            <span className="privacy-note">Client identity protected by confidentiality</span>
+          </div>
+        </div>
+        <div className="project-grid">
+          {projects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} />)}
+        </div>
+        <Link className="work-link" href="/work">Explore all case studies <span>↗</span></Link>
+      </section>
+
       <section className="approach-section" id="approach">
         <div className="approach-panel">
           <div className="approach-copy">
@@ -124,8 +141,8 @@ export default function Home() {
             <p>Kami mulai dari kebutuhan bisnis, menyusun solusi yang tepat, lalu menjaga hasilnya tetap optimal.</p>
           </div>
           <ol className="process-list">
-            <li><span>01</span><div><strong>Discover</strong><p>Memahami tujuan, tantangan, dan sistem yang sudah berjalan.</p></div></li>
-            <li><span>02</span><div><strong>Design &amp; Deliver</strong><p>Merancang solusi yang relevan dan mengeksekusinya secara terukur.</p></div></li>
+            <li><span>01</span><div><strong>Discover</strong><p>Memahami tujuan, tantangan, pengguna, dan sistem yang sudah berjalan.</p></div></li>
+            <li><span>02</span><div><strong>Design &amp; Deliver</strong><p>Merancang solusi, mengembangkan secara iteratif, dan menguji bagian penting.</p></div></li>
             <li><span>03</span><div><strong>Operate &amp; Improve</strong><p>Memantau, mendukung, dan meningkatkan performa secara berkelanjutan.</p></div></li>
           </ol>
         </div>
@@ -151,13 +168,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer>
-        <img src="/retech-logo-transparent.png" alt="RETECH Digital Solution" />
-        <p>PT. Retech Digital Solution<br />IT solutions that move business forward.</p>
-        <div><a href="#services">Services</a><a href="#approach">Approach</a><a href="mailto:sales@retech.id">Email</a></div>
-        <small>© {new Date().getFullYear()} RETECH. All rights reserved.</small>
-      </footer>
-
+      <SiteFooter />
       <ChatWidget />
     </main>
   );

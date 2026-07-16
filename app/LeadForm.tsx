@@ -9,10 +9,9 @@ type LeadFormProps = {
 };
 
 const serviceOptions = [
-  "Website & Mobile Application",
-  "Managed IT Services",
-  "Remote Support",
-  "Server Installation & Configuration",
+  "Digital Product & Application Development",
+  "Managed Infrastructure & IT Operations",
+  "Remote IT & Server Deployment",
   "Konsultasi kebutuhan lainnya",
 ];
 
