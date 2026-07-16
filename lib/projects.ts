@@ -104,17 +104,21 @@ export const fallbackProjects: Project[] = [
     slug: "android-attendance-app",
     title: "Android Attendance App",
     category: "Mobile Application",
-    status: "in-development",
+    status: "live",
     summary:
-      "Aplikasi Android untuk absensi lapangan yang direncanakan terhubung langsung dengan HRMS dan alur verifikasi perusahaan.",
+      "Aplikasi Android untuk absensi foto berbasis lokasi dengan timestamp, riwayat kehadiran, serta deteksi indikasi fake dan mock location.",
     challenge:
-      "Proses absensi mobile membutuhkan pengalaman yang sederhana, validasi yang jelas, dan sinkronisasi data yang aman.",
+      "Absensi mobile harus mudah digunakan sekaligus memastikan foto, lokasi, dan waktu kehadiran dapat divalidasi serta tidak mudah dimanipulasi.",
     solution:
-      "Tahap pengembangan berikutnya berfokus pada alur check-in, validasi lokasi, bukti kehadiran, dan sinkronisasi ke HRMS.",
+      "RETECH membangun alur check-in dan check-out dengan bukti foto, validasi lokasi, timestamp audit, deteksi fake GPS dan mock location, statistik kehadiran, serta sinkronisasi HRMS.",
     outcome:
-      "Targetnya adalah pengalaman absensi mobile yang cepat untuk karyawan dan tetap mudah diawasi oleh tim HR.",
-    services: ["Android", "Mobile UX", "API Integration", "HRMS Sync"],
-    gallery: [],
+      "Tim HR memperoleh data absensi yang lebih dapat diaudit, sementara karyawan dapat melakukan check-in dan check-out langsung dari perangkat Android.",
+    services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Timestamp Audit", "HRMS Sync"],
+    gallery: [
+      { src: "/case-studies/android-attendance/mobile-home.png", alt: "Beranda absensi Android dengan check-in, check-out, dan timestamp" },
+      { src: "/case-studies/android-attendance/attendance-admin.png", alt: "Analitik keterlambatan dan administrasi attendance" },
+      { src: "/case-studies/android-attendance/attendance-history.png", alt: "Riwayat check-in dan check-out dengan timestamp" },
+    ],
     featured: false,
     sortOrder: 5,
   },

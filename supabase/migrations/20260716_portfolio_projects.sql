@@ -75,13 +75,13 @@ values
     true, true, 4
   ),
   (
-    'android-attendance-app', 'Android Attendance App', 'Mobile Application', 'in-development',
-    'Aplikasi Android untuk absensi lapangan yang direncanakan terhubung langsung dengan HRMS dan alur verifikasi perusahaan.',
-    'Proses absensi mobile membutuhkan pengalaman yang sederhana, validasi yang jelas, dan sinkronisasi data yang aman.',
-    'Tahap pengembangan berikutnya berfokus pada alur check-in, validasi lokasi, bukti kehadiran, dan sinkronisasi ke HRMS.',
-    'Targetnya adalah pengalaman absensi mobile yang cepat untuk karyawan dan tetap mudah diawasi oleh tim HR.',
-    array['Android','Mobile UX','API Integration','HRMS Sync'],
-    '[]'::jsonb,
+    'android-attendance-app', 'Android Attendance App', 'Mobile Application', 'live',
+    'Aplikasi Android untuk absensi foto berbasis lokasi dengan timestamp, riwayat kehadiran, serta deteksi indikasi fake dan mock location.',
+    'Absensi mobile harus mudah digunakan sekaligus memastikan foto, lokasi, dan waktu kehadiran dapat divalidasi serta tidak mudah dimanipulasi.',
+    'RETECH membangun alur check-in dan check-out dengan bukti foto, validasi lokasi, timestamp audit, deteksi fake GPS dan mock location, statistik kehadiran, serta sinkronisasi HRMS.',
+    'Tim HR memperoleh data absensi yang lebih dapat diaudit, sementara karyawan dapat melakukan check-in dan check-out langsung dari perangkat Android.',
+    array['Photo Attendance','Location Validation','Anti Fake/Mock Location','Timestamp Audit','HRMS Sync'],
+    '[{"src":"/case-studies/android-attendance/mobile-home.png","alt":"Beranda absensi Android dengan check-in, check-out, dan timestamp"},{"src":"/case-studies/android-attendance/attendance-admin.png","alt":"Analitik keterlambatan dan administrasi attendance"},{"src":"/case-studies/android-attendance/attendance-history.png","alt":"Riwayat check-in dan check-out dengan timestamp"}]'::jsonb,
     false, true, 5
   )
 on conflict (slug) do update set
