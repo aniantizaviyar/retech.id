@@ -20,17 +20,17 @@ export const fallbackProjects: Project[] = [
     category: "Digital Product",
     status: "live",
     summary:
-      "Company profile responsif yang merapikan informasi layanan logistik dan memudahkan calon pelanggan menemukan jalur komunikasi yang tepat.",
+      "Website logistik responsif dengan pelacakan kiriman dan pengecekan tarif, sehingga pelanggan dapat mengakses layanan utama dari satu pengalaman digital.",
     challenge:
-      "Informasi layanan yang luas perlu disusun menjadi pengalaman digital yang mudah dipahami di desktop maupun perangkat mobile.",
+      "Informasi layanan, status pengiriman, dan estimasi tarif perlu disusun menjadi pengalaman yang mudah dipahami di desktop maupun perangkat mobile.",
     solution:
-      "RETECH merancang arsitektur halaman, tampilan layanan, alur konversi, dan pengalaman responsif dari tahap eksplorasi sampai inquiry.",
+      "RETECH merancang company profile, pencarian nomor resi, pengecekan tarif, tampilan layanan, dan alur inquiry dalam antarmuka responsif.",
     outcome:
-      "Kehadiran digital yang lebih terstruktur, cepat diakses, dan siap mendukung kebutuhan pemasaran perusahaan.",
-    services: ["Company Profile", "Responsive Web", "UX Structure", "Inquiry Flow"],
+      "Pelanggan dapat mengenali layanan, melacak kiriman, dan mengecek tarif lebih cepat dari satu kanal digital yang terstruktur.",
+    services: ["Shipment Tracking", "Rate Checker", "Company Profile", "Responsive Web"],
     gallery: [
-      { src: "/case-studies/logistics/hero.png", alt: "Tampilan utama website perusahaan logistik" },
-      { src: "/case-studies/logistics/services.png", alt: "Tampilan layanan website perusahaan logistik" },
+      { src: "/case-studies/logistics/tracking-command-center.png", alt: "Command center pelacakan kiriman dan pengecekan tarif" },
+      { src: "/case-studies/logistics/tracking-and-rate.png", alt: "Form pelacakan kiriman dengan akses cek tarif" },
     ],
     featured: true,
     sortOrder: 1,
@@ -83,17 +83,18 @@ export const fallbackProjects: Project[] = [
     category: "Managed IT",
     status: "live",
     summary:
-      "Control center untuk memantau traffic, utilisasi link, kesehatan router, dan tren bandwidth secara real-time.",
+      "Control center untuk memantau traffic, utilisasi link, kesehatan router, server, endpoint, layanan, dan sertifikat secara real-time.",
     challenge:
       "Kondisi jaringan harus terlihat secara cepat agar gangguan dan beban berlebih dapat ditangani sebelum berdampak luas.",
     solution:
-      "RETECH membangun dashboard monitoring dengan indikator kapasitas, status kesehatan, grafik real-time, dan threshold operasional.",
+      "RETECH membangun dashboard monitoring jaringan dan server dengan indikator kapasitas, endpoint availability, response time, service health, sertifikat TLS, grafik real-time, dan threshold operasional.",
     outcome:
       "Tim IT memperoleh visibilitas terpusat untuk menjaga stabilitas layanan dan merespons anomali lebih awal.",
     services: ["Network Monitoring", "Server Monitoring", "Alerting", "Managed IT"],
     gallery: [
       { src: "/case-studies/infrastructure-monitoring/realtime-overview.png", alt: "Ringkasan monitoring jaringan real-time" },
       { src: "/case-studies/infrastructure-monitoring/bandwidth-trend.png", alt: "Grafik tren bandwidth real-time" },
+      { src: "/case-studies/infrastructure-monitoring/server-monitoring.png", alt: "Monitoring kesehatan server, endpoint, layanan, dan sertifikat" },
     ],
     featured: true,
     sortOrder: 4,
