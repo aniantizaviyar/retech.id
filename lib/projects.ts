@@ -92,8 +92,8 @@ export const fallbackProjects: Project[] = [
       "Tim IT memperoleh visibilitas terpusat untuk menjaga stabilitas layanan dan merespons anomali lebih awal.",
     services: ["Network Monitoring", "Server Monitoring", "Alerting", "Managed IT"],
     gallery: [
-      { src: "/case-studies/infrastructure-monitoring/realtime-overview.png", alt: "Ringkasan monitoring jaringan real-time" },
-      { src: "/case-studies/infrastructure-monitoring/bandwidth-trend.png", alt: "Grafik tren bandwidth real-time" },
+      { src: "/case-studies/infrastructure-monitoring/network-monitor-v2.png", alt: "Dashboard monitoring jaringan, utilisasi link, dan bandwidth real-time" },
+      { src: "/case-studies/infrastructure-monitoring/server-monitor-v2.png", alt: "Dashboard utilisasi resource, runtime, dan layanan server" },
       { src: "/case-studies/infrastructure-monitoring/server-monitoring.png", alt: "Monitoring kesehatan server, endpoint, layanan, dan sertifikat" },
     ],
     featured: true,
