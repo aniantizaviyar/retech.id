@@ -36,12 +36,12 @@ insert into public.portfolio_projects
 values
   (
     'logistics-company-website', 'Logistics Company Website', 'Digital Product', 'live',
-    'Website logistik responsif dengan pelacakan kiriman dan pengecekan tarif, sehingga pelanggan dapat mengakses layanan utama dari satu pengalaman digital.',
+    'Platform logistik responsif dengan pelacakan kiriman, pengecekan tarif, serta CMS operasional untuk mengelola shipment, konten, dan pesan customer.',
     'Informasi layanan, status pengiriman, dan estimasi tarif perlu disusun menjadi pengalaman yang mudah dipahami di desktop maupun perangkat mobile.',
-    'RETECH merancang company profile, pencarian nomor resi, pengecekan tarif, tampilan layanan, dan alur inquiry dalam antarmuka responsif.',
+    'RETECH merancang company profile, pencarian nomor resi, pengecekan tarif, dan dashboard CMS untuk memantau shipment serta mengelola konten dan inquiry.',
     'Pelanggan dapat mengenali layanan, melacak kiriman, dan mengecek tarif lebih cepat dari satu kanal digital yang terstruktur.',
-    array['Shipment Tracking','Rate Checker','Company Profile','Responsive Web'],
-    '[{"src":"/case-studies/logistics/tracking-command-center.png","alt":"Command center pelacakan kiriman dan pengecekan tarif"},{"src":"/case-studies/logistics/tracking-and-rate.png","alt":"Form pelacakan kiriman dengan akses cek tarif"}]'::jsonb,
+    array['Shipment Tracking','Rate Checker','Operations CMS','Responsive Web'],
+    '[{"src":"/case-studies/logistics/tracking-and-rate-v2.png","alt":"Website pelacakan kiriman dan pengecekan tarif"},{"src":"/case-studies/logistics/cms-dashboard.png","alt":"Dashboard CMS untuk shipment, konten, dan pesan customer"}]'::jsonb,
     true, true, 1
   ),
   (
