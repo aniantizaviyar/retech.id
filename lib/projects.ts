@@ -71,8 +71,8 @@ export const fallbackProjects: Project[] = [
       "Pemantauan kehadiran menjadi lebih ringkas dan keputusan administratif dapat dibuat dengan data yang lebih mudah dibaca.",
     services: ["HRMS", "Attendance", "Reporting", "Dashboard Analytics"],
     gallery: [
-      { src: "/case-studies/hrms/attendance-analytics.png", alt: "Analitik absensi dan keterlambatan" },
-      { src: "/case-studies/hrms/attendance-percentage.png", alt: "Ringkasan persentase kehadiran" },
+      { src: "/case-studies/hrms/attendance-analytics-v2.png", alt: "Analitik absensi dan keterlambatan" },
+      { src: "/case-studies/hrms/attendance-percentage-v2.png", alt: "Ringkasan persentase kehadiran" },
     ],
     featured: true,
     sortOrder: 3,

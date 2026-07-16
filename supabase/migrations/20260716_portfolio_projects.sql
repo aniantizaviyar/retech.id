@@ -61,7 +61,7 @@ values
     'RETECH menyatukan data absensi, filter periode, ringkasan visual, laporan, dan administrasi cuti dalam platform terpusat.',
     'Pemantauan kehadiran menjadi lebih ringkas dan keputusan administratif dapat dibuat dengan data yang lebih mudah dibaca.',
     array['HRMS','Attendance','Reporting','Dashboard Analytics'],
-    '[{"src":"/case-studies/hrms/attendance-analytics.png","alt":"Analitik absensi dan keterlambatan"},{"src":"/case-studies/hrms/attendance-percentage.png","alt":"Ringkasan persentase kehadiran"}]'::jsonb,
+    '[{"src":"/case-studies/hrms/attendance-analytics-v2.png","alt":"Analitik absensi dan keterlambatan"},{"src":"/case-studies/hrms/attendance-percentage-v2.png","alt":"Ringkasan persentase kehadiran"}]'::jsonb,
     true, true, 3
   ),
   (
