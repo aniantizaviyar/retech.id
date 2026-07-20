@@ -9,6 +9,7 @@ export function SiteFooter() {
       <div>
         <Link href="/#services">Services</Link>
         <Link href="/work">Case Studies</Link>
+        <Link href="/pricing">Pricing</Link>
         <Link href="/#approach">Approach</Link>
         <a href="mailto:sales@retech.id">Email</a>
       </div>
