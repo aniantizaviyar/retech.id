@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { createHmac } from "node:crypto";
+import { validateLeadInput } from "@/lib/leads";
 
 export const runtime = "nodejs";
 
@@ -10,7 +12,13 @@ type LeadPayload = {
   needs?: unknown;
   source?: unknown;
   company?: unknown;
+  turnstileToken?: unknown;
 };
+
+type RateLimitResult = { allowed: boolean; remaining: number; retry_after: number };
+type TurnstileResult = { success?: boolean; action?: string; hostname?: string; "error-codes"?: string[] };
+
+const TEST_TURNSTILE_SECRET = "1x0000000000000000000000000000000AA";
 
 function text(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -24,6 +32,69 @@ function escapeHtml(value: string) {
     "'": "&#039;",
     '"': "&quot;",
   })[character] || character);
+}
+
+function getClientAddress(request: Request) {
+  return request.headers.get("cf-connecting-ip")
+    || request.headers.get("x-real-ip")
+    || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || "unknown";
+}
+
+async function consumeRateLimit(
+  supabaseUrl: string,
+  secretKey: string,
+  request: Request,
+): Promise<RateLimitResult | null> {
+  const salt = process.env.RATE_LIMIT_SALT || (process.env.NODE_ENV === "development" ? "retech-local-rate-limit" : "");
+  if (!salt) return null;
+
+  const identity = `${getClientAddress(request)}:${request.headers.get("user-agent") || "unknown"}`;
+  const fingerprint = createHmac("sha256", salt).update(identity).digest("hex");
+  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/consume_lead_rate_limit`, {
+    method: "POST",
+    headers: {
+      apikey: secretKey,
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_fingerprint: fingerprint, p_limit: 5, p_window_seconds: 600 }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("Lead rate-limit check failed", response.status, await response.text());
+    return null;
+  }
+
+  const result = (await response.json()) as RateLimitResult[];
+  return result[0] || null;
+}
+
+async function verifyTurnstile(token: string, request: Request) {
+  const secret = process.env.TURNSTILE_SECRET_KEY
+    || (process.env.NODE_ENV === "development" ? TEST_TURNSTILE_SECRET : "");
+  if (!secret || !token || token.length > 2048) return false;
+
+  try {
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ secret, response: token, remoteip: getClientAddress(request) }),
+      signal: AbortSignal.timeout(8_000),
+      cache: "no-store",
+    });
+    if (!response.ok) return false;
+
+    const result = (await response.json()) as TurnstileResult;
+    if (!result.success) return false;
+    if (process.env.NODE_ENV === "production" && result.action !== "lead_submit") return false;
+    if (process.env.NODE_ENV === "production" && result.hostname !== "retech.id" && result.hostname !== "www.retech.id") return false;
+    return true;
+  } catch (error) {
+    console.error("Turnstile verification failed", error);
+    return false;
+  }
 }
 
 async function notifySales(lead: { name: string; phone: string; service: string; needs: string; source: string }) {
@@ -80,23 +151,33 @@ export async function POST(request: Request) {
     const body = (await request.json()) as LeadPayload;
     if (text(body.company, 200)) return NextResponse.json({ ok: true });
 
-    const lead = {
-      name: text(body.name, 100),
-      phone: text(body.phone, 30),
-      service: text(body.service, 100),
-      needs: text(body.needs, 2000),
-      source: body.source === "chatbot" ? "chatbot" : body.source === "contact" ? "contact" : "",
-    };
+    const validation = validateLeadInput(body as Record<string, unknown>);
+    if (!validation.ok) return NextResponse.json({ error: validation.error, field: validation.field }, { status: 400 });
 
-    if (lead.name.length < 2 || lead.phone.length < 8 || lead.service.length < 2 || lead.needs.length < 3 || !lead.source) {
-      return NextResponse.json({ error: "Mohon lengkapi semua data dengan benar." }, { status: 400 });
-    }
+    const source = body.source === "chatbot" ? "chatbot" : body.source === "contact" ? "contact" : "";
+    if (!source) return NextResponse.json({ error: "Sumber inquiry tidak valid." }, { status: 400 });
+
+    const lead = { ...validation.data, source };
 
     const supabaseUrl = process.env.SUPABASE_URL;
     const secretKey = process.env.SUPABASE_SECRET_KEY;
     if (!supabaseUrl || !secretKey) {
       console.error("Supabase environment is not configured");
       return NextResponse.json({ error: "Layanan inquiry sedang dikonfigurasi." }, { status: 503 });
+    }
+
+    const rateLimit = await consumeRateLimit(supabaseUrl, secretKey, request);
+    if (!rateLimit) return NextResponse.json({ error: "Proteksi inquiry sedang tidak tersedia. Silakan coba lagi." }, { status: 503 });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Terlalu banyak percobaan. Silakan tunggu beberapa menit lalu coba lagi." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.retry_after), "RateLimit-Limit": "5", "RateLimit-Remaining": "0" } },
+      );
+    }
+
+    const turnstileToken = text(body.turnstileToken, 2048);
+    if (!(await verifyTurnstile(turnstileToken, request))) {
+      return NextResponse.json({ error: "Verifikasi keamanan gagal atau kedaluwarsa. Silakan coba lagi." }, { status: 403 });
     }
 
     const emailStatus = await notifySales(lead);
@@ -116,7 +197,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Inquiry belum dapat disimpan. Silakan coba lagi." }, { status: 502 });
     }
 
-    return NextResponse.json({ ok: true, notified: emailStatus === "sent" }, { status: 201 });
+    return NextResponse.json(
+      { ok: true, notified: emailStatus === "sent" },
+      { status: 201, headers: { "RateLimit-Limit": "5", "RateLimit-Remaining": String(rateLimit.remaining) } },
+    );
   } catch (error) {
     console.error("Lead submission failed", error);
     return NextResponse.json({ error: "Terjadi kendala. Silakan coba lagi." }, { status: 500 });

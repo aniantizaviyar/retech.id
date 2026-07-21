@@ -247,12 +247,15 @@ h2 { margin: 18px 0 0; font-size: clamp(42px, 4.2vw, 66px); line-height: 1.03; l
 .lead-field { display: flex; flex-direction: column; gap: 8px; }
 .lead-field-full { grid-column: 1 / -1; }
 .lead-field label { color: #a9bfcc; font-size: 12px; font-weight: 600; }
+.lead-field small { color: #607c8e; font-size: 9px; line-height: 1.45; }
 .lead-field input, .lead-field select, .lead-field textarea { width: 100%; border: 1px solid rgba(130,184,213,.15); border-radius: 13px; padding: 13px 14px; outline: none; color: var(--ink); background: #071722; transition: border-color .2s ease, box-shadow .2s ease; }
 .lead-field select { appearance: none; background-image: linear-gradient(45deg,transparent 50%,#7894a6 50%),linear-gradient(135deg,#7894a6 50%,transparent 50%); background-position: calc(100% - 18px) 52%,calc(100% - 13px) 52%; background-size: 5px 5px,5px 5px; background-repeat: no-repeat; padding-right: 38px; }
 .lead-field textarea { resize: vertical; min-height: 118px; line-height: 1.55; }
 .lead-field input::placeholder, .lead-field textarea::placeholder { color: #536f81; }
 .lead-field input:focus, .lead-field select:focus, .lead-field textarea:focus { border-color: rgba(24,201,237,.6); box-shadow: 0 0 0 3px rgba(24,201,237,.07); }
 .lead-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; left: -10000px; }
+.lead-turnstile { min-height: 65px; overflow: hidden; }
+.turnstile-shell { width: 100%; min-height: 65px; }
 .lead-consent { grid-column: 1 / -1; margin: -2px 0 0 !important; color: #607c8e !important; font-size: 10px; line-height: 1.5 !important; }
 .lead-error { grid-column: 1 / -1; margin: 0 !important; color: #ff9b9b !important; font-size: 12px; }
 .lead-submit { grid-column: 1 / -1; min-height: 51px; border: 0; border-radius: 13px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; color: #00131d; background: linear-gradient(135deg,#2bd8f4,#2589ef); box-shadow: 0 12px 28px rgba(16,151,218,.18), inset 0 1px rgba(255,255,255,.45); font-size: 13px; font-weight: 700; cursor: pointer; }
@@ -290,6 +293,7 @@ footer small { grid-column: 1/-1; padding-top: 26px; border-top: 1px solid var(-
 .lead-form.is-compact { grid-template-columns: 1fr; gap: 11px; margin-top: 14px; }
 .lead-form.is-compact .lead-field-full, .lead-form.is-compact .lead-consent, .lead-form.is-compact .lead-submit, .lead-form.is-compact .lead-error { grid-column: 1; }
 .lead-form.is-compact .lead-field label { font-size: 10px; }
+.lead-form.is-compact .lead-field small { font-size: 8px; }
 .lead-form.is-compact .lead-field input, .lead-form.is-compact .lead-field select, .lead-form.is-compact .lead-field textarea { padding: 10px 11px; border-radius: 10px; font-size: 11px; }
 .lead-form.is-compact .lead-field textarea { min-height: 74px; }
 .lead-form.is-compact .lead-consent { font-size: 9px; }
