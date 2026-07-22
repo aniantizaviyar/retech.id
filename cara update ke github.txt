@@ -1,0 +1,15 @@
+1. Masuk ke folder
+cd "C:\Users\eZa\Documents\RETECH DIGITAL SOLUTION"
+
+2. Setelah mengubah source code
+Jalankan pemeriksaan lokal:
+npm.cmd run lint
+npm.cmd run vercel-build
+
+3. Kemudian publish:
+git add .
+git commit -m "Update website content"
+git push github main
+
+4. Setelah git push berhasil, Vercel akan otomatis memperbarui website.
+git status
