@@ -78,5 +78,5 @@ export function TurnstileWidget({ onVerify, onUnavailable }: TurnstileWidgetProp
     };
   }, [siteKey]);
 
-  return <div className="turnstile-shell" ref={containerRef} aria-label="Verifikasi keamanan" />;
+  return <div className="turnstile-shell" ref={containerRef} role="group" aria-label="Verifikasi keamanan" />;
 }
