@@ -14,17 +14,59 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const project = await getProject((await params).slug);
+  const { slug } = await params;
+  const project = await getProject(slug);
   if (!project) return { title: "Case Study" };
-  return { title: project.title, description: project.summary };
+  const path = `/work/${project.slug}`;
+  const image = project.gallery[0]?.src || "/og.png";
+  return {
+    title: project.title,
+    description: project.summary,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "article",
+      url: path,
+      title: `${project.title} | RETECH`,
+      description: project.summary,
+      images: [{ url: image, alt: project.gallery[0]?.alt || project.title }],
+    },
+    twitter: { card: "summary_large_image", title: `${project.title} | RETECH`, description: project.summary, images: [image] },
+  };
 }
 
 export default async function ProjectPage({ params }: PageProps) {
   const project = await getProject((await params).slug);
   if (!project) notFound();
 
+  const projectUrl = `https://retech.id/work/${project.slug}`;
+  const projectSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "@id": `${projectUrl}#case-study`,
+    name: project.title,
+    description: project.summary,
+    url: projectUrl,
+    inLanguage: "id-ID",
+    creator: { "@id": "https://retech.id/#organization" },
+    keywords: project.services.join(", "),
+    image: project.gallery.map((image) => `https://retech.id${image.src}`),
+    about: project.category,
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://retech.id" },
+      { "@type": "ListItem", position: 2, name: "Case Studies", item: "https://retech.id/work" },
+      { "@type": "ListItem", position: 3, name: project.title, item: projectUrl },
+    ],
+  };
+
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
       <SiteHeader />
       <article className="case-study">
         <header className="case-hero">

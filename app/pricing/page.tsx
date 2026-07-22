@@ -7,6 +7,15 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const metadata: Metadata = {
   title: "Pricing",
   description: "Estimasi awal layanan development, managed IT, dan remote support RETECH.",
+  alternates: { canonical: "/pricing" },
+  openGraph: {
+    type: "website",
+    url: "/pricing",
+    title: "Pricing Layanan IT RETECH",
+    description: "Estimasi awal website, aplikasi, managed IT, server, domain, dan hosting RETECH.",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Pricing layanan RETECH" }],
+  },
+  twitter: { card: "summary_large_image", title: "Pricing Layanan IT RETECH", images: ["/og.png"] },
 };
 
 const packages = [

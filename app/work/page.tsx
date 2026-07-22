@@ -9,6 +9,15 @@ import { getProjects } from "@/lib/projects";
 export const metadata: Metadata = {
   title: "Case Studies",
   description: "Pilihan website, aplikasi bisnis, HRMS, dan sistem monitoring yang dibangun RETECH.",
+  alternates: { canonical: "/work" },
+  openGraph: {
+    type: "website",
+    url: "/work",
+    title: "Case Studies RETECH",
+    description: "Portfolio website, aplikasi bisnis, HRMS, dan monitoring infrastructure yang dibangun RETECH.",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Case Studies RETECH" }],
+  },
+  twitter: { card: "summary_large_image", title: "Case Studies RETECH", images: ["/og.png"] },
 };
 
 export default async function WorkPage() {

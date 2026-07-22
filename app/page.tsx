@@ -9,9 +9,23 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { getProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
-  title: "RETECH — IT Solutions That Move Business Forward",
+  title: { absolute: "RETECH — IT Solutions That Move Business Forward" },
   description:
     "PT. Retech Digital Solution membangun produk digital, mengelola infrastruktur IT, dan menangani deployment server untuk bisnis.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    title: "RETECH — IT Solutions That Move Business Forward",
+    description: "Website, aplikasi, managed IT, dan solusi server untuk membantu bisnis bergerak lebih cepat.",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "RETECH Digital Solution" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RETECH — IT Solutions That Move Business Forward",
+    description: "Website, aplikasi, managed IT, dan solusi server untuk bisnis.",
+    images: ["/og.png"],
+  },
 };
 
 const services = [
