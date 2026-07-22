@@ -5,6 +5,16 @@ export const faqs = [
       "Company profile berfokus pada informasi bisnis. Website + CMS menambahkan area admin untuk mengelola konten. Web application menjalankan proses bisnis yang lebih kompleks seperti role, approval, transaksi, integrasi, dan reporting.",
   },
   {
+    question: "Apa perbedaan WordPress dengan website custom menggunakan Next.js, React, atau Laravel?",
+    answer:
+      "WordPress cocok untuk website berbasis konten yang membutuhkan pengelolaan cepat dengan fitur standar. Custom development lebih tepat ketika bisnis membutuhkan UI khusus, performa tinggi, integrasi, keamanan, workflow, atau fitur yang tidak dapat dipenuhi plugin standar. RETECH merekomendasikan pendekatan berdasarkan kebutuhan, anggaran, dan rencana pengembangan—bukan sekadar memilih teknologi yang paling mahal.",
+  },
+  {
+    question: "Apakah RETECH menggunakan teknologi modern?",
+    answer:
+      "Ya. Sesuai kebutuhan project, RETECH dapat menggunakan Next.js, React, TypeScript, Laravel/PHP, REST API, database SQL, dan Flutter untuk Android serta iOS. Stack final ditentukan setelah discovery agar solusi tetap cepat, aman, mudah dirawat, dan siap dikembangkan tanpa menambah kompleksitas yang tidak diperlukan.",
+  },
+  {
     question: "Apakah RETECH dapat membuat aplikasi Android dan iOS?",
     answer:
       "Ya. RETECH dapat mengembangkan aplikasi Android saja atau Android dan iOS. Scope ditentukan dari fitur, backend, integrasi, kebutuhan perangkat, dan target distribusi aplikasi.",
