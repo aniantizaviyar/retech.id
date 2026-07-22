@@ -41,7 +41,7 @@ export default async function WorkPage() {
         <span className="kicker">YOUR PROJECT, NEXT</span>
         <h2>Punya tantangan yang<br /><em>mirip?</em></h2>
         <p>Kami bisa mulai dari discovery singkat untuk memetakan kebutuhan, risiko, dan tahap implementasi paling masuk akal.</p>
-        <Link className="button button-primary" href="/#contact">Discuss your project <span>↗</span></Link>
+        <Link className="button button-primary" href="/#contact" data-analytics="contact_cta_click" data-analytics-source="work">Discuss your project <span>↗</span></Link>
       </section>
       <SiteFooter />
       <ChatWidget />

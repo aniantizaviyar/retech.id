@@ -37,6 +37,7 @@ const services = [
       "Dari company profile hingga aplikasi bisnis, kami merancang produk digital yang cepat, aman, dan siap bertumbuh.",
     items: ["Company Profile", "CMS", "Web App", "Android", "iOS", "API Integration"],
     value: "Launch faster. Work smarter.",
+    href: "/services/digital-product-development",
   },
   {
     number: "02",
@@ -46,6 +47,7 @@ const services = [
       "Kami menjaga server, jaringan, data, dan support harian agar operasional bisnis tetap stabil dan terukur.",
     items: ["Server Maintenance", "Monitoring", "Infrastructure", "Helpdesk", "Backup & Restore"],
     value: "Visibility, uptime, continuity.",
+    href: "/services/managed-it-services",
   },
   {
     number: "03",
@@ -55,6 +57,7 @@ const services = [
       "Instalasi, konfigurasi, troubleshooting, dan hardening sistem oleh tim teknis tanpa menunggu kunjungan onsite.",
     items: ["Remote Support", "Server Installation", "Configuration", "Migration", "Hardening"],
     value: "Expert help, wherever you are.",
+    href: "/services/remote-server-support",
   },
 ];
 
@@ -77,7 +80,7 @@ export default async function Home() {
             dan menyelesaikan tantangan IT—dari ide hingga operasional.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#contact">Start a project <span>↗</span></a>
+            <a className="button button-primary" href="#contact" data-analytics="contact_cta_click" data-analytics-source="home_hero">Start a project <span>↗</span></a>
             <Link className="button button-secondary" href="/work">View our work <span>↘</span></Link>
           </div>
           <div className="trust-row">
@@ -122,9 +125,9 @@ export default async function Home() {
               <div className="service-tags">
                 {service.items.map((item) => <span key={item}>{item}</span>)}
               </div>
-              <a href="#contact" aria-label={`Discuss ${service.title}`}>
-                Discuss this service <span>↗</span>
-              </a>
+              <Link href={service.href} aria-label={`View ${service.title}`} data-analytics="service_detail_click" data-analytics-source="home_service_card">
+                View service details <span>↗</span>
+              </Link>
             </article>
           ))}
         </div>

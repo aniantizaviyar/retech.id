@@ -3,6 +3,7 @@
 import { FormEvent, useId, useState } from "react";
 import { SERVICE_OPTIONS, validateLeadInput } from "@/lib/leads";
 import { TurnstileWidget } from "./TurnstileWidget";
+import { trackSiteEvent } from "@/components/AnalyticsEvents";
 
 type LeadFormProps = {
   source: "chatbot" | "contact";
@@ -61,6 +62,11 @@ export function LeadForm({ source, compact = false, initialNeed = "" }: LeadForm
 
       setSubmitted(validation.data);
       setStatus("success");
+      trackSiteEvent("generate_lead", {
+        form_source: source,
+        service: validation.data.service,
+        page_path: window.location.pathname,
+      });
       form.reset();
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : "Terjadi kendala. Silakan coba lagi.");
@@ -80,7 +86,7 @@ export function LeadForm({ source, compact = false, initialNeed = "" }: LeadForm
         <span className="lead-success-icon">✓</span>
         <strong>Inquiry sudah tersimpan.</strong>
         <p>Tim RETECH akan menghubungi Anda melalui nomor yang dicantumkan.</p>
-        <a href={`mailto:sales@retech.id?subject=${encodeURIComponent(`Inquiry ${submitted.service} — ${submitted.name}`)}&body=${mailBody}`}>
+        <a data-analytics="email_click" data-analytics-source={`${source}_success`} href={`mailto:sales@retech.id?subject=${encodeURIComponent(`Inquiry ${submitted.service} — ${submitted.name}`)}&body=${mailBody}`}>
           Kirim juga via email <span aria-hidden="true">↗</span>
         </a>
       </div>
@@ -119,7 +125,7 @@ export function LeadForm({ source, compact = false, initialNeed = "" }: LeadForm
       </div>
       <p className="lead-consent">Dengan mengirim form, Anda setuju tim RETECH menghubungi Anda untuk menindaklanjuti inquiry ini.</p>
       {status === "error" && <p className="lead-error" role="alert">{error}</p>}
-      <button className="lead-submit" type="submit" disabled={status === "sending"}>
+      <button className="lead-submit" type="submit" disabled={status === "sending"} data-analytics="lead_form_submit_click" data-analytics-source={source}>
         {status === "sending" ? "Mengirim…" : "Kirim inquiry"}<span aria-hidden="true">↗</span>
       </button>
     </form>

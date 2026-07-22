@@ -118,7 +118,7 @@ export default async function ProjectPage({ params }: PageProps) {
         <section className="case-next">
           <span className="kicker">BUILD YOUR NEXT SYSTEM</span>
           <h2>Let&apos;s turn your<br /><em>challenge into progress.</em></h2>
-          <Link className="button button-primary" href="/#contact">Start a conversation <span>↗</span></Link>
+          <Link className="button button-primary" href="/#contact" data-analytics="contact_cta_click" data-analytics-source={`case_${project.slug}`}>Start a conversation <span>↗</span></Link>
         </section>
       </article>
       <SiteFooter />

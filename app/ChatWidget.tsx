@@ -61,7 +61,7 @@ export function ChatWidget() {
           <div className="chat-header">
             <div className="chat-avatar">R</div>
             <div><strong>RETECH Assistant</strong><span><i /> Online</span></div>
-            <button onClick={() => setOpen(false)} aria-label="Close assistant">×</button>
+            <button onClick={() => setOpen(false)} aria-label="Close assistant" data-analytics="chatbot_close">×</button>
           </div>
           <div className="chat-messages" aria-live="polite">
             {messages.map((message, index) => (
@@ -71,15 +71,15 @@ export function ChatWidget() {
               </div>
             ))}
           </div>
-          {messages.length < 3 && <div className="quick-questions">{quickQuestions.map((question) => <button key={question} onClick={() => send(question)}>{question}</button>)}</div>}
+          {messages.length < 3 && <div className="quick-questions">{quickQuestions.map((question) => <button key={question} onClick={() => send(question)} data-analytics="chatbot_quick_question" data-analytics-source={question}>{question}</button>)}</div>}
           <form onSubmit={submit} className="chat-input">
             <label className="sr-only" htmlFor="chat-question">Ask RETECH</label>
             <input id="chat-question" value={input} onChange={(event) => setInput(event.target.value)} placeholder="Tulis kebutuhan Anda..." />
-            <button type="submit" aria-label="Send message">↑</button>
+            <button type="submit" aria-label="Send message" data-analytics="chatbot_message_submit">↑</button>
           </form>
         </section>
       )}
-      <button className="chat-trigger" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? "Close RETECH assistant" : "Open RETECH assistant"}>
+      <button className="chat-trigger" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? "Close RETECH assistant" : "Open RETECH assistant"} data-analytics={open ? "chatbot_close" : "chatbot_open"}>
         {open ? "×" : <><span className="chat-mark">R</span><span className="chat-label">Ask RETECH</span></>}
       </button>
     </div>

@@ -53,7 +53,7 @@ export default function PricingPage() {
         <div className="pricing-grid">
           {packages.map((item) => <article className={`pricing-card${item.recommended ? " pricing-card-featured" : ""}`} key={item.name}>
             {item.recommended && <span className="pricing-badge">RECOMMENDED</span>}<span className="pricing-eyebrow">{item.eyebrow}</span><h3>{item.name}</h3><p>{item.description}</p>
-            <div className="pricing-price"><small>Mulai dari</small><strong>{item.price}</strong></div><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul><Link href="/#contact">Diskusikan kebutuhan <span>↗</span></Link>
+            <div className="pricing-price"><small>Mulai dari</small><strong>{item.price}</strong></div><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul><Link href="/#contact" data-analytics="contact_cta_click" data-analytics-source={`pricing_${item.name}`}>Diskusikan kebutuhan <span>↗</span></Link>
           </article>)}
         </div>
       </section>
@@ -77,7 +77,7 @@ export default function PricingPage() {
         <div><span className="kicker">GOOD TO KNOW</span><h2>Scope before<br /><em>commitment.</em></h2></div>
         <div className="pricing-note-grid"><p><strong>Termasuk</strong>Discovery singkat, estimasi pekerjaan, testing, dan handover sesuai ruang lingkup.</p><p><strong>Belum termasuk</strong>Hosting, domain, akun developer, biaya store, lisensi, layanan pihak ketiga, pajak, dan pekerjaan di luar scope.</p><p><strong>Store publishing</strong>RETECH membantu menyiapkan build dan submission. Customer menyediakan akun Google Play atau Apple Developer dan menyelesaikan verifikasi.</p><p><strong>Maintenance</strong>Garansi bug berbeda dari fitur baru. Maintenance lanjutan dibuat sebagai paket terpisah.</p><p><strong>Kepemilikan</strong>Domain, cloud, dan akun store didaftarkan atas nama customer, bukan akun pribadi RETECH.</p><p><strong>Ketersediaan</strong>Jadwal dan response time dikonfirmasi sebelum pekerjaan dimulai. Layanan 24/7 tidak termasuk.</p></div>
       </section>
-      <section className="pricing-cta"><span className="kicker">GET A REAL ESTIMATE</span><h2>Ceritakan kebutuhan.<br /><em>Kami bantu petakan.</em></h2><p>Konsultasi awal membantu menentukan pendekatan, prioritas, biaya, dan timeline yang paling masuk akal.</p><Link className="button button-primary" href="/#contact">Request quotation <span>↗</span></Link></section>
+      <section className="pricing-cta"><span className="kicker">GET A REAL ESTIMATE</span><h2>Ceritakan kebutuhan.<br /><em>Kami bantu petakan.</em></h2><p>Konsultasi awal membantu menentukan pendekatan, prioritas, biaya, dan timeline yang paling masuk akal.</p><Link className="button button-primary" href="/#contact" data-analytics="contact_cta_click" data-analytics-source="pricing_bottom">Request quotation <span>↗</span></Link></section>
       <SiteFooter /><ChatWidget />
     </main>
   );
