@@ -110,12 +110,15 @@ export const fallbackProjects: Project[] = [
     challenge:
       "Absensi mobile harus mudah digunakan sekaligus memastikan foto, lokasi, dan waktu kehadiran dapat divalidasi serta tidak mudah dimanipulasi.",
     solution:
-      "RETECH membangun alur check-in dan check-out dengan bukti foto, validasi lokasi, timestamp audit, deteksi fake GPS dan mock location, statistik kehadiran, serta sinkronisasi HRMS.",
+      "RETECH membangun alur check-in dan check-out dengan bukti foto, validasi lokasi, timestamp audit, deteksi fake GPS dan mock location, kalender serta riwayat absensi, pengajuan cuti, Admin Hub, dan sinkronisasi HRMS.",
     outcome:
-      "Tim HR memperoleh data absensi yang lebih dapat diaudit, sementara karyawan dapat melakukan check-in dan check-out langsung dari perangkat Android.",
-    services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Timestamp Audit", "HRMS Sync"],
+      "Tim HR memperoleh data absensi dan administrasi cuti yang lebih mudah diaudit, sementara karyawan dapat mengelola kehadiran langsung dari perangkat Android.",
+    services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Attendance Calendar", "Leave Management", "Admin Hub", "HRMS Sync"],
     gallery: [
       { src: "/case-studies/android-attendance/mobile-home.png", alt: "Beranda absensi Android dengan check-in, check-out, dan timestamp" },
+      { src: "/case-studies/android-attendance/attendance-calendar.jpg", alt: "Kalender absensi dengan ringkasan hadir, terlambat, dan shift" },
+      { src: "/case-studies/android-attendance/admin-hub.jpg", alt: "Admin Hub untuk attendance, kedisiplinan, approval cuti, dan manajemen kuota" },
+      { src: "/case-studies/android-attendance/leave-request.jpg", alt: "Pengajuan cuti, sisa kuota, dan riwayat status persetujuan" },
       { src: "/case-studies/android-attendance/attendance-admin.png", alt: "Analitik keterlambatan dan administrasi attendance" },
       { src: "/case-studies/android-attendance/attendance-history.png", alt: "Riwayat check-in dan check-out dengan timestamp" },
     ],
