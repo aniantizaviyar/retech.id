@@ -45,14 +45,17 @@ export const fallbackProjects: Project[] = [
     challenge:
       "Data operasional dan konten tersebar di beberapa alur kerja, sehingga pembaruan dan pemantauan membutuhkan lebih banyak waktu.",
     solution:
-      "RETECH membangun dashboard ringkas, modul pengelolaan konten, pencarian, pagination, dan kontrol data dalam satu sistem.",
+      "RETECH membangun dashboard ringkas, modul pengelolaan konten, pencarian, pagination, kontrol data, analitik submission, dan administrasi campaign dalam satu sistem.",
     outcome:
       "Tim dapat membaca kondisi operasional dan memperbarui konten dari satu area kerja yang konsisten.",
-    services: ["Web App", "Dashboard", "CMS", "Role-based Admin"],
+    services: ["Web App", "Dashboard", "CMS", "Campaign Administration", "Role-based Admin"],
     gallery: [
       { src: "/case-studies/dashboard-cms/news-cms.png", alt: "Pengelolaan artikel dan alur publikasi News CMS" },
       { src: "/case-studies/dashboard-cms/analytics-dashboard.png", alt: "Dashboard analytics untuk metrik penggunaan dan pertumbuhan" },
       { src: "/case-studies/dashboard-cms/shipment-cms.png", alt: "Pengelolaan shipment dan pembaruan status operasional" },
+      { src: "/case-studies/dashboard-cms/contest-login-privacy.webp", alt: "Login aman untuk dashboard administrasi campaign" },
+      { src: "/case-studies/dashboard-cms/contest-dashboard-privacy.webp", alt: "Dashboard campaign dengan ringkasan submission dan distribusi tema" },
+      { src: "/case-studies/dashboard-cms/contest-submissions-privacy.webp", alt: "Pengelolaan dan pemeriksaan detail submission pada CMS" },
     ],
     featured: true,
     sortOrder: 2,
@@ -67,13 +70,16 @@ export const fallbackProjects: Project[] = [
     challenge:
       "Tim HR membutuhkan gambaran kehadiran yang cepat tanpa harus merekap data secara manual dari berbagai sumber.",
     solution:
-      "RETECH menyatukan data absensi, filter periode, ringkasan visual, laporan, dan administrasi cuti dalam platform terpusat.",
+      "RETECH menyatukan dashboard kehadiran, analitik keterlambatan, filter periode, approval cuti, pengelolaan sisa cuti, dan administrasi pengguna dalam platform terpusat.",
     outcome:
       "Pemantauan kehadiran menjadi lebih ringkas dan keputusan administratif dapat dibuat dengan data yang lebih mudah dibaca.",
-    services: ["HRMS", "Attendance", "Reporting", "Dashboard Analytics"],
+    services: ["HRMS", "Attendance", "Leave Approval", "Leave Balance", "Reporting", "Dashboard Analytics"],
     gallery: [
-      { src: "/case-studies/hrms/attendance-analytics-v2.png", alt: "Analitik absensi dan keterlambatan" },
-      { src: "/case-studies/hrms/attendance-percentage-v2.png", alt: "Ringkasan persentase kehadiran" },
+      { src: "/case-studies/hrms/login-privacy.webp", alt: "Halaman login aman untuk portal administrasi HRMS" },
+      { src: "/case-studies/hrms/dashboard-overview-privacy.webp", alt: "Dashboard HRMS dengan tren absensi dan status check-in" },
+      { src: "/case-studies/hrms/attendance-analysis-privacy.webp", alt: "Analitik keterlambatan, shift, dan komposisi check-in" },
+      { src: "/case-studies/hrms/leave-approval-privacy.webp", alt: "Administrasi approval dan status pengajuan cuti" },
+      { src: "/case-studies/hrms/leave-balances-privacy.webp", alt: "Pengelolaan kuota, pemakaian, dan sisa cuti karyawan" },
     ],
     featured: true,
     sortOrder: 3,
@@ -115,12 +121,11 @@ export const fallbackProjects: Project[] = [
       "Tim HR memperoleh data absensi dan administrasi cuti yang lebih mudah diaudit, sementara karyawan dapat mengelola kehadiran langsung dari perangkat Android.",
     services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Attendance Calendar", "Leave Management", "Admin Hub", "HRMS Sync"],
     gallery: [
-      { src: "/case-studies/android-attendance/mobile-home.png", alt: "Beranda absensi Android dengan check-in, check-out, dan timestamp" },
+      { src: "/case-studies/android-attendance/mobile-dashboard-privacy.webp", alt: "Beranda aplikasi Android dengan check-in, check-out, lokasi, dan timestamp" },
+      { src: "/case-studies/android-attendance/mobile-overview-privacy.webp", alt: "Ringkasan kehadiran dan akses cepat pada aplikasi Android" },
       { src: "/case-studies/android-attendance/attendance-calendar.jpg", alt: "Kalender absensi dengan ringkasan hadir, terlambat, dan shift" },
       { src: "/case-studies/android-attendance/admin-hub.jpg", alt: "Admin Hub untuk attendance, kedisiplinan, approval cuti, dan manajemen kuota" },
       { src: "/case-studies/android-attendance/leave-request.jpg", alt: "Pengajuan cuti, sisa kuota, dan riwayat status persetujuan" },
-      { src: "/case-studies/android-attendance/attendance-admin.png", alt: "Analitik keterlambatan dan administrasi attendance" },
-      { src: "/case-studies/android-attendance/attendance-history.png", alt: "Riwayat check-in dan check-out dengan timestamp" },
     ],
     featured: false,
     sortOrder: 5,
