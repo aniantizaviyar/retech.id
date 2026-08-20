@@ -11,8 +11,8 @@ export function SiteHeader() {
         <Link href="/services">Services</Link>
         <Link href="/work">Case Studies</Link>
         <Link href="/pricing">Pricing</Link>
+        <Link href="/about">About</Link>
         <Link href="/faq">FAQ</Link>
-        <Link href="/#approach">Approach</Link>
         <Link href="/#contact">Contact</Link>
       </nav>
       <Link className="nav-cta" href="/#contact" data-analytics="contact_cta_click" data-analytics-source="header">

@@ -26,6 +26,12 @@ function getAnswer(input: string): Message {
   if (/portfolio|case stud|hasil|project|proyek|pernah buat/.test(text)) {
     return { role: "agent", text: "Case Studies RETECH mencakup website perusahaan logistik, dashboard & CMS, HRMS dan attendance, serta infrastructure monitoring. Identitas customer dan data sensitif disembunyikan. Buka /work untuk melihat tampilannya." };
   }
+  if (/tentang|about|siapa retech|profil perusahaan|perusahaan apa/.test(text)) {
+    return { role: "agent", text: "PT. Retech Digital Solution (RETECH) adalah partner teknologi B2B untuk digital product development, managed IT operations, dan server deployment. Kami mengutamakan kebutuhan bisnis, keamanan, serta delivery yang jelas. Buka /about untuk mengenal RETECH lebih lanjut." };
+  }
+  if (/privasi|privacy|data pribadi|keamanan data/.test(text)) {
+    return { role: "agent", text: "RETECH memproses data inquiry secara terbatas untuk tindak lanjut, keamanan, dan peningkatan layanan. Kami tidak menjual data pribadi. Detail lengkap tersedia di /privacy-policy." };
+  }
   if (/harga|biaya|budget|quotation|proposal|estimasi|berapa/.test(text)) {
     return { role: "agent", text: "Biaya bergantung pada scope, kompleksitas, dan target waktu. Isi detail singkat di bawah agar tim RETECH dapat menyiapkan estimasi yang lebih tepat.", leadForm: true, initialNeed: input };
   }

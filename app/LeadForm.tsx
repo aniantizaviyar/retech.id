@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useId, useState } from "react";
+import Link from "next/link";
 import { SERVICE_OPTIONS, validateLeadInput } from "@/lib/leads";
 import { TurnstileWidget } from "./TurnstileWidget";
 import { trackSiteEvent } from "@/components/AnalyticsEvents";
@@ -94,7 +95,7 @@ export function LeadForm({ source, compact = false, initialNeed = "" }: LeadForm
   }
 
   return (
-    <form className={`lead-form ${compact ? "is-compact" : ""}`} onSubmit={submit} aria-label="Form konsultasi RETECH">
+    <form className={`lead-form ${compact ? "is-compact" : ""}`} onSubmit={submit} aria-label="Form konsultasi RETECH" data-clarity-mask="true">
       <div className="lead-field">
         <label htmlFor={`${formId}-name`}>Nama</label>
         <input id={`${formId}-name`} name="name" autoComplete="name" minLength={2} maxLength={80} required placeholder="Nama lengkap" aria-describedby={`${formId}-name-hint`} />
@@ -123,7 +124,7 @@ export function LeadForm({ source, compact = false, initialNeed = "" }: LeadForm
         <label htmlFor={`${formId}-company`}>Company website</label>
         <input id={`${formId}-company`} name="company" tabIndex={-1} autoComplete="off" />
       </div>
-      <p className="lead-consent">Dengan mengirim form, Anda setuju tim RETECH menghubungi Anda untuk menindaklanjuti inquiry ini.</p>
+      <p className="lead-consent">Dengan mengirim form, Anda setuju tim RETECH menghubungi Anda untuk menindaklanjuti inquiry ini dan telah membaca <Link href="/privacy-policy">Kebijakan Privasi</Link>.</p>
       {status === "error" && <p className="lead-error" role="alert">{error}</p>}
       <button className="lead-submit" type="submit" disabled={status === "sending"} data-analytics="lead_form_submit_click" data-analytics-source={source}>
         {status === "sending" ? "Mengirim…" : "Kirim inquiry"}<span aria-hidden="true">↗</span>

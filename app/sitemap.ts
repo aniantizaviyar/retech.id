@@ -21,6 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${siteUrl}/about`,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: `${siteUrl}/work`,
       changeFrequency: "weekly",
       priority: 0.9,
@@ -39,6 +44,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${siteUrl}/faq`,
       changeFrequency: "monthly",
       priority: 0.6,
+    },
+    {
+      url: `${siteUrl}/privacy-policy`,
+      changeFrequency: "yearly",
+      priority: 0.4,
     },
     ...projects.map((project) => ({
       url: `${siteUrl}/work/${project.slug}`,
