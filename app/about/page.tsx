@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChatWidget } from "../ChatWidget";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { companyContact } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -148,6 +149,37 @@ export default function AboutPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="about-company-info">
+        <div>
+          <span className="kicker">COMPANY INFORMATION</span>
+          <h2>Reach RETECH.<br /><em>Start with a conversation.</em></h2>
+          <p>Kunjungan ke business address dilakukan berdasarkan janji temu.</p>
+        </div>
+        <address>
+          <a href={companyContact.mapUrl} target="_blank" rel="noreferrer">
+            <span>BUSINESS ADDRESS</span>
+            {companyContact.address}
+            <b>Open Maps ↗</b>
+          </a>
+          <a
+            href={companyContact.whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-analytics="whatsapp_click"
+            data-analytics-source="about_company_info"
+          >
+            <span>WHATSAPP · CHAT ONLY</span>
+            {companyContact.whatsappDisplay}
+            <b>Start chat ↗</b>
+          </a>
+          <a href={`mailto:${companyContact.email}`}>
+            <span>EMAIL</span>
+            {companyContact.email}
+            <b>Send email ↗</b>
+          </a>
+        </address>
       </section>
 
       <section className="about-trust">

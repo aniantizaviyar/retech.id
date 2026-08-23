@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { AnalyticsEvents } from "@/components/AnalyticsEvents";
+import { companyContact } from "@/lib/company";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -45,7 +46,25 @@ const organizationSchema = {
   url: "https://retech.id",
   logo: "https://retech.id/retech-logo-transparent.png",
   image: "https://retech.id/og.png",
-  email: "sales@retech.id",
+  email: companyContact.email,
+  telephone: companyContact.whatsappE164,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress:
+      "EasyOffice Bekasi, Emerald Commercial Bekasi, UF-10, Jl. Boulevard Selatan, RT 004 / RW 011, Margamulya, Bekasi Utara",
+    addressLocality: "Kota Bekasi",
+    addressRegion: "Jawa Barat",
+    postalCode: "17142",
+    addressCountry: "ID",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "sales",
+    telephone: companyContact.whatsappE164,
+    email: companyContact.email,
+    url: companyContact.whatsappUrl,
+    availableLanguage: ["Indonesian", "English"],
+  },
   description: "Penyedia website dan mobile development, managed IT services, remote support, serta solusi server untuk bisnis.",
   areaServed: { "@type": "Country", name: "Indonesia" },
   knowsAbout: ["Website Development", "Mobile Application Development", "Managed IT Services", "Server Monitoring", "Remote IT Support"],

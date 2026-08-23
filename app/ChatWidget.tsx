@@ -32,6 +32,9 @@ function getAnswer(input: string): Message {
   if (/privasi|privacy|data pribadi|keamanan data/.test(text)) {
     return { role: "agent", text: "RETECH memproses data inquiry secara terbatas untuk tindak lanjut, keamanan, dan peningkatan layanan. Kami tidak menjual data pribadi. Detail lengkap tersedia di /privacy-policy." };
   }
+  if (/alamat|lokasi|kantor|whatsapp|nomor wa|kontak|hubungi/.test(text)) {
+    return { role: "agent", text: "Business address RETECH berada di EasyOffice Bekasi, Emerald Commercial Bekasi, UF-10, Jl. Boulevard Selatan, Margamulya, Bekasi Utara, Kota Bekasi 17142. WhatsApp +62 877-9834-7007 tersedia untuk chat saja. Kunjungan dilakukan berdasarkan janji temu." };
+  }
   if (/harga|biaya|budget|quotation|proposal|estimasi|berapa/.test(text)) {
     return { role: "agent", text: "Biaya bergantung pada scope, kompleksitas, dan target waktu. Isi detail singkat di bawah agar tim RETECH dapat menyiapkan estimasi yang lebih tepat.", leadForm: true, initialNeed: input };
   }

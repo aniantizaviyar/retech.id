@@ -5,6 +5,7 @@ import { ChatWidget } from "./ChatWidget";
 import { LeadForm } from "./LeadForm";
 import { ProjectCard } from "@/components/ProjectCard";
 import { SiteFooter } from "@/components/SiteFooter";
+import { companyContact } from "@/lib/company";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getProjects } from "@/lib/projects";
 
@@ -175,7 +176,24 @@ export default async function Home() {
             <div className="contact-note"><span>01</span><p>Pilih layanan dan jelaskan kebutuhan Anda.</p></div>
             <div className="contact-note"><span>02</span><p>Tim kami meninjau scope dan menghubungi Anda.</p></div>
             <div className="contact-note"><span>03</span><p>Kami susun solusi serta estimasi yang relevan.</p></div>
-            <a className="contact-email" href="mailto:sales@retech.id">sales@retech.id <span>↗</span></a>
+            <div className="contact-direct">
+              <a className="contact-direct-link" href={`mailto:${companyContact.email}`}>
+                <span>EMAIL</span>{companyContact.email} <b>↗</b>
+              </a>
+              <a
+                className="contact-direct-link"
+                href={companyContact.whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                data-analytics="whatsapp_click"
+                data-analytics-source="home_contact"
+              >
+                <span>WHATSAPP · CHAT ONLY</span>{companyContact.whatsappDisplay} <b>↗</b>
+              </a>
+              <a className="contact-direct-link contact-address" href={companyContact.mapUrl} target="_blank" rel="noreferrer">
+                <span>BUSINESS ADDRESS · VISIT BY APPOINTMENT</span>{companyContact.address} <b>↗</b>
+              </a>
+            </div>
           </div>
           <div className="contact-form-card">
             <span className="contact-form-label">PROJECT INQUIRY</span>
