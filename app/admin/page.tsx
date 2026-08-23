@@ -7,7 +7,7 @@ import { AdminDashboard } from "./AdminDashboard";
 import "./admin.css";
 
 export const metadata: Metadata = {
-  title: "Admin CMS | RETECH",
+  title: { absolute: "RETECH Admin CMS" },
   description: "Secure RETECH content management system.",
   robots: { index: false, follow: false, noarchive: true, nocache: true },
 };
