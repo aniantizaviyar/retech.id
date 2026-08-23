@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getProjects } from "@/lib/projects";
-import { services } from "@/lib/services";
+import { getServices } from "@/lib/cms-data";
 import { localePath } from "@/lib/i18n";
 
 const siteUrl = "https://retech.id";
@@ -9,6 +9,7 @@ export const revalidate = 300;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getProjects();
+  const services = await getServices("id");
   const baseEntries = [
     { path: "/", changeFrequency: "weekly" as const, priority: 1 },
     { path: "/pricing", changeFrequency: "monthly" as const, priority: 0.8 },

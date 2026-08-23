@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import { getPageContent, getPricing } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -59,19 +60,24 @@ const englishSupport = [
 export default async function PricingPage() {
   const locale = await getLocale();
   const en = locale === "en";
-  const localizedPackages = en ? englishPackages : packages;
-  const localizedHosting = en ? englishHosting : hosting;
-  const localizedSupport = en ? englishSupport : support;
+  const pageContent = await getPageContent("pricing", locale);
+  const pricingRecords = await getPricing(locale);
+  const cmsPackages = pricingRecords.filter((record) => record.section === "development").map((record) => record.data);
+  const cmsHosting = pricingRecords.filter((record) => record.section === "hosting").map((record) => record.data);
+  const cmsSupport = pricingRecords.filter((record) => record.section === "support").map((record) => [record.data.name, record.data.price, record.data.description] as const);
+  const localizedPackages = cmsPackages.length ? cmsPackages : (en ? englishPackages : packages);
+  const localizedHosting = cmsHosting.length ? cmsHosting : (en ? englishHosting : hosting);
+  const localizedSupport = cmsSupport.length ? cmsSupport : (en ? englishSupport : support);
   return (
     <main>
       <SiteHeader locale={locale} />
       <section className="pricing-hero">
         <span className="kicker">PRICING GUIDE</span>
         <h1>Clear starting point.<br /><em>Flexible final scope.</em></h1>
-        <div className="pricing-intro"><p>{en ? "The following prices are starting estimates to support planning. A final proposal is prepared after requirements, complexity, and timeline are understood." : "Harga berikut adalah estimasi awal untuk membantu perencanaan. Penawaran final dibuat setelah kebutuhan, kompleksitas, dan timeline dipahami."}</p><span>{en ? "Starting prices • Not fixed rates" : "Harga mulai dari • Bukan tarif tetap"}</span></div>
+        <div className="pricing-intro"><p>{String(pageContent.heroIntro || "")}</p><span>{String(pageContent.heroNote || "")}</span></div>
       </section>
       <section className="pricing-section">
-        <div className="pricing-heading"><div><span className="kicker">01 / DEVELOPMENT</span><h2>Build what your<br /><em>business needs.</em></h2></div><p>{en ? "From professional websites to business systems and custom mobile applications." : "Mulai dari website profesional hingga sistem bisnis dan aplikasi mobile custom."}</p></div>
+        <div className="pricing-heading"><div><span className="kicker">01 / DEVELOPMENT</span><h2>Build what your<br /><em>business needs.</em></h2></div><p>{String(pageContent.developmentIntro || "")}</p></div>
         <div className="pricing-grid">
           {localizedPackages.map((item) => <article className={`pricing-card${item.recommended ? " pricing-card-featured" : ""}`} key={item.name}>
             {item.recommended && <span className="pricing-badge">RECOMMENDED</span>}<span className="pricing-eyebrow">{item.eyebrow}</span><h3>{item.name}</h3><p>{item.description}</p>
@@ -94,13 +100,13 @@ export default async function PricingPage() {
         </div>
       </section>
       <section className="support-pricing">
-        <div className="pricing-heading"><div><span className="kicker">04 / SUPPORT & OPERATIONS</span><h2>Keep systems<br /><em>running reliably.</em></h2></div><p>{en ? "Choose one-time assistance or recurring management based on capacity and system risk." : "Pilih bantuan insidental atau pengelolaan rutin sesuai kapasitas dan tingkat risiko sistem."}</p></div>
+        <div className="pricing-heading"><div><span className="kicker">04 / SUPPORT & OPERATIONS</span><h2>Keep systems<br /><em>running reliably.</em></h2></div><p>{String(pageContent.supportIntro || "")}</p></div>
         <div className="support-price-list">{localizedSupport.map(([name, price, description], index) => <article key={name}><span>0{index + 1}</span><div><h3>{name}</h3><p>{description}</p></div><strong>{price}</strong></article>)}</div>
       </section>
       <section className="hosting-pricing">
-        <div className="pricing-heading"><div><span className="kicker">05 / DOMAIN & HOSTING</span><h2>Infrastructure,<br /><em>without hidden ownership.</em></h2></div><p>{en ? "Domains and cloud services are recurring costs. Accounts and ownership remain under the customer's name; RETECH assists with setup and management." : "Domain dan cloud adalah biaya berulang. Akun dan kepemilikan tetap atas nama customer; RETECH membantu setup dan pengelolaannya."}</p></div>
+        <div className="pricing-heading"><div><span className="kicker">05 / DOMAIN & HOSTING</span><h2>Infrastructure,<br /><em>without hidden ownership.</em></h2></div><p>{String(pageContent.hostingIntro || "")}</p></div>
         <div className="hosting-grid">{localizedHosting.map((item) => <article key={item.name}><span>OPTIONAL ADD-ON</span><h3>{item.name}</h3><strong>{item.price}</strong><p>{item.description}</p><ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></article>)}</div>
-        <p className="hosting-disclaimer">{en ? "Renewal pricing follows registrar and cloud-provider rates. High resource usage, large storage, email hosting, licenses, and third-party services are quoted separately." : "Harga perpanjangan mengikuti tarif registrar dan cloud provider. Pemakaian resource tinggi, storage besar, email hosting, lisensi, dan layanan pihak ketiga dihitung terpisah."}</p>
+        <p className="hosting-disclaimer">{String(pageContent.hostingDisclaimer || "")}</p>
       </section>
       <section className="pricing-notes">
         <div><span className="kicker">GOOD TO KNOW</span><h2>Scope before<br /><em>commitment.</em></h2></div>
@@ -120,7 +126,7 @@ export default async function PricingPage() {
           ["Ketersediaan", "Jadwal dan response time dikonfirmasi sebelum pekerjaan dimulai. Layanan 24/7 tidak termasuk."],
         ]).map(([title, copy]) => <p key={title}><strong>{title}</strong>{copy}</p>)}</div>
       </section>
-      <section className="pricing-cta"><span className="kicker">GET A REAL ESTIMATE</span><h2>{en ? "Tell us what you need." : "Ceritakan kebutuhan."}<br /><em>{en ? "We'll help map it." : "Kami bantu petakan."}</em></h2><p>{en ? "An initial consultation helps determine the most practical approach, priorities, budget, and timeline." : "Konsultasi awal membantu menentukan pendekatan, prioritas, biaya, dan timeline yang paling masuk akal."}</p><Link className="button button-primary" href={localePath(locale, "/#contact")} data-analytics="contact_cta_click" data-analytics-source="pricing_bottom">{en ? "Request quotation" : "Minta quotation"} <span>↗</span></Link></section>
+      <section className="pricing-cta"><span className="kicker">GET A REAL ESTIMATE</span><h2>{en ? "Tell us what you need." : "Ceritakan kebutuhan."}<br /><em>{en ? "We'll help map it." : "Kami bantu petakan."}</em></h2><p>{String(pageContent.ctaIntro || "")}</p><Link className="button button-primary" href={localePath(locale, "/#contact")} data-analytics="contact_cta_click" data-analytics-source="pricing_bottom">{en ? "Request quotation" : "Minta quotation"} <span>↗</span></Link></section>
       <SiteFooter locale={locale} /><ChatWidget locale={locale} />
     </main>
   );

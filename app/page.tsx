@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import { getPageContent } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -71,6 +72,13 @@ export default async function Home() {
   const en = locale === "en";
   const projects = (await getProjects(locale)).filter((project) => project.featured).slice(0, 4);
   const homeServices = en ? englishServices : services;
+  const pageContent = await getPageContent("home", locale);
+  const processItems = Array.isArray(pageContent.process)
+    ? pageContent.process.filter((item): item is Record<string, string> => typeof item === "object" && item !== null && !Array.isArray(item))
+    : [];
+  const contactSteps = Array.isArray(pageContent.contactSteps)
+    ? pageContent.contactSteps.filter((item): item is string => typeof item === "string")
+    : [];
 
   return (
     <main>
@@ -78,16 +86,12 @@ export default async function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <div className="status-pill"><span /> Your IT partner for what&apos;s next</div>
+          <div className="status-pill"><span /> {String(pageContent.heroBadge || "Your IT partner for what's next")}</div>
           <h1>
-            Technology that works.<br />
-            <em>Business that grows.</em>
+            {String(pageContent.heroTitle || "Technology that works.")}<br />
+            <em>{String(pageContent.heroTitleAccent || "Business that grows.")}</em>
           </h1>
-          <p>
-            {en
-              ? "RETECH helps businesses build digital products, maintain infrastructure, and solve IT challenges—from idea to daily operations."
-              : "RETECH membantu bisnis membangun produk digital, menjaga infrastruktur, dan menyelesaikan tantangan IT—dari ide hingga operasional."}
-          </p>
+          <p>{String(pageContent.heroIntro || "")}</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#contact" data-analytics="contact_cta_click" data-analytics-source="home_hero">{en ? "Start a project" : "Mulai project"} <span>↗</span></a>
             <Link className="button button-secondary" href={localePath(locale, "/work")}>{en ? "View our work" : "Lihat hasil kerja"} <span>↘</span></Link>
@@ -118,7 +122,7 @@ export default async function Home() {
             <span className="kicker">WHAT WE DO</span>
             <h2>One partner.<br /><em>Every layer of IT.</em></h2>
           </div>
-          <p>{en ? "Three service lines connecting product development, operational stability, and technical support into one solution." : "Tiga lini layanan yang menghubungkan pembangunan produk, stabilitas operasional, dan dukungan teknis menjadi satu solusi."}</p>
+          <p>{String(pageContent.servicesIntro || "")}</p>
         </div>
 
         <div className="service-grid">
@@ -149,7 +153,7 @@ export default async function Home() {
             <h2>Built for real<br /><em>operations.</em></h2>
           </div>
           <div className="section-side-copy">
-            <p>{en ? "Selected website, business application, HRMS, and monitoring implementations from active systems." : "Implementasi website, aplikasi bisnis, HRMS, dan monitoring yang dipilih dari sistem aktif."}</p>
+            <p>{String(pageContent.workIntro || "")}</p>
             <span className="privacy-note">{en ? "Client identity protected by confidentiality" : "Identitas customer dilindungi oleh kerahasiaan"}</span>
           </div>
         </div>
@@ -164,12 +168,10 @@ export default async function Home() {
           <div className="approach-copy">
             <span className="kicker">HOW WE WORK</span>
             <h2>Clear process.<br /><em>Measurable impact.</em></h2>
-            <p>{en ? "We start with the business need, shape the right solution, and keep the outcome performing at its best." : "Kami mulai dari kebutuhan bisnis, menyusun solusi yang tepat, lalu menjaga hasilnya tetap optimal."}</p>
+            <p>{String(pageContent.processIntro || "")}</p>
           </div>
           <ol className="process-list">
-            <li><span>01</span><div><strong>Discover</strong><p>{en ? "Understand goals, challenges, users, and the systems already in place." : "Memahami tujuan, tantangan, pengguna, dan sistem yang sudah berjalan."}</p></div></li>
-            <li><span>02</span><div><strong>Design &amp; Deliver</strong><p>{en ? "Design the solution, build iteratively, and test critical functions." : "Merancang solusi, mengembangkan secara iteratif, dan menguji bagian penting."}</p></div></li>
-            <li><span>03</span><div><strong>Operate &amp; Improve</strong><p>{en ? "Monitor, support, and continuously improve performance." : "Memantau, mendukung, dan meningkatkan performa secara berkelanjutan."}</p></div></li>
+            {processItems.map((step, index) => <li key={`${String(step.title)}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{String(step.title || "")}</strong><p>{String(step.copy || "")}</p></div></li>)}
           </ol>
         </div>
       </section>
@@ -180,10 +182,8 @@ export default async function Home() {
           <div className="contact-copy">
             <span className="kicker">LET&apos;S BUILD WHAT&apos;S NEXT</span>
             <h2>Ready to move your<br /><em>business forward?</em></h2>
-            <p>{en ? "Tell us about your IT needs. Your inquiry will be stored securely and the RETECH team will contact you about the next step." : "Ceritakan kebutuhan IT Anda. Inquiry akan tersimpan dengan aman dan tim RETECH akan menghubungi Anda untuk langkah berikutnya."}</p>
-            <div className="contact-note"><span>01</span><p>{en ? "Select a service and describe what you need." : "Pilih layanan dan jelaskan kebutuhan Anda."}</p></div>
-            <div className="contact-note"><span>02</span><p>{en ? "Our team reviews the scope and contacts you." : "Tim kami meninjau scope dan menghubungi Anda."}</p></div>
-            <div className="contact-note"><span>03</span><p>{en ? "We prepare a relevant solution and estimate." : "Kami susun solusi serta estimasi yang relevan."}</p></div>
+            <p>{String(pageContent.contactIntro || "")}</p>
+            {contactSteps.map((step, index) => <div className="contact-note" key={`${String(step)}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><p>{String(step)}</p></div>)}
             <div className="contact-direct">
               <a className="contact-direct-link" href={`mailto:${companyContact.email}`}>
                 <span>EMAIL</span>{companyContact.email} <b>↗</b>

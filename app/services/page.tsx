@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ChatWidget } from "../ChatWidget";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getServices } from "@/lib/services";
+import { getPageContent, getServices } from "@/lib/cms-data";
 import { absoluteLocaleUrl, languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 
@@ -18,7 +18,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ServicesPage() {
   const locale = await getLocale();
   const en = locale === "en";
-  const services = getServices(locale);
+  const services = await getServices(locale);
+  const pageContent = await getPageContent("services", locale);
   const pageUrl = absoluteLocaleUrl(locale, "/services");
   const offerCatalogSchema = {
     "@context": "https://schema.org",
@@ -51,7 +52,7 @@ export default async function ServicesPage() {
       <section className="service-page-hero">
         <span className="kicker">RETECH SERVICES</span>
         <h1>Build. Operate.<br /><em>Move forward.</em></h1>
-        <p>{en ? "One partner to build digital products, maintain infrastructure, and deliver server solutions with a clear direction." : "Satu partner untuk membangun produk digital, menjaga infrastruktur, dan menyelesaikan kebutuhan server secara terarah."}</p>
+        <p>{String(pageContent.heroIntro || (en ? "One partner to build digital products, maintain infrastructure, and deliver server solutions with a clear direction." : "Satu partner untuk membangun produk digital, menjaga infrastruktur, dan menyelesaikan kebutuhan server secara terarah."))}</p>
       </section>
       <section className="service-directory" aria-label={en ? "RETECH services" : "Daftar layanan RETECH"}>
         {services.map((service, index) => (
@@ -68,7 +69,7 @@ export default async function ServicesPage() {
       </section>
       <section className="service-bottom-cta">
         <span className="kicker">NOT SURE WHERE TO START?</span>
-        <h2>{en ? "Tell us where you are." : "Ceritakan kondisi Anda."}<br /><em>{en ? "We'll map the way forward." : "Kami bantu petakan."}</em></h2>
+        <h2>{String(pageContent.ctaTitle || (en ? "Tell us where you are." : "Ceritakan kondisi Anda."))}<br /><em>{String(pageContent.ctaTitleAccent || (en ? "We'll map the way forward." : "Kami bantu petakan."))}</em></h2>
         <div><Link className="button button-primary" href={localePath(locale, "/#contact")} data-analytics="contact_cta_click" data-analytics-source="services">{en ? "Discuss your needs" : "Konsultasi kebutuhan"} <span>↗</span></Link><Link className="button button-secondary" href={localePath(locale, "/faq")}>{en ? "Read FAQ" : "Baca FAQ"} <span>↗</span></Link></div>
       </section>
       <SiteFooter locale={locale} /><ChatWidget locale={locale} />

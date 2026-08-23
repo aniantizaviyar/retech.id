@@ -96,7 +96,7 @@ export const services: ServiceDefinition[] = [
   },
 ];
 
-const englishServices: Record<string, Omit<ServiceDefinition, "slug">> = {
+export const englishServices: Record<string, Omit<ServiceDefinition, "slug">> = {
   "digital-product-development": {
     eyebrow: "BUILD",
     title: "Digital Product & Application Development",
@@ -151,11 +151,11 @@ const englishServices: Record<string, Omit<ServiceDefinition, "slug">> = {
   },
 };
 
-export function getServices(locale: Locale): ServiceDefinition[] {
+export function getFallbackServices(locale: Locale): ServiceDefinition[] {
   if (locale === "id") return services;
   return services.map((service) => ({ slug: service.slug, ...englishServices[service.slug] }));
 }
 
-export function getService(slug: string, locale: Locale = "id") {
-  return getServices(locale).find((service) => service.slug === slug);
+export function getFallbackService(slug: string, locale: Locale = "id") {
+  return getFallbackServices(locale).find((service) => service.slug === slug);
 }

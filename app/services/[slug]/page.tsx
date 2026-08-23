@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { ChatWidget } from "../../ChatWidget";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getService, services } from "@/lib/services";
+import { services } from "@/lib/services";
+import { getService } from "@/lib/cms-data";
 import { absoluteLocaleUrl, languageAlternates, localeConfig, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 
@@ -16,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const locale = await getLocale();
-  const service = getService((await params).slug, locale);
+  const service = await getService((await params).slug, locale);
   if (!service) return { title: "Service" };
   const basePath = `/services/${service.slug}`;
   const path = localePath(locale, basePath);
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ServiceDetailPage({ params }: PageProps) {
   const locale = await getLocale();
   const en = locale === "en";
-  const service = getService((await params).slug, locale);
+  const service = await getService((await params).slug, locale);
   if (!service) notFound();
   const pageUrl = absoluteLocaleUrl(locale, `/services/${service.slug}`);
   const serviceSchema = {

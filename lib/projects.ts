@@ -136,7 +136,7 @@ export const fallbackProjects: Project[] = [
 
 type ProjectTranslation = Pick<Project, "title" | "category" | "summary" | "challenge" | "solution" | "outcome" | "services"> & { galleryAlt: string[] };
 
-const englishProjectContent: Record<string, ProjectTranslation> = {
+export const englishProjectContent: Record<string, ProjectTranslation> = {
   "logistics-company-website": {
     title: "Logistics Company Website",
     category: "Digital Product",
@@ -200,27 +200,28 @@ function localizeProject(project: Project, locale: Locale): Project {
   };
 }
 
-function normalizeProject(row: Record<string, unknown>): Project | null {
+function normalizeProject(row: Record<string, unknown>, locale: Locale): Project | null {
   if (typeof row.slug !== "string" || typeof row.title !== "string") return null;
+  const translation = locale === "en" ? englishProjectContent[row.slug] : undefined;
   const gallery = Array.isArray(row.gallery)
     ? row.gallery.filter(
-        (item): item is { src: string; alt: string } =>
+        (item): item is { src: string; alt: string; alt_en?: string } =>
           typeof item === "object" && item !== null &&
           typeof (item as { src?: unknown }).src === "string" &&
           typeof (item as { alt?: unknown }).alt === "string",
-      )
+      ).map((item, index) => ({ src: item.src, alt: locale === "en" ? (typeof item.alt_en === "string" ? item.alt_en : translation?.galleryAlt[index] || item.alt) : item.alt }))
     : [];
 
   return {
     slug: row.slug,
-    title: row.title,
-    category: typeof row.category === "string" ? row.category : "Digital Solution",
+    title: locale === "en" ? (typeof row.title_en === "string" ? row.title_en : translation?.title || row.title) : row.title,
+    category: locale === "en" ? (typeof row.category_en === "string" ? row.category_en : translation?.category || (typeof row.category === "string" ? row.category : "Digital Solution")) : (typeof row.category === "string" ? row.category : "Digital Solution"),
     status: row.status === "in-development" ? "in-development" : "live",
-    summary: typeof row.summary === "string" ? row.summary : "",
-    challenge: typeof row.challenge === "string" ? row.challenge : "",
-    solution: typeof row.solution === "string" ? row.solution : "",
-    outcome: typeof row.outcome === "string" ? row.outcome : "",
-    services: Array.isArray(row.services) ? row.services.filter((item): item is string => typeof item === "string") : [],
+    summary: locale === "en" ? (typeof row.summary_en === "string" ? row.summary_en : translation?.summary || (typeof row.summary === "string" ? row.summary : "")) : (typeof row.summary === "string" ? row.summary : ""),
+    challenge: locale === "en" ? (typeof row.challenge_en === "string" ? row.challenge_en : translation?.challenge || (typeof row.challenge === "string" ? row.challenge : "")) : (typeof row.challenge === "string" ? row.challenge : ""),
+    solution: locale === "en" ? (typeof row.solution_en === "string" ? row.solution_en : translation?.solution || (typeof row.solution === "string" ? row.solution : "")) : (typeof row.solution === "string" ? row.solution : ""),
+    outcome: locale === "en" ? (typeof row.outcome_en === "string" ? row.outcome_en : translation?.outcome || (typeof row.outcome === "string" ? row.outcome : "")) : (typeof row.outcome === "string" ? row.outcome : ""),
+    services: locale === "en" && Array.isArray(row.services_en) && row.services_en.length ? row.services_en.filter((item): item is string => typeof item === "string") : (locale === "en" && translation ? translation.services : Array.isArray(row.services) ? row.services.filter((item): item is string => typeof item === "string") : []),
     gallery,
     featured: row.featured === true,
     sortOrder: typeof row.sort_order === "number" ? row.sort_order : 99,
@@ -237,13 +238,13 @@ export async function getProjects(locale: Locale = "id"): Promise<Project[]> {
       `${url}/rest/v1/portfolio_projects?select=*&published=eq.true&order=sort_order.asc`,
       {
         headers: { apikey: key, Authorization: `Bearer ${key}` },
-        next: { revalidate: 300 },
+        next: { revalidate: 60, tags: ["cms-content"] },
       },
     );
     if (!response.ok) return fallbackProjects.map((project) => localizeProject(project, locale));
     const rows = (await response.json()) as Record<string, unknown>[];
-    const projects = rows.map(normalizeProject).filter((item): item is Project => item !== null);
-    return (projects.length ? projects : fallbackProjects).map((project) => localizeProject(project, locale));
+    const projects = rows.map((row) => normalizeProject(row, locale)).filter((item): item is Project => item !== null);
+    return projects.length ? projects : fallbackProjects.map((project) => localizeProject(project, locale));
   } catch {
     return fallbackProjects.map((project) => localizeProject(project, locale));
   }

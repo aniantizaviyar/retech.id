@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { absoluteLocaleUrl, languageAlternates, localeConfig, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import { getPageContent } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -35,6 +36,7 @@ export default async function PrivacyPolicyPage() {
   const locale = await getLocale();
   const en = locale === "en";
   const localizedSections = en ? englishSections : sections;
+  const pageContent = await getPageContent("privacy-policy", locale);
   const pageUrl = absoluteLocaleUrl(locale, "/privacy-policy");
   const pageSchema = {
     "@context": "https://schema.org",
@@ -58,9 +60,7 @@ export default async function PrivacyPolicyPage() {
         <span className="kicker">PRIVACY AT RETECH</span>
         <h1>{en ? "Transparent about data." : "Transparan tentang data."}<br /><em>{en ? "Serious about security." : "Serius soal keamanannya."}</em></h1>
         <div className="privacy-hero-meta">
-          <p>
-            {en ? "This policy explains how PT. Retech Digital Solution (\"RETECH\", \"we\") processes data when you access retech.id, use the assistant, or submit an inquiry." : "Kebijakan ini menjelaskan bagaimana PT. Retech Digital Solution (\"RETECH\", \"kami\") memproses data ketika Anda mengakses retech.id, menggunakan assistant, atau mengirim inquiry."}
-          </p>
+          <p>{String(pageContent.intro || "")}</p>
           <span>{en ? "Last updated" : "Terakhir diperbarui"}<br /><strong>{en ? "August 20, 2026" : "20 Agustus 2026"}</strong></span>
         </div>
       </section>
@@ -78,7 +78,7 @@ export default async function PrivacyPolicyPage() {
         <div className="privacy-content">
           <div className="privacy-summary">
             <strong>{en ? "Our commitment at a glance" : "Ringkasan komitmen kami"}</strong>
-            <p>{en ? "RETECH does not sell or rent personal data. We collect relevant data to respond to inquiries, protect our services, and understand website performance." : "RETECH tidak menjual atau menyewakan data pribadi. Kami mengumpulkan data yang relevan untuk menanggapi inquiry, menjaga keamanan layanan, dan memahami performa website."}</p>
+            <p>{String(pageContent.summary || "")}</p>
           </div>
 
           <article id="scope">

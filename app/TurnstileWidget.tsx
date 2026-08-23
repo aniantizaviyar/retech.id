@@ -17,12 +17,13 @@ type TurnstileWidgetProps = {
   onVerify: (token: string) => void;
   onUnavailable: () => void;
   locale?: "id" | "en";
+  action?: "lead_submit" | "admin_login";
 };
 
 const SCRIPT_ID = "cloudflare-turnstile-script";
 const TEST_SITE_KEY = "1x00000000000000000000AA";
 
-export function TurnstileWidget({ onVerify, onUnavailable, locale = "id" }: TurnstileWidgetProps) {
+export function TurnstileWidget({ onVerify, onUnavailable, locale = "id", action = "lead_submit" }: TurnstileWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const onVerifyRef = useRef(onVerify);
@@ -46,7 +47,7 @@ export function TurnstileWidget({ onVerify, onUnavailable, locale = "id" }: Turn
       if (cancelled || !containerRef.current || !window.turnstile || widgetIdRef.current) return;
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         sitekey: siteKey,
-        action: "lead_submit",
+        action,
         theme: "dark",
         size: "flexible",
         language: locale,
@@ -78,7 +79,7 @@ export function TurnstileWidget({ onVerify, onUnavailable, locale = "id" }: Turn
       if (widgetIdRef.current && window.turnstile) window.turnstile.remove(widgetIdRef.current);
       widgetIdRef.current = null;
     };
-  }, [locale, siteKey]);
+  }, [action, locale, siteKey]);
 
   return <div className="turnstile-shell" ref={containerRef} role="group" aria-label={locale === "en" ? "Security verification" : "Verifikasi keamanan"} />;
 }

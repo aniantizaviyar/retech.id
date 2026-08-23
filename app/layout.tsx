@@ -7,6 +7,7 @@ import { AnalyticsEvents } from "@/components/AnalyticsEvents";
 import { companyContact } from "@/lib/company";
 import { localeConfig } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import { headers } from "next/headers";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -98,6 +99,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const requestHeaders = await headers();
+  const isAdmin = requestHeaders.get("x-retech-admin") === "true";
   const locale = await getLocale();
   const english = locale === "en";
   const organizationSchema = getOrganizationSchema(english);
@@ -105,12 +108,12 @@ export default async function RootLayout({
   return (
     <html lang={localeConfig[locale].htmlLang}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, "\\u003c") }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, "\\u003c") }} />
+        {!isAdmin && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, "\\u003c") }} />}
+        {!isAdmin && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, "\\u003c") }} />}
         {children}
-        <AnalyticsEvents />
-        <Analytics />
-        <GoogleTagManager gtmId="GTM-MX3X63MF" />
+        {!isAdmin && <AnalyticsEvents />}
+        {!isAdmin && <Analytics />}
+        {!isAdmin && <GoogleTagManager gtmId="GTM-MX3X63MF" />}
       </body>
     </html>
   );

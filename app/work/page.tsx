@@ -7,6 +7,7 @@ import { WorkGrid } from "@/components/WorkGrid";
 import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import { getPageContent } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -20,16 +21,17 @@ export default async function WorkPage() {
   const locale = await getLocale();
   const en = locale === "en";
   const projects = await getProjects(locale);
+  const pageContent = await getPageContent("work", locale);
 
   return (
     <main>
       <SiteHeader locale={locale} />
       <section className="work-hero">
         <span className="kicker">CASE STUDIES</span>
-        <h1>Technology in action.<br /><em>Built for real work.</em></h1>
+        <h1>{String(pageContent.heroTitle || "Technology in action.")}<br /><em>{String(pageContent.heroTitleAccent || "Built for real work.")}</em></h1>
         <div className="work-hero-copy">
-          <p>{en ? "Websites, operational applications, HRMS platforms, and infrastructure monitoring designed for day-to-day business needs." : "Website, aplikasi operasional, HRMS, dan monitoring infrastructure yang dirancang untuk kebutuhan bisnis sehari-hari."}</p>
-          <span className="privacy-note">{en ? "Customer names, logos, emails, addresses, and sensitive data are not displayed." : "Nama, logo, email, alamat, dan data sensitif customer tidak ditampilkan."}</span>
+          <p>{String(pageContent.heroIntro || "")}</p>
+          <span className="privacy-note">{String(pageContent.privacyNote || "")}</span>
         </div>
       </section>
       <section className="work-listing">
@@ -37,8 +39,8 @@ export default async function WorkPage() {
       </section>
       <section className="work-cta">
         <span className="kicker">YOUR PROJECT, NEXT</span>
-        <h2>{en ? "Facing a similar" : "Punya tantangan yang"}<br /><em>{en ? "challenge?" : "mirip?"}</em></h2>
-        <p>{en ? "We can begin with a short discovery to map requirements, risks, and the most practical implementation path." : "Kami bisa mulai dari discovery singkat untuk memetakan kebutuhan, risiko, dan tahap implementasi paling masuk akal."}</p>
+        <h2>{String(pageContent.ctaTitle || (en ? "Facing a similar challenge?" : "Punya tantangan serupa?"))}</h2>
+        <p>{String(pageContent.ctaIntro || "")}</p>
         <Link className="button button-primary" href={localePath(locale, "/#contact")} data-analytics="contact_cta_click" data-analytics-source="work">{en ? "Discuss your project" : "Diskusikan project Anda"} <span>↗</span></Link>
       </section>
       <SiteFooter locale={locale} />

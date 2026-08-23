@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { companyContact } from "@/lib/company";
 import { absoluteLocaleUrl, languageAlternates, localeConfig, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import { getPageContent } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -62,6 +63,7 @@ export default async function AboutPage() {
   const en = locale === "en";
   const localizedPrinciples = en ? englishPrinciples : principles;
   const localizedCapabilities = en ? englishCapabilities : capabilities;
+  const pageContent = await getPageContent("about", locale);
   const pageUrl = absoluteLocaleUrl(locale, "/about");
   const aboutSchema = {
     "@context": "https://schema.org",
@@ -94,14 +96,10 @@ export default async function AboutPage() {
       <section className="about-hero">
         <div>
           <span className="kicker">ABOUT RETECH</span>
-          <h1>Technology with<br /><em>business context.</em></h1>
+          <h1>{String(pageContent.heroTitle || "Technology with")}<br /><em>{String(pageContent.heroTitleAccent || "business context.")}</em></h1>
         </div>
         <div className="about-hero-copy">
-          <p>
-            {en
-              ? "PT. Retech Digital Solution—RETECH—is a B2B technology partner that helps businesses build digital products, maintain infrastructure, and deliver server solutions with a clear direction."
-              : "PT. Retech Digital Solution—RETECH—adalah partner teknologi B2B yang membantu bisnis membangun produk digital, menjaga infrastruktur, dan menyelesaikan kebutuhan server secara terarah."}
-          </p>
+          <p>{String(pageContent.heroIntro || "")}</p>
           <span>BUILD · OPERATE · SUPPORT</span>
         </div>
       </section>
@@ -109,12 +107,8 @@ export default async function AboutPage() {
       <section className="about-statement">
         <span className="about-index">01 / OUR PURPOSE</span>
         <div>
-          <h2>{en ? "Technology should simplify operations—" : "Teknologi harus mempermudah operasi—"}<em>{en ? "not add complexity." : "bukan menambah kompleksitas."}</em></h2>
-          <p>
-            {en
-              ? "Our mission is to translate business needs into digital solutions that are relevant, secure, maintainable, and ready to grow. We combine product development, infrastructure operations, and server expertise so technical decisions stay connected to business outcomes."
-              : "Misi kami adalah menerjemahkan kebutuhan bisnis menjadi solusi digital yang relevan, aman, dapat dipelihara, dan siap berkembang. Kami menggabungkan product development, infrastructure operations, serta server expertise agar keputusan teknis tetap terhubung dengan hasil bisnis."}
-          </p>
+          <h2>{String(pageContent.purposeTitle || "")}<em>{String(pageContent.purposeTitleAccent || "")}</em></h2>
+          <p>{String(pageContent.purposeCopy || "")}</p>
         </div>
       </section>
 
@@ -124,7 +118,7 @@ export default async function AboutPage() {
             <span className="kicker">HOW WE THINK</span>
             <h2>Principles that<br /><em>guide the work.</em></h2>
           </div>
-          <p>{en ? "Principles that protect delivery quality, clarity in collaboration, and long-term trust." : "Prinsip kerja yang menjaga kualitas delivery, kejelasan kolaborasi, dan kepercayaan jangka panjang."}</p>
+          <p>{String(pageContent.principlesIntro || "")}</p>
         </div>
         <div className="principle-grid">
           {localizedPrinciples.map((principle) => (
@@ -141,9 +135,7 @@ export default async function AboutPage() {
         <div>
           <span className="kicker">WHAT WE CONNECT</span>
           <h2>From idea to<br /><em>daily operations.</em></h2>
-          <p>
-            {en ? "RETECH connects three layers that are often handled separately: product development, operational stability, and technical support." : "RETECH menghubungkan tiga lapisan yang sering ditangani terpisah: pembangunan produk, stabilitas operasional, dan dukungan teknis."}
-          </p>
+          <p>{String(pageContent.capabilitiesIntro || "")}</p>
           <Link className="button button-secondary" href={localePath(locale, "/services")}>{en ? "Explore services" : "Jelajahi layanan"} <span>↗</span></Link>
         </div>
         <div className="capability-list">
@@ -160,7 +152,7 @@ export default async function AboutPage() {
         <div>
           <span className="kicker">COMPANY INFORMATION</span>
           <h2>Reach RETECH.<br /><em>Start with a conversation.</em></h2>
-          <p>{en ? "Visits to our business address are available by appointment." : "Kunjungan ke business address dilakukan berdasarkan janji temu."}</p>
+          <p>{String(pageContent.companyIntro || "")}</p>
         </div>
         <address>
           <a href={companyContact.mapUrl} target="_blank" rel="noreferrer">
@@ -192,11 +184,7 @@ export default async function AboutPage() {
         <div className="about-trust-grid">
           <h2>Your system.<br /><em>Your data. Your control.</em></h2>
           <div>
-            <p>
-              {en
-                ? "We prioritize customer confidentiality, need-based access, documentation, and clear handover. Technology is selected for the context—not simply because it is trending—with attention to security, performance, operating cost, and future extensibility."
-                : "Kami mengutamakan kerahasiaan informasi customer, akses berbasis kebutuhan, dokumentasi, dan handover yang jelas. Teknologi dipilih sesuai konteks—bukan karena tren semata—dengan perhatian pada keamanan, performa, biaya operasional, dan kemampuan pengembangan berikutnya."}
-            </p>
+            <p>{String(pageContent.trustCopy || "")}</p>
             <Link href={localePath(locale, "/privacy-policy")}>{en ? "Read our Privacy Policy" : "Baca Kebijakan Privasi"} <span>↗</span></Link>
           </div>
         </div>
