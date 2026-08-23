@@ -3,16 +3,20 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import type { CmsResource } from "@/lib/cms-validation";
+import { MailUsersPanel } from "./MailUsersPanel";
 
 type CmsRecord = Record<string, unknown> & { id?: string | number; slug?: string; published?: boolean; sort_order?: number };
 type MediaRecord = { name: string; url: string; created_at?: string; metadata?: { size?: number; mimetype?: string } };
-type Tab = CmsResource | "media";
+type WebsiteTab = CmsResource | "media";
+type Tab = WebsiteTab | "mail-users";
 
-const tabs: Array<{ id: Tab; label: string; icon: string }> = [
+const websiteTabs: Array<{ id: WebsiteTab; label: string; icon: string }> = [
   { id: "pages", label: "Pages", icon: "▤" }, { id: "projects", label: "Case Studies", icon: "◫" },
   { id: "services", label: "Services", icon: "◇" }, { id: "faqs", label: "FAQ", icon: "?" },
   { id: "pricing", label: "Pricing", icon: "₿" }, { id: "media", label: "Media", icon: "▧" },
 ];
+const mailTabs: Array<{ id: Tab; label: string; icon: string }> = [{ id: "mail-users", label: "User", icon: "@" }];
+const allTabs = [...websiteTabs, ...mailTabs];
 
 function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)); }
 function lines(value: unknown) { return Array.isArray(value) ? value.join("\n") : ""; }
@@ -111,6 +115,7 @@ function RecordEditor({ resource, record, onClose, onSaved }: { resource: CmsRes
 
 export function AdminDashboard({ email }: { email: string }) {
   const [tab, setTab] = useState<Tab>("pages");
+  const [websiteOpen, setWebsiteOpen] = useState(true);
   const [records, setRecords] = useState<CmsRecord[]>([]);
   const [media, setMedia] = useState<MediaRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,12 +123,14 @@ export function AdminDashboard({ email }: { email: string }) {
   const [editing, setEditing] = useState<CmsRecord | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => { let cancelled = false; const url = tab === "media" ? "/api/admin/media" : `/api/admin/cms?resource=${tab}`; fetch(url).then(async (response) => { const result = await response.json() as { records?: CmsRecord[] | MediaRecord[]; error?: string }; if (!response.ok) throw new Error(result.error || "Data gagal dimuat."); if (!cancelled) { if (tab === "media") setMedia(result.records as MediaRecord[] || []); else setRecords(result.records as CmsRecord[] || []); } }).catch((loadError) => { if (!cancelled) setError(loadError.message); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, [tab, refreshKey]);
+  useEffect(() => { if (tab === "mail-users") return; let cancelled = false; const url = tab === "media" ? "/api/admin/media" : `/api/admin/cms?resource=${tab}`; fetch(url).then(async (response) => { const result = await response.json() as { records?: CmsRecord[] | MediaRecord[]; error?: string }; if (!response.ok) throw new Error(result.error || "Data gagal dimuat."); if (!cancelled) { if (tab === "media") setMedia(result.records as MediaRecord[] || []); else setRecords(result.records as CmsRecord[] || []); } }).catch((loadError) => { if (!cancelled) setError(loadError.message); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, [tab, refreshKey]);
 
   const publishedCount = useMemo(() => records.filter((record) => record.published !== false).length, [records]);
+  const activeTab = allTabs.find((item) => item.id === tab);
+  function selectTab(nextTab: Tab) { setLoading(nextTab !== "mail-users"); setError(""); setTab(nextTab); setEditing(null); }
   function refresh() { setEditing(null); setLoading(true); setError(""); setRefreshKey((key) => key + 1); }
   async function remove(record: CmsRecord) {
-    if (!record.id || tab === "media" || !window.confirm(`Hapus “${labelFor(record, tab)}”? Tindakan ini tidak dapat dibatalkan.`)) return;
+    if (!record.id || tab === "media" || tab === "mail-users" || !window.confirm(`Hapus “${labelFor(record, tab)}”? Tindakan ini tidak dapat dibatalkan.`)) return;
     const response = await fetch(`/api/admin/cms/${tab}/${record.id}`, { method: "DELETE" }); const result = await response.json() as { error?: string };
     if (!response.ok) { setError(result.error || "Gagal menghapus data."); return; } refresh();
   }
@@ -132,12 +139,15 @@ export function AdminDashboard({ email }: { email: string }) {
   async function removeMedia(item: MediaRecord) { if (!window.confirm(`Hapus file ${item.name} dari storage? Pastikan file tidak sedang digunakan.`)) return; const response = await fetch(`/api/admin/media?path=${encodeURIComponent(item.name)}`, { method: "DELETE" }); const result = await response.json() as { error?: string }; if (!response.ok) setError(result.error || "Gagal menghapus media."); refresh(); }
 
   return <main className="admin-app">
-    <aside className="admin-sidebar"><div className="admin-brand"><Image src="/retech-logo-transparent.png" alt="RETECH" width={500} height={430} priority /><div><strong>RETECH CMS</strong><span>Content Operations</span></div></div><nav>{tabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => { setLoading(true); setError(""); setTab(item.id); setEditing(null); }}><i>{item.icon}</i>{item.label}</button>)}</nav><div className="admin-sidebar-footer"><a href="https://retech.id" target="_blank" rel="noreferrer">Lihat website ↗</a><button onClick={logout}>Logout</button></div></aside>
-    <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / CONTENT MANAGEMENT</span><h1>{tabs.find((item) => item.id === tab)?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
-      <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{tab === "media" ? media.length : records.length}</strong></article><article><span>{tab === "media" ? "Storage media" : "Published"}</span><strong>{tab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
-        <div className="admin-list-header"><div><h2>{tab === "media" ? "Media library" : `Kelola ${tabs.find((item) => item.id === tab)?.label}`}</h2><p>{tab === "projects" ? "Tambah case study, edit konten bilingual, upload, urutkan, atau hapus gambar." : tab === "pages" ? "Edit copy per halaman dalam Bahasa Indonesia dan English." : "Perubahan published akan tampil pada website setelah disimpan."}</p></div>{tab === "media" ? <label className="admin-primary-button">Upload media<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadMedia(file); event.currentTarget.value = ""; }} /></label> : <button className="admin-primary-button" onClick={() => setEditing(emptyRecord(tab))}>+ Tambah data</button>}</div>
+    <aside className="admin-sidebar"><div className="admin-brand"><Image src="/retech-logo-transparent.png" alt="RETECH" width={500} height={430} priority /><div><strong>RETECH CMS</strong><span>Content Operations</span></div></div><nav>
+      <div className="admin-nav-group"><button className={`admin-nav-toggle ${websiteTabs.some((item) => item.id === tab) ? "current" : ""}`} onClick={() => setWebsiteOpen((open) => !open)} aria-expanded={websiteOpen}><i>⌂</i><span>Website</span><b>{websiteOpen ? "⌃" : "⌄"}</b></button>{websiteOpen && <div className="admin-subnav">{websiteTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)}><i>{item.icon}</i>{item.label}</button>)}</div>}</div>
+      <div className="admin-nav-section"><span>MAIL</span>{mailTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)}><i>{item.icon}</i>{item.label}</button>)}</div>
+    </nav><div className="admin-sidebar-footer"><a href="https://retech.id" target="_blank" rel="noreferrer">Lihat website ↗</a><button onClick={logout}>Logout</button></div></aside>
+    <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / {tab === "mail-users" ? "MAIL OPERATIONS" : "CONTENT MANAGEMENT"}</span><h1>{activeTab?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
+      {tab === "mail-users" ? <MailUsersPanel /> : <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{tab === "media" ? media.length : records.length}</strong></article><article><span>{tab === "media" ? "Storage media" : "Published"}</span><strong>{tab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
+        <div className="admin-list-header"><div><h2>{tab === "media" ? "Media library" : `Kelola ${activeTab?.label}`}</h2><p>{tab === "projects" ? "Tambah case study, edit konten bilingual, upload, urutkan, atau hapus gambar." : tab === "pages" ? "Edit copy per halaman dalam Bahasa Indonesia dan English." : "Perubahan published akan tampil pada website setelah disimpan."}</p></div>{tab === "media" ? <label className="admin-primary-button">Upload media<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadMedia(file); event.currentTarget.value = ""; }} /></label> : <button className="admin-primary-button" onClick={() => setEditing(emptyRecord(tab))}>+ Tambah data</button>}</div>
         {error && <p className="admin-form-message" role="alert">{error}</p>}{loading ? <div className="admin-loading">Memuat data CMS…</div> : tab === "media" ? <div className="admin-media-grid">{media.map((item) => <article key={item.name}><Image src={item.url} alt={item.name} width={360} height={220} unoptimized /><div><strong>{item.name}</strong><small>{item.metadata?.size ? `${Math.round(item.metadata.size / 1024)} KB` : "Media"}</small><button onClick={() => navigator.clipboard.writeText(item.url)}>Salin URL</button><button className="danger" onClick={() => removeMedia(item)}>Hapus</button></div></article>)}</div> : <div className="admin-record-list">{records.map((record) => <article key={String(record.id)}><div className="admin-record-order">{String(record.sort_order ?? "—").padStart(2, "0")}</div><div><span className={record.published === false ? "status-draft" : "status-live"}>{record.published === false ? "DRAFT" : "PUBLISHED"}</span><h3>{labelFor(record, tab)}</h3><p>{record.slug ? `/${record.slug}` : tab === "faqs" ? String(record.answer_id || "").slice(0, 130) : "Content record"}</p></div><div className="admin-record-actions"><button onClick={() => setEditing(clone(record))}>Edit</button><button className="danger" onClick={() => remove(record)}>Hapus</button></div></article>)}</div>}
-      </div>
-    </section>{editing && tab !== "media" && <RecordEditor resource={tab} record={editing} onClose={() => setEditing(null)} onSaved={refresh} />}
+      </div>}
+    </section>{editing && tab !== "media" && tab !== "mail-users" && <RecordEditor resource={tab} record={editing} onClose={() => setEditing(null)} onSaved={refresh} />}
   </main>;
 }

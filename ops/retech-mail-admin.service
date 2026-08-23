@@ -1,0 +1,31 @@
+[Unit]
+Description=RETECH mailbox administration API
+After=network-online.target postfix.service dovecot.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+EnvironmentFile=/etc/retech-mail-admin.env
+ExecStart=/usr/bin/python3 /usr/local/lib/retech-mail-admin/service.py
+Restart=on-failure
+RestartSec=3s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+ReadWritePaths=/etc/dovecot /etc/postfix /var/vmail /var/backups/retech-mail-admin /run
+
+[Install]
+WantedBy=multi-user.target

@@ -176,6 +176,16 @@
 .admin-brand strong { font-size: 14px; letter-spacing: 0.04em; }
 .admin-brand span { color: var(--admin-muted); font-size: 10px; }
 .admin-sidebar nav { display: grid; gap: 6px; }
+.admin-nav-group,
+.admin-nav-section { display: grid; gap: 5px; }
+.admin-nav-section { margin-top: 18px; }
+.admin-nav-section > span {
+  padding: 0 14px 3px;
+  color: #52778b;
+  font: 700 9px/1.4 var(--font-geist-mono), monospace;
+  letter-spacing: 0.16em;
+}
+.admin-subnav { display: grid; gap: 4px; padding-left: 13px; }
 
 .admin-sidebar nav button {
   display: flex;
@@ -191,6 +201,12 @@
   text-align: left;
   cursor: pointer;
 }
+
+.admin-sidebar nav .admin-nav-toggle { color: #d3e9f3; font-weight: 700; }
+.admin-sidebar nav .admin-nav-toggle.current { color: #fff; }
+.admin-sidebar nav .admin-nav-toggle span { flex: 1; }
+.admin-sidebar nav .admin-nav-toggle b { color: #557c91; font-size: 11px; }
+.admin-sidebar nav .admin-subnav button { min-height: 40px; border-radius: 10px; font-size: 12px; }
 
 .admin-sidebar nav button:hover,
 .admin-sidebar nav button.active {
@@ -278,9 +294,11 @@
 .admin-record-list h3 { margin: 6px 0 3px; font-size: 16px; }
 .admin-record-list p { max-width: 850px; margin: 0; color: var(--admin-muted); font-size: 12px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .status-live,
-.status-draft { font: 700 9px var(--font-geist-mono), monospace; letter-spacing: 0.1em; }
+.status-draft,
+.status-protected { font: 700 9px var(--font-geist-mono), monospace; letter-spacing: 0.1em; }
 .status-live { color: var(--admin-green); }
 .status-draft { color: #ffc767; }
+.status-protected { color: #73b6ff; }
 .admin-record-actions { display: flex; gap: 7px; }
 .admin-record-actions .danger,
 .admin-media-grid .danger { color: var(--admin-danger); border-color: rgba(255, 111, 120, 0.24); }
@@ -352,16 +370,65 @@
 .admin-editor-options label { display: flex; align-items: center; gap: 8px; }
 .admin-modal footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--admin-line); }
 
+.admin-mail-content { max-width: 1500px; }
+.admin-mail-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.admin-mail-stats article small { color: var(--admin-muted); font-size: 11px; }
+.admin-mail-storage-note {
+  margin-bottom: 18px;
+  padding: 17px 18px;
+  border: 1px solid var(--admin-line);
+  border-radius: 15px;
+  background: rgba(11, 29, 41, 0.72);
+}
+.admin-mail-storage-note > div:first-child { display: flex; justify-content: space-between; gap: 16px; font-size: 12px; }
+.admin-mail-storage-note > div:first-child span,
+.admin-mail-storage-note p { color: var(--admin-muted); }
+.admin-mail-storage-note p { margin: 9px 0 0; font-size: 11px; line-height: 1.55; }
+.admin-storage-track { height: 7px; margin-top: 11px; overflow: hidden; border-radius: 999px; background: #06131d; }
+.admin-storage-track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--admin-cyan), var(--admin-blue)); box-shadow: 0 0 18px rgba(37, 198, 237, 0.3); }
+.admin-mail-list { display: grid; gap: 10px; }
+.admin-mail-list > article {
+  display: grid;
+  grid-template-columns: 46px minmax(230px, 1fr) minmax(115px, 0.35fr) minmax(115px, 0.35fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 17px;
+  border: 1px solid var(--admin-line);
+  border-radius: 15px;
+  background: var(--admin-panel);
+}
+.admin-mail-avatar { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(37, 198, 237, 0.25); border-radius: 13px; background: rgba(37, 198, 237, 0.08); color: var(--admin-cyan); font-weight: 800; }
+.admin-mail-identity h3 { margin: 5px 0 3px; font-size: 15px; }
+.admin-mail-identity p { margin: 0; color: var(--admin-muted); font-size: 11px; }
+.admin-mail-metric { display: grid; gap: 4px; }
+.admin-mail-metric span { color: var(--admin-muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; }
+.admin-mail-metric strong { font-size: 15px; }
+.admin-mail-metric small { color: #55798d; font-size: 9px; }
+.admin-mail-modal { width: min(760px, 100%); }
+.admin-mail-form-grid { align-items: end; }
+.admin-password-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-password-actions > span { color: #a9cada; font-size: 12px; font-weight: 650; }
+.admin-show-password { display: flex; align-items: center; gap: 8px; color: #bdd5e0; font-size: 12px; }
+.admin-security-note { margin: 14px 0 0; color: var(--admin-muted); font-size: 11px; line-height: 1.6; }
+
 @media (max-width: 900px) {
   .admin-app { display: block; }
   .admin-sidebar { position: static; height: auto; padding: 14px; border-right: 0; border-bottom: 1px solid var(--admin-line); }
   .admin-brand { padding-bottom: 12px; }
   .admin-sidebar nav { display: flex; overflow-x: auto; padding-bottom: 3px; }
+  .admin-nav-group,
+  .admin-nav-section { display: flex; flex: 0 0 auto; margin-top: 0; }
+  .admin-nav-section > span { display: none; }
+  .admin-subnav { display: flex; gap: 4px; padding-left: 0; }
+  .admin-sidebar nav .admin-nav-toggle { display: none; }
   .admin-sidebar nav button { min-width: max-content; width: auto; }
   .admin-sidebar-footer { display: none; }
   .admin-topbar,
   .admin-content { padding-left: 20px; padding-right: 20px; }
   .admin-language-columns { grid-template-columns: 1fr; }
+  .admin-mail-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-mail-list > article { grid-template-columns: 42px minmax(0, 1fr) repeat(2, minmax(105px, 0.35fr)); }
+  .admin-mail-list .admin-record-actions { grid-column: 2 / -1; justify-content: flex-end; }
 }
 
 @media (max-width: 640px) {
@@ -382,4 +449,8 @@
   .admin-editor-section-title { align-items: stretch; flex-direction: column; }
   .admin-gallery-list article { grid-template-columns: 1fr; }
   .admin-gallery-list img { width: 100%; height: auto; max-height: 260px; }
+  .admin-mail-list > article { grid-template-columns: 42px minmax(0, 1fr); }
+  .admin-mail-metric { grid-column: 2; }
+  .admin-mail-list .admin-record-actions { grid-column: 2; justify-content: flex-start; flex-wrap: wrap; }
+  .admin-mail-form-grid { grid-template-columns: 1fr; }
 }
