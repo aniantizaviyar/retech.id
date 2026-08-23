@@ -38,6 +38,11 @@ main { min-height: 100vh; background: radial-gradient(circle at 72% 14%, rgba(24
 .site-header nav a:hover, footer a:hover { color: var(--cyan); }
 .nav-cta { padding: 12px 18px; border-radius: 999px; background: var(--surface); box-shadow: 7px 7px 16px #04101a, -5px -5px 14px rgba(31,70,94,.35), inset 0 1px rgba(255,255,255,.05); font-size: 13px; }
 .nav-cta span { color: var(--cyan); margin-left: 8px; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.language-switcher { display: flex; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(7,19,30,.72); }
+.language-switcher a { min-width: 34px; padding: 7px 8px; border-radius: 999px; color: #6f8ea2; text-align: center; font: 10px var(--font-geist-mono); transition: color .2s ease, background .2s ease; }
+.language-switcher a:hover { color: var(--ink); }
+.language-switcher a.active { color: #03131c; background: linear-gradient(135deg,var(--cyan),#3184f3); }
 
 .hero { width: min(1440px, calc(100% - 64px)); margin: 0 auto; min-height: 760px; display: grid; grid-template-columns: 1.06fr .94fr; align-items: center; gap: 50px; padding: 72px 8px 84px; }
 .status-pill { width: fit-content; padding: 10px 15px; border-radius: 999px; color: #a6bfd0; background: rgba(17,36,51,.72); border: 1px solid rgba(134,190,219,.13); box-shadow: inset 0 1px rgba(255,255,255,.04); font-family: var(--font-geist-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
@@ -456,7 +461,7 @@ h2 { margin: 18px 0 0; font-size: clamp(42px, 4.2vw, 66px); line-height: 1.03; l
   .about-hero,.about-capabilities,.about-company-info { grid-template-columns: 1fr; gap: 50px; }.about-hero { min-height: 0; }.about-hero-copy { align-self: auto; padding-bottom: 0; }.about-statement { grid-template-columns: 1fr; gap: 35px; }.privacy-layout { grid-template-columns: 220px 1fr; gap: 50px; }
 }
 @media (max-width: 720px) {
-  .site-header { width: calc(100% - 32px); height: 76px; }.brand { width: 105px; height: 68px; }.site-header nav { display: none; }.nav-cta { padding: 10px 14px; }
+  .site-header { width: calc(100% - 32px); height: 76px; }.brand { width: 98px; height: 64px; }.site-header nav { display: none; }.header-actions { gap: 7px; }.nav-cta { padding: 10px 12px; font-size: 11px; }.language-switcher a { min-width: 30px; padding: 6px; }
   .hero { width: calc(100% - 32px); min-height: 0; padding: 70px 0 80px; gap: 20px; } h1 { font-size: clamp(44px,14vw,64px); }.hero-copy > p { font-size: 16px; }.hero-actions { flex-direction: column; max-width: 360px; }.trust-row { flex-wrap: wrap; line-height: 1.6; }
   .floating-card { min-width: 125px; padding: 12px; }.card-top { right: -4%; }.card-bottom { left: -2%; }.floating-card strong { font-size: 12px; }
   .services-section,.approach-section,.featured-work { padding: 90px 16px; }.section-heading { display: block; }.section-heading > p,.section-side-copy { margin-top: 28px; }.service-card { padding: 25px; border-radius: 22px; }

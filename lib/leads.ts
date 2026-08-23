@@ -1,9 +1,22 @@
-export const SERVICE_OPTIONS = [
+import type { Locale } from "./i18n";
+
+export const SERVICE_OPTIONS_ID = [
   "Digital Product & Application Development",
   "Managed Infrastructure & IT Operations",
   "Remote IT & Server Deployment",
   "Konsultasi kebutuhan lainnya",
 ] as const;
+export const SERVICE_OPTIONS_EN = [
+  "Digital Product & Application Development",
+  "Managed Infrastructure & IT Operations",
+  "Remote IT & Server Deployment",
+  "Other consulting needs",
+] as const;
+export const SERVICE_OPTIONS = [...new Set([...SERVICE_OPTIONS_ID, ...SERVICE_OPTIONS_EN])] as string[];
+
+export function getServiceOptions(locale: Locale) {
+  return locale === "en" ? SERVICE_OPTIONS_EN : SERVICE_OPTIONS_ID;
+}
 
 export type LeadInput = {
   name: string;
@@ -41,25 +54,26 @@ export function normalizePhone(value: unknown) {
   return phone.startsWith("+") ? `+${digits}` : digits;
 }
 
-export function validateLeadInput(input: Record<string, unknown>): LeadValidationResult {
+export function validateLeadInput(input: Record<string, unknown>, locale: Locale = "id"): LeadValidationResult {
+  const en = locale === "en";
   const name = cleanSingleLine(input.name, 100);
   if (!NAME_PATTERN.test(name)) {
-    return { ok: false, field: "name", error: "Nama harus berisi minimal 2 huruf dan tidak boleh berisi angka." };
+    return { ok: false, field: "name", error: en ? "Name must contain at least 2 letters and cannot contain numbers." : "Nama harus berisi minimal 2 huruf dan tidak boleh berisi angka." };
   }
 
   const phone = normalizePhone(input.phone);
   if (!phone) {
-    return { ok: false, field: "phone", error: "Nomor telepon hanya boleh berisi 8–15 digit, dengan awalan + bila diperlukan." };
+    return { ok: false, field: "phone", error: en ? "Phone number must contain 8–15 digits, with an optional + prefix." : "Nomor telepon hanya boleh berisi 8–15 digit, dengan awalan + bila diperlukan." };
   }
 
   const service = cleanSingleLine(input.service, 100);
-  if (!SERVICE_OPTIONS.includes(service as (typeof SERVICE_OPTIONS)[number])) {
-    return { ok: false, field: "service", error: "Silakan pilih layanan dari daftar yang tersedia." };
+  if (!SERVICE_OPTIONS.includes(service)) {
+    return { ok: false, field: "service", error: en ? "Please select a service from the available options." : "Silakan pilih layanan dari daftar yang tersedia." };
   }
 
   const needs = cleanMultiline(input.needs, 2000);
   if (needs.length < 10 || CONTROL_CHARACTERS.test(needs)) {
-    return { ok: false, field: "needs", error: "Jelaskan kebutuhan minimal 10 karakter tanpa karakter kontrol." };
+    return { ok: false, field: "needs", error: en ? "Describe your requirements in at least 10 characters without control characters." : "Jelaskan kebutuhan minimal 10 karakter tanpa karakter kontrol." };
   }
 
   return { ok: true, data: { name, phone, service, needs } };

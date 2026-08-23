@@ -13,6 +13,8 @@ export type Project = {
   sortOrder: number;
 };
 
+import type { Locale } from "./i18n";
+
 export const fallbackProjects: Project[] = [
   {
     slug: "logistics-company-website",
@@ -132,6 +134,72 @@ export const fallbackProjects: Project[] = [
   },
 ];
 
+type ProjectTranslation = Pick<Project, "title" | "category" | "summary" | "challenge" | "solution" | "outcome" | "services"> & { galleryAlt: string[] };
+
+const englishProjectContent: Record<string, ProjectTranslation> = {
+  "logistics-company-website": {
+    title: "Logistics Company Website",
+    category: "Digital Product",
+    summary: "A responsive logistics platform with shipment tracking, rate checking, and an operational CMS for managing shipments, content, and customer messages.",
+    challenge: "Service information, shipment status, and rate estimates needed to become a clear experience across desktop and mobile devices.",
+    solution: "RETECH designed the company profile, tracking-number search, rate checker, and CMS dashboard for monitoring shipments and managing content and inquiries.",
+    outcome: "Customers can understand services, track shipments, and check rates faster through one structured digital channel.",
+    services: ["Shipment Tracking", "Rate Checker", "Operations CMS", "Responsive Web"],
+    galleryAlt: ["Shipment tracking and rate-checking website", "CMS dashboard for shipments, content, and customer messages"],
+  },
+  "operations-dashboard-cms": {
+    title: "Operations Dashboard & CMS",
+    category: "Business Application",
+    summary: "A centralized operational dashboard and CMS for monitoring activity, managing content, and simplifying administrative work.",
+    challenge: "Operational data and content were spread across multiple workflows, making updates and monitoring more time-consuming.",
+    solution: "RETECH built a concise dashboard, content management modules, search, pagination, data controls, submission analytics, and campaign administration in one system.",
+    outcome: "The team can understand operational conditions and update content from one consistent workspace.",
+    services: ["Web App", "Dashboard", "CMS", "Campaign Administration", "Role-based Admin"],
+    galleryAlt: ["News CMS article management and publishing workflow", "Analytics dashboard for usage and growth metrics", "Shipment management and operational status updates", "Secure login for the campaign administration dashboard", "Campaign dashboard with submission and theme distribution summaries", "CMS submission management and detail review"],
+  },
+  "hrms-attendance-platform": {
+    title: "HRMS & Attendance Platform",
+    category: "Business Application",
+    summary: "An integrated HR system for monitoring attendance, lateness, schedules, leave, and administrative reports in one dashboard.",
+    challenge: "The HR team needed a fast view of attendance without manually consolidating data from multiple sources.",
+    solution: "RETECH combined attendance dashboards, lateness analytics, period filters, leave approval, leave-balance management, and user administration in a centralized platform.",
+    outcome: "Attendance monitoring is more concise and administrative decisions can be made with easier-to-read data.",
+    services: ["HRMS", "Attendance", "Leave Approval", "Leave Balance", "Reporting", "Dashboard Analytics"],
+    galleryAlt: ["Secure login page for the HRMS administration portal", "HRMS dashboard with attendance trends and check-in status", "Lateness, shift, and check-in composition analytics", "Leave request approval and status administration", "Employee leave quota, usage, and balance management"],
+  },
+  "infrastructure-monitoring": {
+    title: "Infrastructure Monitoring",
+    category: "Managed IT",
+    summary: "A control center for real-time monitoring of traffic, link utilization, router health, servers, endpoints, services, and certificates.",
+    challenge: "Network conditions needed to be visible quickly so incidents and excessive load could be addressed before they caused wider impact.",
+    solution: "RETECH built network and server monitoring dashboards with capacity indicators, endpoint availability, response time, service health, TLS certificates, real-time charts, and operational thresholds.",
+    outcome: "The IT team gains centralized visibility to maintain service stability and respond to anomalies earlier.",
+    services: ["Network Monitoring", "Server Monitoring", "Alerting", "Managed IT"],
+    galleryAlt: ["Real-time network, link utilization, and bandwidth monitoring dashboard", "Server resource, runtime, and service monitoring dashboard", "Server, endpoint, service, and certificate health monitoring"],
+  },
+  "android-attendance-app": {
+    title: "Android Attendance App",
+    category: "Mobile Application",
+    summary: "An Android application for photo and location-based attendance with timestamps, attendance history, and fake or mock location detection.",
+    challenge: "Mobile attendance needed to remain easy to use while ensuring photos, location, and attendance time could be validated and were harder to manipulate.",
+    solution: "RETECH built check-in and check-out flows with photo evidence, location validation, audit timestamps, fake GPS and mock-location detection, an attendance calendar and history, leave requests, an Admin Hub, and HRMS synchronization.",
+    outcome: "HR teams receive attendance and leave data that is easier to audit, while employees manage attendance directly from Android devices.",
+    services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Attendance Calendar", "Leave Management", "Admin Hub", "HRMS Sync"],
+    galleryAlt: ["Android app home screen with check-in, check-out, location, and timestamp", "Attendance summary and quick access in the Android app", "Attendance calendar with present, late, and shift summaries", "Admin Hub for attendance, discipline, leave approval, and quota management", "Leave request, remaining quota, and approval-status history"],
+  },
+};
+
+function localizeProject(project: Project, locale: Locale): Project {
+  if (locale === "id") return project;
+  const translation = englishProjectContent[project.slug];
+  if (!translation) return project;
+  return {
+    ...project,
+    ...translation,
+    gallery: project.gallery.map((image, index) => ({ ...image, alt: translation.galleryAlt[index] || image.alt })),
+  };
+}
+
 function normalizeProject(row: Record<string, unknown>): Project | null {
   if (typeof row.slug !== "string" || typeof row.title !== "string") return null;
   const gallery = Array.isArray(row.gallery)
@@ -159,10 +227,10 @@ function normalizeProject(row: Record<string, unknown>): Project | null {
   };
 }
 
-export async function getProjects(): Promise<Project[]> {
+export async function getProjects(locale: Locale = "id"): Promise<Project[]> {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SECRET_KEY;
-  if (!url || !key) return fallbackProjects;
+  if (!url || !key) return fallbackProjects.map((project) => localizeProject(project, locale));
 
   try {
     const response = await fetch(
@@ -172,15 +240,15 @@ export async function getProjects(): Promise<Project[]> {
         next: { revalidate: 300 },
       },
     );
-    if (!response.ok) return fallbackProjects;
+    if (!response.ok) return fallbackProjects.map((project) => localizeProject(project, locale));
     const rows = (await response.json()) as Record<string, unknown>[];
     const projects = rows.map(normalizeProject).filter((item): item is Project => item !== null);
-    return projects.length ? projects : fallbackProjects;
+    return (projects.length ? projects : fallbackProjects).map((project) => localizeProject(project, locale));
   } catch {
-    return fallbackProjects;
+    return fallbackProjects.map((project) => localizeProject(project, locale));
   }
 }
 
-export async function getProject(slug: string) {
-  return (await getProjects()).find((project) => project.slug === slug);
+export async function getProject(slug: string, locale: Locale = "id") {
+  return (await getProjects(locale)).find((project) => project.slug === slug);
 }

@@ -8,26 +8,24 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { companyContact } from "@/lib/company";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getProjects } from "@/lib/projects";
+import { languageAlternates, localePath } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 
-export const metadata: Metadata = {
-  title: { absolute: "RETECH — IT Solutions That Move Business Forward" },
-  description:
-    "PT. Retech Digital Solution membangun produk digital, mengelola infrastruktur IT, dan menangani deployment server untuk bisnis.",
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    url: "/",
-    title: "RETECH — IT Solutions That Move Business Forward",
-    description: "Website, aplikasi, managed IT, dan solusi server untuk membantu bisnis bergerak lebih cepat.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "RETECH Digital Solution" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "RETECH — IT Solutions That Move Business Forward",
-    description: "Website, aplikasi, managed IT, dan solusi server untuk bisnis.",
-    images: ["/og.png"],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const en = locale === "en";
+  const canonical = localePath(locale, "/");
+  const description = en
+    ? "PT. Retech Digital Solution builds digital products, manages IT infrastructure, and delivers server solutions for businesses."
+    : "PT. Retech Digital Solution membangun produk digital, mengelola infrastruktur IT, dan menangani deployment server untuk bisnis.";
+  return {
+    title: { absolute: "RETECH — IT Solutions That Move Business Forward" },
+    description,
+    alternates: { canonical, languages: languageAlternates("/") },
+    openGraph: { type: "website", url: canonical, title: "RETECH — IT Solutions That Move Business Forward", description, images: [{ url: "/og.png", width: 1200, height: 630, alt: "RETECH Digital Solution" }] },
+    twitter: { card: "summary_large_image", title: "RETECH — IT Solutions That Move Business Forward", description, images: ["/og.png"] },
+  };
+}
 
 const services = [
   {
@@ -62,12 +60,21 @@ const services = [
   },
 ];
 
+const englishServices = [
+  { ...services[0], description: "From company profiles to business applications, we design fast, secure digital products that are ready to grow." },
+  { ...services[1], description: "We maintain servers, networks, data, and day-to-day support so business operations remain stable and measurable." },
+  { ...services[2], description: "Remote installation, configuration, troubleshooting, and hardening by technical specialists without waiting for an onsite visit." },
+];
+
 export default async function Home() {
-  const projects = (await getProjects()).filter((project) => project.featured).slice(0, 4);
+  const locale = await getLocale();
+  const en = locale === "en";
+  const projects = (await getProjects(locale)).filter((project) => project.featured).slice(0, 4);
+  const homeServices = en ? englishServices : services;
 
   return (
     <main>
-      <SiteHeader />
+      <SiteHeader locale={locale} />
 
       <section className="hero" id="top">
         <div className="hero-copy">
@@ -77,12 +84,13 @@ export default async function Home() {
             <em>Business that grows.</em>
           </h1>
           <p>
-            RETECH membantu bisnis membangun produk digital, menjaga infrastruktur,
-            dan menyelesaikan tantangan IT—dari ide hingga operasional.
+            {en
+              ? "RETECH helps businesses build digital products, maintain infrastructure, and solve IT challenges—from idea to daily operations."
+              : "RETECH membantu bisnis membangun produk digital, menjaga infrastruktur, dan menyelesaikan tantangan IT—dari ide hingga operasional."}
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#contact" data-analytics="contact_cta_click" data-analytics-source="home_hero">Start a project <span>↗</span></a>
-            <Link className="button button-secondary" href="/work">View our work <span>↘</span></Link>
+            <a className="button button-primary" href="#contact" data-analytics="contact_cta_click" data-analytics-source="home_hero">{en ? "Start a project" : "Mulai project"} <span>↗</span></a>
+            <Link className="button button-secondary" href={localePath(locale, "/work")}>{en ? "View our work" : "Lihat hasil kerja"} <span>↘</span></Link>
           </div>
           <div className="trust-row">
             <span>DIGITAL PRODUCT</span><i />
@@ -110,11 +118,11 @@ export default async function Home() {
             <span className="kicker">WHAT WE DO</span>
             <h2>One partner.<br /><em>Every layer of IT.</em></h2>
           </div>
-          <p>Tiga lini layanan yang menghubungkan pembangunan produk, stabilitas operasional, dan dukungan teknis menjadi satu solusi.</p>
+          <p>{en ? "Three service lines connecting product development, operational stability, and technical support into one solution." : "Tiga lini layanan yang menghubungkan pembangunan produk, stabilitas operasional, dan dukungan teknis menjadi satu solusi."}</p>
         </div>
 
         <div className="service-grid">
-          {services.map((service) => (
+          {homeServices.map((service) => (
             <article className="service-card" key={service.number}>
               <div className="service-topline">
                 <span>{service.eyebrow}</span>
@@ -126,8 +134,8 @@ export default async function Home() {
               <div className="service-tags">
                 {service.items.map((item) => <span key={item}>{item}</span>)}
               </div>
-              <Link href={service.href} aria-label={`View ${service.title}`} data-analytics="service_detail_click" data-analytics-source="home_service_card">
-                View service details <span>↗</span>
+              <Link href={localePath(locale, service.href)} aria-label={`${en ? "View" : "Lihat"} ${service.title}`} data-analytics="service_detail_click" data-analytics-source="home_service_card">
+                {en ? "View service details" : "Lihat detail layanan"} <span>↗</span>
               </Link>
             </article>
           ))}
@@ -141,14 +149,14 @@ export default async function Home() {
             <h2>Built for real<br /><em>operations.</em></h2>
           </div>
           <div className="section-side-copy">
-            <p>Implementasi website, aplikasi bisnis, HRMS, dan monitoring yang dipilih dari sistem aktif.</p>
-            <span className="privacy-note">Client identity protected by confidentiality</span>
+            <p>{en ? "Selected website, business application, HRMS, and monitoring implementations from active systems." : "Implementasi website, aplikasi bisnis, HRMS, dan monitoring yang dipilih dari sistem aktif."}</p>
+            <span className="privacy-note">{en ? "Client identity protected by confidentiality" : "Identitas customer dilindungi oleh kerahasiaan"}</span>
           </div>
         </div>
         <div className="project-grid">
-          {projects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} />)}
+          {projects.map((project, index) => <ProjectCard key={project.slug} project={project} locale={locale} index={index} />)}
         </div>
-        <Link className="work-link" href="/work">Explore all case studies <span>↗</span></Link>
+        <Link className="work-link" href={localePath(locale, "/work")}>{en ? "Explore all case studies" : "Lihat semua case study"} <span>↗</span></Link>
       </section>
 
       <section className="approach-section" id="approach">
@@ -156,12 +164,12 @@ export default async function Home() {
           <div className="approach-copy">
             <span className="kicker">HOW WE WORK</span>
             <h2>Clear process.<br /><em>Measurable impact.</em></h2>
-            <p>Kami mulai dari kebutuhan bisnis, menyusun solusi yang tepat, lalu menjaga hasilnya tetap optimal.</p>
+            <p>{en ? "We start with the business need, shape the right solution, and keep the outcome performing at its best." : "Kami mulai dari kebutuhan bisnis, menyusun solusi yang tepat, lalu menjaga hasilnya tetap optimal."}</p>
           </div>
           <ol className="process-list">
-            <li><span>01</span><div><strong>Discover</strong><p>Memahami tujuan, tantangan, pengguna, dan sistem yang sudah berjalan.</p></div></li>
-            <li><span>02</span><div><strong>Design &amp; Deliver</strong><p>Merancang solusi, mengembangkan secara iteratif, dan menguji bagian penting.</p></div></li>
-            <li><span>03</span><div><strong>Operate &amp; Improve</strong><p>Memantau, mendukung, dan meningkatkan performa secara berkelanjutan.</p></div></li>
+            <li><span>01</span><div><strong>Discover</strong><p>{en ? "Understand goals, challenges, users, and the systems already in place." : "Memahami tujuan, tantangan, pengguna, dan sistem yang sudah berjalan."}</p></div></li>
+            <li><span>02</span><div><strong>Design &amp; Deliver</strong><p>{en ? "Design the solution, build iteratively, and test critical functions." : "Merancang solusi, mengembangkan secara iteratif, dan menguji bagian penting."}</p></div></li>
+            <li><span>03</span><div><strong>Operate &amp; Improve</strong><p>{en ? "Monitor, support, and continuously improve performance." : "Memantau, mendukung, dan meningkatkan performa secara berkelanjutan."}</p></div></li>
           </ol>
         </div>
       </section>
@@ -172,39 +180,39 @@ export default async function Home() {
           <div className="contact-copy">
             <span className="kicker">LET&apos;S BUILD WHAT&apos;S NEXT</span>
             <h2>Ready to move your<br /><em>business forward?</em></h2>
-            <p>Ceritakan kebutuhan IT Anda. Inquiry akan tersimpan dengan aman dan tim RETECH akan menghubungi Anda untuk langkah berikutnya.</p>
-            <div className="contact-note"><span>01</span><p>Pilih layanan dan jelaskan kebutuhan Anda.</p></div>
-            <div className="contact-note"><span>02</span><p>Tim kami meninjau scope dan menghubungi Anda.</p></div>
-            <div className="contact-note"><span>03</span><p>Kami susun solusi serta estimasi yang relevan.</p></div>
+            <p>{en ? "Tell us about your IT needs. Your inquiry will be stored securely and the RETECH team will contact you about the next step." : "Ceritakan kebutuhan IT Anda. Inquiry akan tersimpan dengan aman dan tim RETECH akan menghubungi Anda untuk langkah berikutnya."}</p>
+            <div className="contact-note"><span>01</span><p>{en ? "Select a service and describe what you need." : "Pilih layanan dan jelaskan kebutuhan Anda."}</p></div>
+            <div className="contact-note"><span>02</span><p>{en ? "Our team reviews the scope and contacts you." : "Tim kami meninjau scope dan menghubungi Anda."}</p></div>
+            <div className="contact-note"><span>03</span><p>{en ? "We prepare a relevant solution and estimate." : "Kami susun solusi serta estimasi yang relevan."}</p></div>
             <div className="contact-direct">
               <a className="contact-direct-link" href={`mailto:${companyContact.email}`}>
                 <span>EMAIL</span>{companyContact.email} <b>↗</b>
               </a>
               <a
                 className="contact-direct-link"
-                href={companyContact.whatsappUrl}
+                href={en ? companyContact.whatsappUrlEn : companyContact.whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
                 data-analytics="whatsapp_click"
                 data-analytics-source="home_contact"
               >
-                <span>WHATSAPP · CHAT ONLY</span>{companyContact.whatsappDisplay} <b>↗</b>
+                <span>WHATSAPP · {en ? "CHAT ONLY" : "HANYA CHAT"}</span>{companyContact.whatsappDisplay} <b>↗</b>
               </a>
               <a className="contact-direct-link contact-address" href={companyContact.mapUrl} target="_blank" rel="noreferrer">
-                <span>BUSINESS ADDRESS · VISIT BY APPOINTMENT</span>{companyContact.address} <b>↗</b>
+                <span>{en ? "BUSINESS ADDRESS · VISIT BY APPOINTMENT" : "ALAMAT BISNIS · KUNJUNGAN DENGAN JANJI"}</span>{companyContact.address} <b>↗</b>
               </a>
             </div>
           </div>
           <div className="contact-form-card">
             <span className="contact-form-label">PROJECT INQUIRY</span>
-            <h3>Ceritakan kebutuhan Anda.</h3>
-            <LeadForm source="contact" />
+            <h3>{en ? "Tell us what you need." : "Ceritakan kebutuhan Anda."}</h3>
+            <LeadForm source="contact" locale={locale} />
           </div>
         </div>
       </section>
 
-      <SiteFooter />
-      <ChatWidget />
+      <SiteFooter locale={locale} />
+      <ChatWidget locale={locale} />
     </main>
   );
 }

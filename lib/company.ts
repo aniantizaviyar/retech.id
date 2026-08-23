@@ -6,6 +6,8 @@ export const companyContact = {
   whatsappE164: "+6287798347007",
   whatsappUrl:
     "https://wa.me/6287798347007?text=Halo%20RETECH%2C%20saya%20ingin%20berkonsultasi%20tentang%20kebutuhan%20IT.",
+  whatsappUrlEn:
+    "https://wa.me/6287798347007?text=Hello%20RETECH%2C%20I%20would%20like%20to%20discuss%20an%20IT%20requirement.",
   address:
     "EasyOffice Bekasi, Emerald Commercial Bekasi, UF-10, Jl. Boulevard Selatan, RT 004 / RW 011, Margamulya, Bekasi Utara, Kota Bekasi, Jawa Barat 17142",
   mapUrl:

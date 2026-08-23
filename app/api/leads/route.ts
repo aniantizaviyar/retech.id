@@ -13,6 +13,7 @@ type LeadPayload = {
   source?: unknown;
   company?: unknown;
   turnstileToken?: unknown;
+  locale?: unknown;
 };
 
 type RateLimitResult = { allowed: boolean; remaining: number; retry_after: number };
@@ -144,18 +145,20 @@ async function notifySales(lead: { name: string; phone: string; service: string;
 }
 
 export async function POST(request: Request) {
+  let english = false;
   try {
     const contentLength = Number(request.headers.get("content-length") || "0");
-    if (contentLength > 20_000) return NextResponse.json({ error: "Data terlalu besar." }, { status: 413 });
+    if (contentLength > 20_000) return NextResponse.json({ error: "Data terlalu besar / payload too large." }, { status: 413 });
 
     const body = (await request.json()) as LeadPayload;
+    english = body.locale === "en";
     if (text(body.company, 200)) return NextResponse.json({ ok: true });
 
-    const validation = validateLeadInput(body as Record<string, unknown>);
+    const validation = validateLeadInput(body as Record<string, unknown>, english ? "en" : "id");
     if (!validation.ok) return NextResponse.json({ error: validation.error, field: validation.field }, { status: 400 });
 
     const source = body.source === "chatbot" ? "chatbot" : body.source === "contact" ? "contact" : "";
-    if (!source) return NextResponse.json({ error: "Sumber inquiry tidak valid." }, { status: 400 });
+    if (!source) return NextResponse.json({ error: english ? "Invalid inquiry source." : "Sumber inquiry tidak valid." }, { status: 400 });
 
     const lead = { ...validation.data, source };
 
@@ -163,21 +166,21 @@ export async function POST(request: Request) {
     const secretKey = process.env.SUPABASE_SECRET_KEY;
     if (!supabaseUrl || !secretKey) {
       console.error("Supabase environment is not configured");
-      return NextResponse.json({ error: "Layanan inquiry sedang dikonfigurasi." }, { status: 503 });
+      return NextResponse.json({ error: english ? "The inquiry service is being configured." : "Layanan inquiry sedang dikonfigurasi." }, { status: 503 });
     }
 
     const rateLimit = await consumeRateLimit(supabaseUrl, secretKey, request);
-    if (!rateLimit) return NextResponse.json({ error: "Proteksi inquiry sedang tidak tersedia. Silakan coba lagi." }, { status: 503 });
+    if (!rateLimit) return NextResponse.json({ error: english ? "Inquiry protection is temporarily unavailable. Please try again." : "Proteksi inquiry sedang tidak tersedia. Silakan coba lagi." }, { status: 503 });
     if (!rateLimit.allowed) {
       return NextResponse.json(
-        { error: "Terlalu banyak percobaan. Silakan tunggu beberapa menit lalu coba lagi." },
+        { error: english ? "Too many attempts. Please wait a few minutes and try again." : "Terlalu banyak percobaan. Silakan tunggu beberapa menit lalu coba lagi." },
         { status: 429, headers: { "Retry-After": String(rateLimit.retry_after), "RateLimit-Limit": "5", "RateLimit-Remaining": "0" } },
       );
     }
 
     const turnstileToken = text(body.turnstileToken, 2048);
     if (!(await verifyTurnstile(turnstileToken, request))) {
-      return NextResponse.json({ error: "Verifikasi keamanan gagal atau kedaluwarsa. Silakan coba lagi." }, { status: 403 });
+      return NextResponse.json({ error: english ? "Security verification failed or expired. Please try again." : "Verifikasi keamanan gagal atau kedaluwarsa. Silakan coba lagi." }, { status: 403 });
     }
 
     const emailStatus = await notifySales(lead);
@@ -194,7 +197,7 @@ export async function POST(request: Request) {
 
     if (!databaseResponse.ok) {
       console.error("Supabase lead insert failed", databaseResponse.status, await databaseResponse.text());
-      return NextResponse.json({ error: "Inquiry belum dapat disimpan. Silakan coba lagi." }, { status: 502 });
+      return NextResponse.json({ error: english ? "The inquiry could not be saved. Please try again." : "Inquiry belum dapat disimpan. Silakan coba lagi." }, { status: 502 });
     }
 
     return NextResponse.json(
@@ -203,6 +206,6 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("Lead submission failed", error);
-    return NextResponse.json({ error: "Terjadi kendala. Silakan coba lagi." }, { status: 500 });
+    return NextResponse.json({ error: english ? "Something went wrong. Please try again." : "Terjadi kendala. Silakan coba lagi." }, { status: 500 });
   }
 }

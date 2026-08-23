@@ -1,21 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/projects";
+import { localePath, type Locale } from "@/lib/i18n";
 
-export function ProjectCard({ project, index = 0 }: { project: Project; index?: number }) {
+export function ProjectCard({ project, locale, index = 0 }: { project: Project; locale: Locale; index?: number }) {
   const cover = project.gallery[0];
+  const en = locale === "en";
   return (
-    <Link className={`project-card project-card-${(index % 3) + 1}`} href={`/work/${project.slug}`}>
+    <Link className={`project-card project-card-${(index % 3) + 1}`} href={localePath(locale, `/work/${project.slug}`)}>
       <div className="project-media">
         {cover ? (
           <Image src={cover.src} alt={cover.alt} fill sizes="(max-width: 760px) 100vw, 50vw" />
         ) : (
-          <div className="project-placeholder" aria-label="Project sedang dalam pengembangan">
+          <div className="project-placeholder" aria-label={en ? "Project in development" : "Project sedang dalam pengembangan"}>
             <span>ANDROID</span>
-            <strong>Coming next</strong>
+            <strong>{en ? "Coming next" : "Segera hadir"}</strong>
           </div>
         )}
-        <span className={`project-status ${project.status}`}>{project.status === "live" ? "Delivered" : "In development"}</span>
+        <span className={`project-status ${project.status}`}>{project.status === "live" ? (en ? "Delivered" : "Selesai") : (en ? "In development" : "Dalam pengembangan")}</span>
       </div>
       <div className="project-card-copy">
         <span className="project-category">{project.category}</span>

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getProjects } from "@/lib/projects";
 import { services } from "@/lib/services";
+import { localePath } from "@/lib/i18n";
 
 const siteUrl = "https://retech.id";
 
@@ -8,52 +9,25 @@ export const revalidate = 300;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getProjects();
-
-  return [
-    {
-      url: siteUrl,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/pricing`,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/about`,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/work`,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/services`,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    ...services.map((service) => ({
-      url: `${siteUrl}/services/${service.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    })),
-    {
-      url: `${siteUrl}/faq`,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${siteUrl}/privacy-policy`,
-      changeFrequency: "yearly",
-      priority: 0.4,
-    },
-    ...projects.map((project) => ({
-      url: `${siteUrl}/work/${project.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    })),
+  const baseEntries = [
+    { path: "/", changeFrequency: "weekly" as const, priority: 1 },
+    { path: "/pricing", changeFrequency: "monthly" as const, priority: 0.8 },
+    { path: "/about", changeFrequency: "monthly" as const, priority: 0.7 },
+    { path: "/work", changeFrequency: "weekly" as const, priority: 0.9 },
+    { path: "/services", changeFrequency: "monthly" as const, priority: 0.9 },
+    ...services.map((service) => ({ path: `/services/${service.slug}`, changeFrequency: "monthly" as const, priority: 0.8 })),
+    { path: "/faq", changeFrequency: "monthly" as const, priority: 0.6 },
+    { path: "/privacy-policy", changeFrequency: "yearly" as const, priority: 0.4 },
+    ...projects.map((project) => ({ path: `/work/${project.slug}`, changeFrequency: "monthly" as const, priority: 0.7 })),
   ];
+
+  return baseEntries.flatMap(({ path, changeFrequency, priority }) => {
+    const idUrl = `${siteUrl}${localePath("id", path)}`;
+    const enUrl = `${siteUrl}${localePath("en", path)}`;
+    const alternates = { languages: { id: idUrl, en: enUrl, "x-default": idUrl } };
+    return [
+      { url: idUrl, changeFrequency, priority, alternates },
+      { url: enUrl, changeFrequency, priority, alternates },
+    ];
+  });
 }

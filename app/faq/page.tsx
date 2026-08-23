@@ -3,21 +3,27 @@ import Link from "next/link";
 import { ChatWidget } from "../ChatWidget";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { faqs } from "@/lib/faqs";
+import { getFaqs } from "@/lib/faqs";
+import { absoluteLocaleUrl, languageAlternates, localePath } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 
-export const metadata: Metadata = {
-  title: "FAQ",
-  description: "Pertanyaan umum tentang website, aplikasi, Managed IT Services, remote support, domain, hosting, biaya, dan proses kerja RETECH.",
-  alternates: { canonical: "/faq" },
-  openGraph: { type: "website", url: "/faq", title: "Frequently Asked Questions | RETECH", description: "Jawaban singkat mengenai layanan dan proses kerja RETECH.", images: ["/og.png"] },
-  twitter: { card: "summary_large_image", title: "Frequently Asked Questions | RETECH", images: ["/og.png"] },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const en = locale === "en";
+  const canonical = localePath(locale, "/faq");
+  const description = en ? "Common questions about websites, applications, Managed IT Services, remote support, domains, hosting, pricing, and the RETECH delivery process." : "Pertanyaan umum tentang website, aplikasi, Managed IT Services, remote support, domain, hosting, biaya, dan proses kerja RETECH.";
+  return { title: "FAQ", description, alternates: { canonical, languages: languageAlternates("/faq") }, openGraph: { type: "website", url: canonical, title: "Frequently Asked Questions | RETECH", description, images: ["/og.png"] }, twitter: { card: "summary_large_image", title: "Frequently Asked Questions | RETECH", description, images: ["/og.png"] } };
+}
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const locale = await getLocale();
+  const en = locale === "en";
+  const faqs = getFaqs(locale);
+  const pageUrl = absoluteLocaleUrl(locale, "/faq");
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": "https://retech.id/faq#faq",
+    "@id": `${pageUrl}#faq`,
     mainEntity: faqs.map((faq) => ({
       "@type": "Question",
       name: faq.question,
@@ -28,13 +34,13 @@ export default function FaqPage() {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
-      <SiteHeader />
-      <section className="faq-hero"><span className="kicker">FREQUENTLY ASKED QUESTIONS</span><h1>Clear answers.<br /><em>Before we start.</em></h1><p>Informasi dasar untuk membantu Anda memahami pilihan layanan, biaya, kepemilikan akun, dan proses kerja RETECH.</p></section>
+      <SiteHeader locale={locale} />
+      <section className="faq-hero"><span className="kicker">FREQUENTLY ASKED QUESTIONS</span><h1>Clear answers.<br /><em>Before we start.</em></h1><p>{en ? "Essential information to help you understand service options, pricing, account ownership, and the RETECH delivery process." : "Informasi dasar untuk membantu Anda memahami pilihan layanan, biaya, kepemilikan akun, dan proses kerja RETECH."}</p></section>
       <section className="faq-list">
         {faqs.map((faq, index) => <details key={faq.question}><summary><span>0{index + 1}</span>{faq.question}</summary><p>{faq.answer}</p></details>)}
       </section>
-      <section className="service-bottom-cta"><span className="kicker">STILL HAVE A QUESTION?</span><h2>Tell us what<br /><em>you need.</em></h2><Link className="button button-primary" href="/#contact" data-analytics="contact_cta_click" data-analytics-source="faq">Hubungi RETECH <span>↗</span></Link></section>
-      <SiteFooter /><ChatWidget />
+      <section className="service-bottom-cta"><span className="kicker">STILL HAVE A QUESTION?</span><h2>Tell us what<br /><em>you need.</em></h2><Link className="button button-primary" href={localePath(locale, "/#contact")} data-analytics="contact_cta_click" data-analytics-source="faq">{en ? "Contact RETECH" : "Hubungi RETECH"} <span>↗</span></Link></section>
+      <SiteFooter locale={locale} /><ChatWidget locale={locale} />
     </main>
   );
 }

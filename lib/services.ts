@@ -12,6 +12,8 @@ export type ServiceDefinition = {
   relatedWork: Array<{ label: string; href: string }>;
 };
 
+import type { Locale } from "./i18n";
+
 export const services: ServiceDefinition[] = [
   {
     slug: "digital-product-development",
@@ -94,6 +96,66 @@ export const services: ServiceDefinition[] = [
   },
 ];
 
-export function getService(slug: string) {
-  return services.find((service) => service.slug === slug);
+const englishServices: Record<string, Omit<ServiceDefinition, "slug">> = {
+  "digital-product-development": {
+    eyebrow: "BUILD",
+    title: "Digital Product & Application Development",
+    shortTitle: "Product Development",
+    summary: "Websites, CMS platforms, web applications, and Android and iOS apps built around real business operations.",
+    description: "RETECH supports the full journey from discovery and UI design to frontend and backend development, API integration, testing, deployment, and handover.",
+    includes: ["Landing pages and company profiles", "Websites with a CMS or admin dashboard", "Web applications and business workflows", "Android applications", "Android + iOS applications", "Backend, database, and API integration"],
+    outcomes: ["Digital products aligned with your brand", "More efficient workflows", "A system ready for phased growth"],
+    process: [
+      { title: "Discovery", description: "Map the goals, users, key features, integrations, and scope boundaries." },
+      { title: "Design & Build", description: "Design the user experience and develop the solution iteratively." },
+      { title: "Test & Launch", description: "Test critical flows and prepare deployment, documentation, and handover." },
+    ],
+    bestFor: ["Companies that need a professional website", "Teams replacing manual processes", "Businesses that need a custom application"],
+    relatedWork: [
+      { label: "Logistics Company Website", href: "/work/logistics-company-website" },
+      { label: "Operations Dashboard & CMS", href: "/work/operations-dashboard-cms" },
+      { label: "Android Attendance App", href: "/work/android-attendance-app" },
+    ],
+  },
+  "managed-it-services": {
+    eyebrow: "OPERATE",
+    title: "Managed Infrastructure & IT Operations",
+    shortTitle: "Managed IT Services",
+    summary: "Maintenance, monitoring, helpdesk, backup, and infrastructure support that keep business services stable.",
+    description: "We help monitor system health, perform recurring tasks, respond to incidents, and plan improvements based on risk priorities.",
+    includes: ["Server maintenance and scheduled patching", "Server, endpoint, and certificate monitoring", "Network and capacity monitoring", "Helpdesk and incident support", "Backup verification and restore support", "Health reports and technical recommendations"],
+    outcomes: ["Clear infrastructure visibility", "Better-controlled downtime risk", "Documented recurring operations"],
+    process: [
+      { title: "Baseline", description: "Document assets, services, dependencies, access, risks, and the initial condition." },
+      { title: "Monitor & Maintain", description: "Run routine checks, monitoring, patching, and backup validation." },
+      { title: "Report & Improve", description: "Report findings, incidents, capacity trends, and improvement plans." },
+    ],
+    bestFor: ["Businesses without a full infrastructure team", "Systems that require continuous monitoring", "Companies that need measurable support"],
+    relatedWork: [{ label: "Infrastructure Monitoring", href: "/work/infrastructure-monitoring" }],
+  },
+  "remote-server-support": {
+    eyebrow: "DEPLOY",
+    title: "Remote IT & Server Deployment",
+    shortTitle: "Remote & Server Support",
+    summary: "Remote installation, configuration, troubleshooting, migration, and server hardening delivered against a clear scope.",
+    description: "RETECH handles scoped technical needs, from a single incident and a new service deployment to workload migration and server configuration hardening.",
+    includes: ["Remote troubleshooting", "Linux server installation", "Web stack and database configuration", "Mail server and SMTP relay setup", "Migration and deployment support", "Server hardening and access review"],
+    outcomes: ["Structured technical resolution", "More consistent configurations", "Deployment accompanied by work notes"],
+    process: [
+      { title: "Triage", description: "Review symptoms, access, impact, scope boundaries, and safeguards." },
+      { title: "Execute", description: "Apply changes in controlled stages with verification at key checkpoints." },
+      { title: "Verify & Handover", description: "Test the outcome and document configurations, residual risks, and next steps." },
+    ],
+    bestFor: ["Incidents requiring a remote engineer", "New server deployments", "Migration or hardening of a running system"],
+    relatedWork: [{ label: "Infrastructure Monitoring", href: "/work/infrastructure-monitoring" }],
+  },
+};
+
+export function getServices(locale: Locale): ServiceDefinition[] {
+  if (locale === "id") return services;
+  return services.map((service) => ({ slug: service.slug, ...englishServices[service.slug] }));
+}
+
+export function getService(slug: string, locale: Locale = "id") {
+  return getServices(locale).find((service) => service.slug === slug);
 }

@@ -1,3 +1,5 @@
+import type { Locale } from "./i18n";
+
 export const faqs = [
   {
     question: "Apa perbedaan website company profile, Website + CMS, dan web application?",
@@ -50,3 +52,20 @@ export const faqs = [
       "Isi form inquiry dengan nama, nomor WhatsApp, jenis layanan, dan kebutuhan. Tim RETECH akan meninjau scope lalu menghubungi Anda untuk klarifikasi dan estimasi awal.",
   },
 ] as const;
+
+export const englishFaqs = [
+  { question: "What is the difference between a company profile website, Website + CMS, and a web application?", answer: "A company profile focuses on business information. Website + CMS adds an admin area for content management. A web application runs more complex business processes involving roles, approvals, transactions, integrations, and reporting." },
+  { question: "What is the difference between WordPress and a custom website built with Next.js, React, or Laravel?", answer: "WordPress is suitable for content-driven websites that need fast setup and standard features. Custom development is a better fit when a business needs a tailored UI, higher performance, integrations, security controls, workflows, or functionality that standard plugins cannot provide. RETECH recommends an approach based on requirements, budget, and growth plans—not simply the most expensive technology." },
+  { question: "Does RETECH use modern technology?", answer: "Yes. Depending on the project, RETECH can use Next.js, React, TypeScript, Laravel/PHP, REST APIs, SQL databases, and Flutter for Android and iOS. The final stack is selected after discovery so the solution remains fast, secure, maintainable, and ready to grow without unnecessary complexity." },
+  { question: "Can RETECH build Android and iOS applications?", answer: "Yes. RETECH can develop an Android-only application or a combined Android and iOS solution. The scope is based on features, backend requirements, integrations, device capabilities, and the intended distribution model." },
+  { question: "Are domain, hosting, and cloud server costs included?", answer: "Not automatically. Domains, hosting, cloud services, licenses, and third-party services are recurring costs and are quoted separately. Accounts and ownership remain under the customer's name." },
+  { question: "Does RETECH help publish apps to Google Play and the Apple App Store?", answer: "RETECH can help prepare production builds and support the submission process. The customer provides the developer accounts, completes verification, and covers Google Play or Apple Developer fees." },
+  { question: "What is included in Managed IT Services?", answer: "The scope may include server maintenance, server and network monitoring, helpdesk support, backup checks, restore support, patching, and infrastructure health reports according to the agreed package." },
+  { question: "Is remote support available for a one-time job?", answer: "Yes. Remote support can be used for a single incident or a defined task such as troubleshooting, service installation, server configuration, migration, or hardening." },
+  { question: "How long does a project take?", answer: "The timeline depends on the number of features, content readiness, integrations, approval cycles, and priority. An estimate is provided after a short discovery and agreement on the initial scope." },
+  { question: "How do I request a quotation?", answer: "Complete the inquiry form with your name, WhatsApp number, service type, and requirements. The RETECH team will review the scope and contact you for clarification and an initial estimate." },
+] as const;
+
+export function getFaqs(locale: Locale) {
+  return locale === "en" ? englishFaqs : faqs;
+}
