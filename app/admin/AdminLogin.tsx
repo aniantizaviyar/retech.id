@@ -10,6 +10,7 @@ export function AdminLogin() {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [turnstileKey, setTurnstileKey] = useState(0);
 
   async function requestCode(event: FormEvent) {
     event.preventDefault();
@@ -17,7 +18,13 @@ export function AdminLogin() {
     setStatus("loading"); setMessage("");
     const response = await fetch("/api/admin/auth/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: "admin@retech.id", turnstileToken: token }) });
     const result = await response.json() as { ok?: boolean; error?: string; message?: string };
-    if (!response.ok || !result.ok) { setStatus("error"); setMessage(result.error || "Kode belum dapat dikirim."); return; }
+    if (!response.ok || !result.ok) {
+      setStatus("error");
+      setMessage(result.error || "Kode belum dapat dikirim.");
+      setToken("");
+      setTurnstileKey((current) => current + 1);
+      return;
+    }
     setStep("verify"); setStatus("idle"); setMessage(result.message || "Kode sudah dikirim.");
   }
 
@@ -41,7 +48,7 @@ export function AdminLogin() {
           <form onSubmit={requestCode}>
             <label>Email administrator</label>
             <input value="admin@retech.id" readOnly aria-readonly="true" />
-            <TurnstileWidget action="admin_login" onVerify={setToken} onUnavailable={() => { setToken(""); setMessage("Verifikasi keamanan tidak dapat dimuat."); }} />
+            <TurnstileWidget key={turnstileKey} action="admin_login" onVerify={setToken} onUnavailable={() => { setToken(""); setMessage("Verifikasi keamanan tidak dapat dimuat."); }} />
             {message && <p className="admin-form-message" role="alert">{message}</p>}
             <button disabled={status === "loading"}>{status === "loading" ? "Mengirim…" : "Kirim kode login"}<span>↗</span></button>
           </form>

@@ -16,19 +16,37 @@ async function verifyTurnstile(token: string, request: Request) {
   const secret = process.env.TURNSTILE_SECRET_KEY || (process.env.NODE_ENV !== "production" ? TEST_TURNSTILE_SECRET : "");
   if (!secret || !token || token.length > 2048) return false;
   try {
+    const form = new URLSearchParams({
+      secret,
+      response: token,
+    });
+    const remoteip = clientAddress(request);
+    if (remoteip !== "unknown") form.set("remoteip", remoteip);
+
     const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ secret, response: token, remoteip: clientAddress(request) }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form,
       signal: AbortSignal.timeout(8_000),
       cache: "no-store",
     });
     if (!response.ok) return false;
-    const result = await response.json() as { success?: boolean; action?: string; hostname?: string };
-    if (!result.success || result.action !== "admin_login") return false;
-    if (process.env.NODE_ENV === "production" && result.hostname !== "admin.retech.id") return false;
+    const result = await response.json() as { success?: boolean; action?: string; hostname?: string; "error-codes"?: string[] };
+    const valid = result.success
+      && result.action === "admin_login"
+      && (process.env.NODE_ENV !== "production" || result.hostname === "admin.retech.id");
+    if (!valid) {
+      console.warn("Admin Turnstile verification rejected", {
+        success: result.success,
+        action: result.action,
+        hostname: result.hostname,
+        errorCodes: result["error-codes"],
+      });
+      return false;
+    }
     return true;
-  } catch {
+  } catch (error) {
+    console.warn("Admin Turnstile verification unavailable", error instanceof Error ? error.message : "Unknown error");
     return false;
   }
 }
