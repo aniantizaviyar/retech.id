@@ -3,20 +3,31 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import type { CmsResource } from "@/lib/cms-validation";
+import { ComingSoonPanel } from "./ComingSoonPanel";
 import { MailUsersPanel } from "./MailUsersPanel";
+import { QuotationPanel } from "./QuotationPanel";
 
 type CmsRecord = Record<string, unknown> & { id?: string | number; slug?: string; published?: boolean; sort_order?: number };
 type MediaRecord = { name: string; url: string; created_at?: string; metadata?: { size?: number; mimetype?: string } };
 type WebsiteTab = CmsResource | "media";
-type Tab = WebsiteTab | "mail-users";
+type BusinessTab = "business-dashboard" | "business-leads" | "business-customers" | "business-contacts" | "business-pipeline" | "business-quotations" | "business-invoices" | "business-payments" | "business-products" | "business-templates";
+type MailTab = "mail-users" | "mail-delivery";
+type Tab = WebsiteTab | BusinessTab | MailTab;
 
 const websiteTabs: Array<{ id: WebsiteTab; label: string; icon: string }> = [
   { id: "pages", label: "Pages", icon: "▤" }, { id: "projects", label: "Case Studies", icon: "◫" },
   { id: "services", label: "Services", icon: "◇" }, { id: "faqs", label: "FAQ", icon: "?" },
   { id: "pricing", label: "Pricing", icon: "₿" }, { id: "media", label: "Media", icon: "▧" },
 ];
-const mailTabs: Array<{ id: Tab; label: string; icon: string }> = [{ id: "mail-users", label: "User", icon: "@" }];
-const allTabs = [...websiteTabs, ...mailTabs];
+const businessTabs: Array<{ id: BusinessTab; label: string; icon: string }> = [
+  { id: "business-dashboard", label: "Dashboard", icon: "▦" }, { id: "business-leads", label: "Leads", icon: "◎" },
+  { id: "business-customers", label: "Customer", icon: "◉" }, { id: "business-contacts", label: "Contacts", icon: "⊙" },
+  { id: "business-pipeline", label: "Pipeline", icon: "⋮" }, { id: "business-quotations", label: "Quotations", icon: "Q" },
+  { id: "business-invoices", label: "Invoices", icon: "I" }, { id: "business-payments", label: "Payments", icon: "$" },
+  { id: "business-products", label: "Products & Services", icon: "◇" }, { id: "business-templates", label: "PDF Templates", icon: "▧" },
+];
+const mailTabs: Array<{ id: MailTab; label: string; icon: string }> = [{ id: "mail-users", label: "User", icon: "@" }, { id: "mail-delivery", label: "Delivery & Bounce", icon: "↯" }];
+const allTabs = [...websiteTabs, ...businessTabs, ...mailTabs];
 
 function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)); }
 function lines(value: unknown) { return Array.isArray(value) ? value.join("\n") : ""; }
@@ -116,6 +127,7 @@ function RecordEditor({ resource, record, onClose, onSaved }: { resource: CmsRes
 export function AdminDashboard({ email }: { email: string }) {
   const [tab, setTab] = useState<Tab>("pages");
   const [websiteOpen, setWebsiteOpen] = useState(true);
+  const [businessOpen, setBusinessOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [records, setRecords] = useState<CmsRecord[]>([]);
   const [media, setMedia] = useState<MediaRecord[]>([]);
@@ -124,15 +136,17 @@ export function AdminDashboard({ email }: { email: string }) {
   const [editing, setEditing] = useState<CmsRecord | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => { if (tab === "mail-users") return; let cancelled = false; const url = tab === "media" ? "/api/admin/media" : `/api/admin/cms?resource=${tab}`; fetch(url).then(async (response) => { const result = await response.json() as { records?: CmsRecord[] | MediaRecord[]; error?: string }; if (!response.ok) throw new Error(result.error || "Data gagal dimuat."); if (!cancelled) { if (tab === "media") setMedia(result.records as MediaRecord[] || []); else setRecords(result.records as CmsRecord[] || []); } }).catch((loadError) => { if (!cancelled) setError(loadError.message); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, [tab, refreshKey]);
+  useEffect(() => { if (!websiteTabs.some((item) => item.id === tab)) return; let cancelled = false; const url = tab === "media" ? "/api/admin/media" : `/api/admin/cms?resource=${tab}`; fetch(url).then(async (response) => { const result = await response.json() as { records?: CmsRecord[] | MediaRecord[]; error?: string }; if (!response.ok) throw new Error(result.error || "Data gagal dimuat."); if (!cancelled) { if (tab === "media") setMedia(result.records as MediaRecord[] || []); else setRecords(result.records as CmsRecord[] || []); } }).catch((loadError) => { if (!cancelled) setError(loadError.message); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, [tab, refreshKey]);
 
   const publishedCount = useMemo(() => records.filter((record) => record.published !== false).length, [records]);
   const activeTab = allTabs.find((item) => item.id === tab);
-  function selectTab(nextTab: Tab) { setLoading(nextTab !== "mail-users"); setError(""); setTab(nextTab); setEditing(null); }
+  const cmsTab = tab as WebsiteTab;
+  const isCmsTab = websiteTabs.some((item) => item.id === tab);
+  function selectTab(nextTab: Tab) { setLoading(websiteTabs.some((item) => item.id === nextTab)); setError(""); setTab(nextTab); setEditing(null); }
   function refresh() { setEditing(null); setLoading(true); setError(""); setRefreshKey((key) => key + 1); }
   async function remove(record: CmsRecord) {
-    if (!record.id || tab === "media" || tab === "mail-users" || !window.confirm(`Hapus “${labelFor(record, tab)}”? Tindakan ini tidak dapat dibatalkan.`)) return;
-    const response = await fetch(`/api/admin/cms/${tab}/${record.id}`, { method: "DELETE" }); const result = await response.json() as { error?: string };
+    if (!record.id || !isCmsTab || cmsTab === "media" || !window.confirm(`Hapus “${labelFor(record, cmsTab)}”? Tindakan ini tidak dapat dibatalkan.`)) return;
+    const response = await fetch(`/api/admin/cms/${cmsTab}/${record.id}`, { method: "DELETE" }); const result = await response.json() as { error?: string };
     if (!response.ok) { setError(result.error || "Gagal menghapus data."); return; } refresh();
   }
   async function logout() { await fetch("/api/admin/auth/logout", { method: "POST" }); window.location.reload(); }
@@ -144,13 +158,14 @@ export function AdminDashboard({ email }: { email: string }) {
       <button className="admin-sidebar-collapse" type="button" onClick={() => setSidebarCollapsed((collapsed) => !collapsed)} aria-label={sidebarCollapsed ? "Tampilkan sidebar" : "Ringkas sidebar"} aria-pressed={sidebarCollapsed} title={sidebarCollapsed ? "Tampilkan sidebar" : "Ringkas sidebar"}>{sidebarCollapsed ? "›" : "‹"}</button>
       <div className="admin-brand"><Image src="/retech-logo-transparent.png" alt="RETECH" width={500} height={430} priority /><div><strong>RETECH CMS</strong><span>Content Operations</span></div></div><nav>
       <div className="admin-nav-group"><button className={`admin-nav-toggle ${websiteTabs.some((item) => item.id === tab) ? "current" : ""}`} onClick={() => sidebarCollapsed ? setSidebarCollapsed(false) : setWebsiteOpen((open) => !open)} aria-expanded={websiteOpen || sidebarCollapsed} title="Website"><i>⌂</i><span className="admin-nav-label">Website</span><b>{websiteOpen ? "⌃" : "⌄"}</b></button>{(websiteOpen || sidebarCollapsed) && <div className="admin-subnav">{websiteTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)} title={item.label} aria-label={item.label}><i>{item.icon}</i><span className="admin-nav-label">{item.label}</span></button>)}</div>}</div>
+      <div className="admin-nav-group admin-business-group"><button className={`admin-nav-toggle ${businessTabs.some((item) => item.id === tab) ? "current" : ""}`} onClick={() => sidebarCollapsed ? setSidebarCollapsed(false) : setBusinessOpen((open) => !open)} aria-expanded={businessOpen || sidebarCollapsed} title="Business"><i>▣</i><span className="admin-nav-label">Business</span><b>{businessOpen ? "⌃" : "⌄"}</b></button>{(businessOpen || sidebarCollapsed) && <div className="admin-subnav">{businessTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)} title={item.label} aria-label={item.label}><i>{item.icon}</i><span className="admin-nav-label">{item.label}</span></button>)}</div>}</div>
       <div className="admin-nav-section"><span>MAIL</span>{mailTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)} title={item.label} aria-label={item.label}><i>{item.icon}</i><span className="admin-nav-label">{item.label}</span></button>)}</div>
     </nav><div className="admin-sidebar-footer"><a href="https://retech.id" target="_blank" rel="noreferrer" title="Lihat website"><i>↗</i><span className="admin-footer-label">Lihat website</span></a><button onClick={logout} title="Logout"><i>⇥</i><span className="admin-footer-label">Logout</span></button></div></aside>
-    <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / {tab === "mail-users" ? "MAIL OPERATIONS" : "CONTENT MANAGEMENT"}</span><h1>{activeTab?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
-      {tab === "mail-users" ? <MailUsersPanel /> : <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{tab === "media" ? media.length : records.length}</strong></article><article><span>{tab === "media" ? "Storage media" : "Published"}</span><strong>{tab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
-        <div className="admin-list-header"><div><h2>{tab === "media" ? "Media library" : `Kelola ${activeTab?.label}`}</h2><p>{tab === "projects" ? "Tambah case study, edit konten bilingual, upload, urutkan, atau hapus gambar." : tab === "pages" ? "Edit copy per halaman dalam Bahasa Indonesia dan English." : "Perubahan published akan tampil pada website setelah disimpan."}</p></div>{tab === "media" ? <label className="admin-primary-button">Upload media<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadMedia(file); event.currentTarget.value = ""; }} /></label> : <button className="admin-primary-button" onClick={() => setEditing(emptyRecord(tab))}>+ Tambah data</button>}</div>
-        {error && <p className="admin-form-message" role="alert">{error}</p>}{loading ? <div className="admin-loading">Memuat data CMS…</div> : tab === "media" ? <div className="admin-media-grid">{media.map((item) => <article key={item.name}><Image src={item.url} alt={item.name} width={360} height={220} unoptimized /><div><strong>{item.name}</strong><small>{item.metadata?.size ? `${Math.round(item.metadata.size / 1024)} KB` : "Media"}</small><button onClick={() => navigator.clipboard.writeText(item.url)}>Salin URL</button><button className="danger" onClick={() => removeMedia(item)}>Hapus</button></div></article>)}</div> : <div className="admin-record-list">{records.map((record) => <article key={String(record.id)}><div className="admin-record-order">{String(record.sort_order ?? "—").padStart(2, "0")}</div><div><span className={record.published === false ? "status-draft" : "status-live"}>{record.published === false ? "DRAFT" : "PUBLISHED"}</span><h3>{labelFor(record, tab)}</h3><p>{record.slug ? `/${record.slug}` : tab === "faqs" ? String(record.answer_id || "").slice(0, 130) : "Content record"}</p></div><div className="admin-record-actions"><button onClick={() => setEditing(clone(record))}>Edit</button><button className="danger" onClick={() => remove(record)}>Hapus</button></div></article>)}</div>}
+    <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / {tab.startsWith("business-") ? "BUSINESS OPERATIONS" : tab.startsWith("mail-") ? "MAIL OPERATIONS" : "CONTENT MANAGEMENT"}</span><h1>{activeTab?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
+      {tab === "mail-users" ? <MailUsersPanel /> : tab === "business-quotations" ? <QuotationPanel /> : !isCmsTab ? <ComingSoonPanel id={tab} title={activeTab?.label || "Coming Soon"} /> : <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{cmsTab === "media" ? media.length : records.length}</strong></article><article><span>{cmsTab === "media" ? "Storage media" : "Published"}</span><strong>{cmsTab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
+        <div className="admin-list-header"><div><h2>{cmsTab === "media" ? "Media library" : `Kelola ${activeTab?.label}`}</h2><p>{cmsTab === "projects" ? "Tambah case study, edit konten bilingual, upload, urutkan, atau hapus gambar." : cmsTab === "pages" ? "Edit copy per halaman dalam Bahasa Indonesia dan English." : "Perubahan published akan tampil pada website setelah disimpan."}</p></div>{cmsTab === "media" ? <label className="admin-primary-button">Upload media<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadMedia(file); event.currentTarget.value = ""; }} /></label> : <button className="admin-primary-button" onClick={() => setEditing(emptyRecord(cmsTab))}>+ Tambah data</button>}</div>
+        {error && <p className="admin-form-message" role="alert">{error}</p>}{loading ? <div className="admin-loading">Memuat data CMS…</div> : cmsTab === "media" ? <div className="admin-media-grid">{media.map((item) => <article key={item.name}><Image src={item.url} alt={item.name} width={360} height={220} unoptimized /><div><strong>{item.name}</strong><small>{item.metadata?.size ? `${Math.round(item.metadata.size / 1024)} KB` : "Media"}</small><button onClick={() => navigator.clipboard.writeText(item.url)}>Salin URL</button><button className="danger" onClick={() => removeMedia(item)}>Hapus</button></div></article>)}</div> : <div className="admin-record-list">{records.map((record) => <article key={String(record.id)}><div className="admin-record-order">{String(record.sort_order ?? "—").padStart(2, "0")}</div><div><span className={record.published === false ? "status-draft" : "status-live"}>{record.published === false ? "DRAFT" : "PUBLISHED"}</span><h3>{labelFor(record, cmsTab)}</h3><p>{record.slug ? `/${record.slug}` : cmsTab === "faqs" ? String(record.answer_id || "").slice(0, 130) : "Content record"}</p></div><div className="admin-record-actions"><button onClick={() => setEditing(clone(record))}>Edit</button><button className="danger" onClick={() => remove(record)}>Hapus</button></div></article>)}</div>}
       </div>}
-    </section>{editing && tab !== "media" && tab !== "mail-users" && <RecordEditor resource={tab} record={editing} onClose={() => setEditing(null)} onSaved={refresh} />}
+    </section>{editing && isCmsTab && cmsTab !== "media" && <RecordEditor resource={cmsTab} record={editing} onClose={() => setEditing(null)} onSaved={refresh} />}
   </main>;
 }
