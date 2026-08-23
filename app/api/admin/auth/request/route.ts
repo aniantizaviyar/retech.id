@@ -14,7 +14,11 @@ function clientAddress(request: Request) {
 
 async function verifyTurnstile(token: string, request: Request) {
   const secret = process.env.TURNSTILE_SECRET_KEY || (process.env.NODE_ENV !== "production" ? TEST_TURNSTILE_SECRET : "");
-  if (!secret || !token || token.length > 2048) return false;
+  if (!secret) {
+    console.error("Admin Turnstile secret is not configured");
+    return { valid: false, reason: "configuration" as const };
+  }
+  if (!token || token.length > 2048) return { valid: false, reason: "token" as const };
   try {
     const form = new URLSearchParams({
       secret,
@@ -30,7 +34,7 @@ async function verifyTurnstile(token: string, request: Request) {
       signal: AbortSignal.timeout(8_000),
       cache: "no-store",
     });
-    if (!response.ok) return false;
+    if (!response.ok) return { valid: false, reason: "upstream" as const };
     const result = await response.json() as { success?: boolean; action?: string; hostname?: string; "error-codes"?: string[] };
     const valid = result.success
       && result.action === "admin_login"
@@ -42,13 +46,31 @@ async function verifyTurnstile(token: string, request: Request) {
         hostname: result.hostname,
         errorCodes: result["error-codes"],
       });
-      return false;
+      const errors = result["error-codes"] || [];
+      if (errors.includes("missing-input-secret") || errors.includes("invalid-input-secret")) {
+        return { valid: false, reason: "configuration" as const };
+      }
+      if (errors.includes("timeout-or-duplicate")) {
+        return { valid: false, reason: "expired" as const };
+      }
+      if (result.success && (result.action !== "admin_login" || (process.env.NODE_ENV === "production" && result.hostname !== "admin.retech.id"))) {
+        return { valid: false, reason: "context" as const };
+      }
+      return { valid: false, reason: "token" as const };
     }
-    return true;
+    return { valid: true as const };
   } catch (error) {
     console.warn("Admin Turnstile verification unavailable", error instanceof Error ? error.message : "Unknown error");
-    return false;
+    return { valid: false, reason: "upstream" as const };
   }
+}
+
+function turnstileError(reason: "configuration" | "token" | "expired" | "context" | "upstream" | undefined) {
+  if (reason === "configuration") return "Konfigurasi keamanan server belum cocok. Administrator perlu memperbarui secret key Turnstile.";
+  if (reason === "expired") return "Verifikasi keamanan sudah terpakai atau kedaluwarsa. Widget telah dimuat ulang; silakan verifikasi lagi.";
+  if (reason === "context") return "Verifikasi keamanan berasal dari domain atau proses yang tidak sesuai.";
+  if (reason === "upstream") return "Layanan verifikasi keamanan sedang tidak dapat dijangkau. Silakan coba kembali.";
+  return "Token verifikasi keamanan tidak valid. Widget telah dimuat ulang; silakan verifikasi lagi.";
 }
 
 async function sendLoginCode(code: string) {
@@ -84,7 +106,8 @@ export async function POST(request: Request) {
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
     const token = typeof body.turnstileToken === "string" ? body.turnstileToken : "";
     if (email !== ADMIN_EMAIL) return NextResponse.json({ error: "Email tidak memiliki akses ke CMS." }, { status: 403 });
-    if (!(await verifyTurnstile(token, request))) return NextResponse.json({ error: "Verifikasi keamanan gagal atau kedaluwarsa." }, { status: 403 });
+    const turnstile = await verifyTurnstile(token, request);
+    if (!turnstile.valid) return NextResponse.json({ error: turnstileError(turnstile.reason) }, { status: 403 });
 
     const since = encodeURIComponent(new Date(Date.now() - 15 * 60_000).toISOString());
     const countResponse = await supabaseAdminFetch(`/rest/v1/cms_admin_login_codes?select=id&email=eq.${encodeURIComponent(ADMIN_EMAIL)}&created_at=gte.${since}`, {
