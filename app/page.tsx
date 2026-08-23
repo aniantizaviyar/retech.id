@@ -10,7 +10,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
-import { getPageContent } from "@/lib/cms-data";
+import { getPageContent, getServices as getCmsServices } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -71,7 +71,16 @@ export default async function Home() {
   const locale = await getLocale();
   const en = locale === "en";
   const projects = (await getProjects(locale)).filter((project) => project.featured).slice(0, 4);
-  const homeServices = en ? englishServices : services;
+  const cmsServices = await getCmsServices(locale);
+  const homeServices = cmsServices.length ? cmsServices.map((service, index) => ({
+    number: String(index + 1).padStart(2, "0"),
+    eyebrow: service.eyebrow,
+    title: service.title,
+    description: service.summary,
+    items: service.includes.slice(0, 6),
+    value: service.outcomes[0] || "Built for your operations.",
+    href: `/services/${service.slug}`,
+  })) : (en ? englishServices : services);
   const pageContent = await getPageContent("home", locale);
   const processItems = Array.isArray(pageContent.process)
     ? pageContent.process.filter((item): item is Record<string, string> => typeof item === "object" && item !== null && !Array.isArray(item))
