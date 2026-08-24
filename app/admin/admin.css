@@ -541,6 +541,26 @@
 .admin-email-event-list small { color: var(--admin-muted); font-size: 10px; }
 .admin-email-event-list p { margin: 2px 0 0; color: #ff9aaa; font-size: 10px; }
 
+.admin-payment-content { max-width: 1600px; }
+.admin-business-section { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--admin-line); }
+.admin-business-modal { width: min(860px, 100%); }
+.admin-account-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.admin-account-grid > article { display: grid; align-content: start; gap: 6px; min-height: 190px; padding: 18px; border: 1px solid var(--admin-line); border-radius: 15px; background: var(--admin-panel); }
+.admin-account-grid article > div:first-child { display: grid; gap: 4px; }
+.admin-account-grid article > div:first-child span,
+.admin-payment-list article > div:first-child span { width: max-content; color: var(--admin-cyan); font: 700 8px var(--font-geist-mono), monospace; letter-spacing: 0.12em; text-transform: uppercase; }
+.admin-account-grid h3 { margin: 0; font-size: 16px; }
+.admin-account-grid p { margin: 0 0 10px; color: var(--admin-muted); font-size: 11px; }
+.admin-account-grid > article > strong { font: 700 17px var(--font-geist-mono), monospace; color: #d8eef7; letter-spacing: 0.04em; }
+.admin-account-grid small { color: var(--admin-muted); font-size: 10px; }
+.admin-account-grid .admin-record-actions { margin-top: auto; padding-top: 12px; justify-content: flex-end; }
+.admin-payment-list { display: grid; gap: 10px; }
+.admin-payment-list > article { display: grid; grid-template-columns: minmax(320px, 1.5fr) minmax(170px, 0.5fr) auto; align-items: center; gap: 20px; padding: 18px; border: 1px solid var(--admin-line); border-radius: 15px; background: var(--admin-panel); }
+.admin-payment-list article > div:first-child,
+.admin-payment-list article > div:nth-child(2) { display: grid; gap: 5px; }
+.admin-payment-list article > div:nth-child(2) { justify-items: end; }
+.admin-payment-list small { color: var(--admin-muted); font-size: 10px; }
+
 @media (max-width: 900px) {
   .admin-app { display: block; }
   .admin-sidebar { position: static; height: auto; padding: 14px; border-right: 0; border-bottom: 1px solid var(--admin-line); }
@@ -601,4 +621,7 @@
   .admin-quotation-item-total { grid-column: 2; justify-items: start; padding-top: 0; }
   .admin-quotation-totals { width: 100%; }
   .admin-email-event-list article { grid-template-columns: 1fr; }
+  .admin-account-grid { grid-template-columns: 1fr; }
+  .admin-payment-list > article { grid-template-columns: 1fr; }
+  .admin-payment-list article > div:nth-child(2) { justify-items: start; }
 }
