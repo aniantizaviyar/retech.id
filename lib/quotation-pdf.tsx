@@ -61,7 +61,11 @@ const styles = StyleSheet.create({
   terms: { padding: 11, borderRadius: 5, backgroundColor: colors.pale, color: colors.muted },
   signatureRow: { marginTop: 22, flexDirection: "row", gap: 55 },
   signature: { flex: 1 },
-  signatureLine: { marginTop: 42, paddingTop: 5, borderTopWidth: 1, borderTopColor: colors.navy },
+  signatureArtwork: { position: "relative", height: 72, marginTop: 4 },
+  signatureInk: { position: "absolute", left: 0, top: 18, width: 145, height: 48, objectFit: "contain" },
+  signatureStamp: { position: "absolute", left: 98, top: 0, width: 72, height: 72, objectFit: "contain", opacity: 0.88 },
+  signaturePlaceholder: { height: 72, marginTop: 4 },
+  signatureLine: { paddingTop: 5, borderTopWidth: 1, borderTopColor: colors.navy },
   signatureName: { fontFamily: "Helvetica-Bold", color: colors.navy },
   footerLine: { position: "absolute", left: 36, right: 36, bottom: 35, height: 2.4, backgroundColor: colors.blue },
   footerLineThin: { position: "absolute", left: 36, right: 36, bottom: 39, height: 0.8, backgroundColor: colors.blue },
@@ -81,7 +85,7 @@ function List({ entries }: { entries: string[] }) {
   return <>{entries.map((entry, index) => <View style={styles.listItem} key={`${entry}-${index}`}><Text style={styles.bullet}>-</Text><Text style={styles.listText}>{entry}</Text></View>)}</>;
 }
 
-export function QuotationPdf({ quotation, logoSrc }: { quotation: Quotation; logoSrc: string }) {
+export function QuotationPdf({ quotation, logoSrc, signatureSrc, stampSrc }: { quotation: Quotation; logoSrc: string; signatureSrc?: string; stampSrc?: string }) {
   const subtotal = quotationSubtotal(quotation);
   const total = quotationTotal(quotation);
   return <Document title={`${quotation.quote_number} - ${quotation.customer_company}`} author={companyContact.legalName} subject={quotation.subject} creator="RETECH Admin CMS">
@@ -138,8 +142,8 @@ export function QuotationPdf({ quotation, logoSrc }: { quotation: Quotation; log
       {quotation.notes && <View style={styles.section} wrap={false}><Text style={styles.sectionTitle}>Catatan dan ketentuan</Text><Text style={styles.terms}>{quotation.notes}</Text></View>}
 
       <View style={styles.signatureRow} wrap={false}>
-        <View style={styles.signature}><Text>Hormat kami,</Text><Text style={styles.signatureLine}>PT RETECH DIGITAL SOLUTION</Text><Text style={styles.clientText}>Authorized Representative</Text></View>
-        <View style={styles.signature}><Text>Disetujui oleh,</Text><Text style={styles.signatureLine}>{quotation.customer_company}</Text><Text style={styles.clientText}>Nama, jabatan, tanda tangan, dan tanggal</Text></View>
+        <View style={styles.signature}><Text>Hormat kami,</Text>{signatureSrc && stampSrc ? <View style={styles.signatureArtwork}><Image style={styles.signatureStamp} src={stampSrc} /><Image style={styles.signatureInk} src={signatureSrc} /></View> : <View style={styles.signaturePlaceholder} />}<Text style={styles.signatureLine}>PT RETECH DIGITAL SOLUTION</Text><Text style={styles.clientText}>Authorized Representative</Text></View>
+        <View style={styles.signature}><Text>Disetujui oleh,</Text><View style={styles.signaturePlaceholder} /><Text style={styles.signatureLine}>{quotation.customer_company}</Text><Text style={styles.clientText}>Nama, jabatan, tanda tangan, dan tanggal</Text></View>
       </View>
 
     </Page>

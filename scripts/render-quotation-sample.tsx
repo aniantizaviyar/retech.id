@@ -30,8 +30,12 @@ const quotation: Quotation = {
   notes: "Quotation berlaku selama 14 hari. Pekerjaan dimulai setelah persetujuan tertulis dan pembayaran awal diterima. Dua putaran revisi mayor termasuk pada fase desain. Permintaan tambahan akan dibuatkan estimasi terpisah.",
 };
 
-const logo = await readFile(path.join(process.cwd(), "public", "retech-logo-transparent.png"));
-const pdf = await renderToBuffer(<QuotationPdf quotation={quotation} logoSrc={`data:image/png;base64,${logo.toString("base64")}`} />);
+const [logo, signature, stamp] = await Promise.all([
+  readFile(path.join(process.cwd(), "public", "retech-logo-transparent.png")),
+  readFile(path.join(process.cwd(), "public", "documents", "retech-signature.png")),
+  readFile(path.join(process.cwd(), "public", "documents", "retech-stamp-transparent.png")),
+]);
+const pdf = await renderToBuffer(<QuotationPdf quotation={quotation} logoSrc={`data:image/png;base64,${logo.toString("base64")}`} signatureSrc={`data:image/png;base64,${signature.toString("base64")}`} stampSrc={`data:image/png;base64,${stamp.toString("base64")}`} />);
 const outputDirectory = path.join(process.cwd(), "output", "pdf");
 await mkdir(outputDirectory, { recursive: true });
 const output = path.join(outputDirectory, "retech-quotation-template.pdf");

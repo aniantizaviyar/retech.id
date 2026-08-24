@@ -38,8 +38,12 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   if (!host || !user || !pass) return Response.json({ error: "Konfigurasi SMTP Brevo belum lengkap." }, { status: 503 });
 
   try {
-    const logo = await readFile(path.join(process.cwd(), "public", "retech-logo-transparent.png"));
-    const pdf = await renderToBuffer(<QuotationPdf quotation={quotation} logoSrc={`data:image/png;base64,${logo.toString("base64")}`} />);
+    const [logo, signature, stamp] = await Promise.all([
+      readFile(path.join(process.cwd(), "public", "retech-logo-transparent.png")),
+      readFile(path.join(process.cwd(), "public", "documents", "retech-signature.png")),
+      readFile(path.join(process.cwd(), "public", "documents", "retech-stamp-transparent.png")),
+    ]);
+    const pdf = await renderToBuffer(<QuotationPdf quotation={quotation} logoSrc={`data:image/png;base64,${logo.toString("base64")}`} signatureSrc={`data:image/png;base64,${signature.toString("base64")}`} stampSrc={`data:image/png;base64,${stamp.toString("base64")}`} />);
     const transporter = nodemailer.createTransport({ host, port, secure: port === 465, requireTLS: port !== 465, auth: { user, pass } });
     const filename = `RETECH-Quotation-${quotation.quote_number.replace(/[^A-Za-z0-9_-]+/g, "-")}.pdf`;
     const result = await transporter.sendMail({
