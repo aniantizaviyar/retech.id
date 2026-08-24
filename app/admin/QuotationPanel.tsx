@@ -1,11 +1,16 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { formatRupiah, quotationStatuses, quotationSubtotal, quotationTotal, type Quotation, type QuotationInput, type QuotationItem } from "@/lib/quotations";
+import { formatRupiah, quotationStatuses, quotationSubtotal, quotationTotal, type Quotation, type QuotationEmailEvent, type QuotationInput, type QuotationItem } from "@/lib/quotations";
 
 type QuotationResponse = { records?: Quotation[]; record?: Quotation; error?: string };
 
 const statusLabels: Record<string, string> = { draft: "Draft", sent: "Sent", accepted: "Accepted", rejected: "Rejected", expired: "Expired" };
+const deliveryLabels: Record<string, string> = { not_sent: "Belum dikirim", submitted: "Submitted ke Brevo", sent: "Sent", delivered: "Delivered", opened: "Opened", clicked: "Clicked", deferred: "Deferred", soft_bounce: "Soft bounce", hard_bounce: "Hard bounce", blocked: "Blocked", invalid: "Invalid email", spam: "Spam complaint", unsubscribed: "Unsubscribed", error: "Error" };
+
+function localDateTime(value?: string | null) {
+  return value ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)) : "—";
+}
 
 function isoDate(offsetDays = 0) {
   const value = new Date();
@@ -81,6 +86,11 @@ export function QuotationPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState<Quotation | null | undefined>(undefined);
+  const [sendingId, setSendingId] = useState("");
+  const [notice, setNotice] = useState("");
+  const [historyRecord, setHistoryRecord] = useState<Quotation | null>(null);
+  const [events, setEvents] = useState<QuotationEmailEvent[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => { let cancelled = false; fetch("/api/admin/business/quotations").then(async (response) => { const result = await response.json() as QuotationResponse; if (!response.ok) throw new Error(result.error || "Data quotation gagal dimuat."); if (!cancelled) setRecords((result.records || []).map(coerceQuotation)); }).catch((loadError) => { if (!cancelled) setError(loadError instanceof Error ? loadError.message : "Data quotation gagal dimuat."); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, [refreshKey]);
@@ -88,13 +98,39 @@ export function QuotationPanel() {
   const stats = useMemo(() => ({ draft: records.filter((record) => record.status === "draft").length, sent: records.filter((record) => record.status === "sent").length, accepted: records.filter((record) => record.status === "accepted").length }), [records]);
   function refresh() { setEditing(undefined); setLoading(true); setError(""); setRefreshKey((value) => value + 1); }
   async function remove(record: Quotation) { if (!window.confirm(`Hapus ${record.quote_number}? Dokumen dan audit penghapusan akan dicatat.`)) return; const response = await fetch(`/api/admin/business/quotations/${record.id}`, { method: "DELETE" }); const result = await response.json() as { error?: string }; if (!response.ok) { setError(result.error || "Quotation belum dapat dihapus."); return; } refresh(); }
+  async function sendEmail(record: Quotation) {
+    if (!record.customer_email) { setError("Isi email PIC customer sebelum mengirim quotation."); return; }
+    const action = Number(record.email_attempts || 0) > 0 ? "Kirim ulang" : "Kirim";
+    if (!window.confirm(`${action} ${record.quote_number} ke ${record.customer_email}? Email akan dikirim dari sales@retech.id dengan PDF terlampir.`)) return;
+    setSendingId(record.id); setError(""); setNotice("");
+    try {
+      const response = await fetch(`/api/admin/business/quotations/${record.id}/send`, { method: "POST" });
+      const result = await response.json() as { error?: string; message?: string };
+      if (!response.ok) throw new Error(result.error || "Email quotation belum dapat dikirim.");
+      setNotice(result.message || "Quotation berhasil diserahkan ke Brevo."); refresh();
+    } catch (sendError) { setError(sendError instanceof Error ? sendError.message : "Email quotation belum dapat dikirim."); }
+    finally { setSendingId(""); }
+  }
+  async function openHistory(record: Quotation) {
+    setHistoryRecord(record); setEvents([]); setHistoryLoading(true); setError("");
+    try {
+      const response = await fetch(`/api/admin/business/quotations/${record.id}/email-events`);
+      const result = await response.json() as { records?: QuotationEmailEvent[]; error?: string };
+      if (!response.ok) throw new Error(result.error || "Riwayat email belum dapat dimuat.");
+      setEvents(result.records || []);
+    } catch (historyError) { setError(historyError instanceof Error ? historyError.message : "Riwayat email belum dapat dimuat."); }
+    finally { setHistoryLoading(false); }
+  }
 
   return <div className="admin-content admin-quotation-content">
     <section className="admin-stats admin-mail-stats"><article><span>Total quotation</span><strong>{records.length}</strong></article><article><span>Draft</span><strong>{stats.draft}</strong></article><article><span>Sent</span><strong>{stats.sent}</strong></article><article><span>Accepted</span><strong>{stats.accepted}</strong></article></section>
-    <div className="admin-list-header"><div><h2>Quotation</h2><p>Buat penawaran tanpa PPN, kelola status, dan unduh PDF berkop RETECH.</p></div><button className="admin-primary-button" onClick={() => setEditing(null)}>+ Buat quotation</button></div>
-    <div className="admin-quotation-guidance"><div><strong>Professional document workflow</strong><p>Draft → review → kirim PDF → Accepted/Rejected. Nomor dokumen tidak berubah setelah dibuat.</p></div><span>NON-PKP</span></div>
+    <div className="admin-list-header"><div><h2>Quotation</h2><p>Buat penawaran tanpa PPN, preview PDF, lalu kirim email profesional melalui Brevo.</p></div><button className="admin-primary-button" onClick={() => setEditing(null)}>+ Buat quotation</button></div>
+    <div className="admin-quotation-guidance"><div><strong>Professional document workflow</strong><p>Draft → review PDF → email HTML + lampiran PDF → tracking delivery → Accepted/Rejected.</p></div><span>NON-PKP</span></div>
     {error && <p className="admin-form-message" role="alert">{error}</p>}
+    {notice && <p className="admin-form-message admin-form-success" role="status">{notice}</p>}
     {loading ? <div className="admin-loading">Memuat quotation…</div> : records.length === 0 ? <div className="admin-empty-state"><strong>Belum ada quotation</strong><p>Buat quotation pertama untuk melihat preview template PDF RETECH.</p><button className="admin-primary-button" onClick={() => setEditing(null)}>Buat quotation pertama</button></div> : <div className="admin-quotation-list">{records.map((record) => <article key={record.id}><div className="admin-quotation-number"><span>{record.status}</span><strong>{record.quote_number}</strong><small>{record.issue_date} - valid {record.valid_until}</small></div><div><h3>{record.customer_company}</h3><p>{record.subject}</p><small>Attn. {record.customer_name}</small></div><div className="admin-quotation-value"><span>Total</span><strong>{formatRupiah(quotationTotal(record))}</strong><small>{record.items.length} item</small></div><div className="admin-record-actions"><a href={`/api/admin/business/quotations/${record.id}/pdf`} target="_blank" rel="noreferrer">PDF</a><button onClick={() => setEditing(record)}>Edit</button><button className="danger" onClick={() => void remove(record)}>Hapus</button></div></article>)}</div>}
+    {loading ? <div className="admin-loading">Memuat quotation…</div> : records.length === 0 ? <div className="admin-empty-state"><strong>Belum ada quotation</strong><p>Buat quotation pertama untuk melihat preview template PDF RETECH.</p><button className="admin-primary-button" onClick={() => setEditing(null)}>Buat quotation pertama</button></div> : <div className="admin-quotation-list">{records.map((record) => <article key={record.id}><div className="admin-quotation-number"><span>{record.status}</span><strong>{record.quote_number}</strong><small>{record.issue_date} - valid {record.valid_until}</small></div><div><h3>{record.customer_company}</h3><p>{record.subject}</p><small>Attn. {record.customer_name}</small><span className={`admin-delivery-status status-${record.delivery_status || "not_sent"}`}>{deliveryLabels[record.delivery_status || "not_sent"]}</span>{record.last_email_at && <small>Terakhir: {localDateTime(record.last_email_at)} · {record.last_email_recipient}</small>}{record.bounce_reason && <small className="admin-delivery-reason">{record.bounce_reason}</small>}</div><div className="admin-quotation-value"><span>Total</span><strong>{formatRupiah(quotationTotal(record))}</strong><small>{record.items.length} item</small></div><div className="admin-record-actions admin-quotation-actions"><a href={`/api/admin/business/quotations/${record.id}/pdf`} target="_blank" rel="noreferrer">Preview</a><a href={`/api/admin/business/quotations/${record.id}/pdf?download=1`}>Download</a><button disabled={!record.customer_email || sendingId === record.id || ["accepted", "rejected", "expired"].includes(record.status)} onClick={() => void sendEmail(record)}>{sendingId === record.id ? "Mengirim…" : Number(record.email_attempts || 0) > 0 ? "Kirim ulang" : "Kirim email"}</button><button onClick={() => void openHistory(record)}>Riwayat</button><button onClick={() => setEditing(record)}>Edit</button><button className="danger" onClick={() => void remove(record)}>Hapus</button></div></article>)}</div>}
     {editing !== undefined && <QuotationEditor quotation={editing} onClose={() => setEditing(undefined)} onSaved={refresh} />}
+    {historyRecord && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal admin-email-history-modal" role="dialog" aria-modal="true" aria-label={`Riwayat email ${historyRecord.quote_number}`}><header><div><span className="admin-kicker">BUSINESS / QUOTATION / DELIVERY</span><h2>Riwayat email</h2><p>{historyRecord.quote_number} · {historyRecord.customer_email || "Email belum diisi"}</p></div><button type="button" onClick={() => setHistoryRecord(null)} aria-label="Tutup riwayat">×</button></header><div className="admin-email-history-body">{historyLoading ? <div className="admin-loading">Memuat riwayat…</div> : events.length === 0 ? <div className="admin-empty-state"><strong>Belum ada pengiriman</strong><p>Riwayat akan muncul setelah quotation dikirim melalui Brevo.</p></div> : <div className="admin-email-event-list">{events.map((event) => <article key={event.id}><span className={`admin-delivery-status status-${event.event}`}>{deliveryLabels[event.event] || event.event}</span><div><strong>{event.recipient}</strong><small>{localDateTime(event.event_at)}</small>{event.reason && <p>{event.reason}</p>}</div></article>)}</div>}</div></section></div>}
   </div>;
 }

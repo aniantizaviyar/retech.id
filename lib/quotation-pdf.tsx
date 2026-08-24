@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   tagline: { marginTop: 3, fontFamily: "Helvetica-Bold", fontSize: 7.5, color: colors.blue, letterSpacing: 1.2 },
   contact: { marginTop: 8, flexDirection: "row", gap: 14, color: colors.muted, fontSize: 7.2 },
   contactLabel: { color: colors.blue, fontFamily: "Helvetica-Bold" },
+  officeAddress: { marginTop: 5, maxWidth: 390, color: colors.muted, fontSize: 6.4, lineHeight: 1.3 },
   titleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginTop: 22, marginBottom: 18 },
   titleBlock: { width: 285 },
   documentTitle: { fontFamily: "Helvetica-Bold", fontSize: 23, lineHeight: 1.05, color: colors.navy, letterSpacing: 1 },
@@ -96,6 +97,7 @@ export function QuotationPdf({ quotation, logoSrc }: { quotation: Quotation; log
             <Text><Text style={styles.contactLabel}>EMAIL </Text>{companyContact.email}</Text>
             <Text><Text style={styles.contactLabel}>WEB </Text>retech.id</Text>
           </View>
+          <Text style={styles.officeAddress}><Text style={styles.contactLabel}>OFFICE </Text>{companyContact.address}</Text>
         </View>
       </View>
       <View style={styles.footerLineThin} fixed />

@@ -17,6 +17,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   if (!records.length) return Response.json({ error: "Quotation tidak ditemukan." }, { status: 404 });
   const logo = await readFile(path.join(process.cwd(), "public", "retech-logo-transparent.png"));
   const pdf = await renderToBuffer(<QuotationPdf quotation={{ ...records[0], discount_amount: Number(records[0].discount_amount), items: records[0].items.map((item) => ({ ...item, quantity: Number(item.quantity), unitPrice: Number(item.unitPrice) })) }} logoSrc={`data:image/png;base64,${logo.toString("base64")}`} />);
-  const filename = records[0].quote_number.replace(/[^A-Za-z0-9_-]+/g, "-");
-  return new Response(new Uint8Array(pdf), { headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="${filename}.pdf"`, "Cache-Control": "private, no-store" } });
+  const filename = `RETECH-Quotation-${records[0].quote_number.replace(/[^A-Za-z0-9_-]+/g, "-")}`;
+  const disposition = new URL(request.url).searchParams.get("download") === "1" ? "attachment" : "inline";
+  return new Response(new Uint8Array(pdf), { headers: { "Content-Type": "application/pdf", "Content-Disposition": `${disposition}; filename="${filename}.pdf"`, "Cache-Control": "private, no-store" } });
 }

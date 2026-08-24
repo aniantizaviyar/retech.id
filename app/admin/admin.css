@@ -488,11 +488,29 @@
 .admin-quotation-number small,
 .admin-quotation-list article > div:nth-child(2) small,
 .admin-quotation-value small { color: var(--admin-muted); font-size: 10px; }
+.admin-quotation-list article > div:nth-child(2) { display: grid; justify-items: start; gap: 3px; }
 .admin-quotation-list h3 { margin: 0 0 5px; font-size: 15px; }
 .admin-quotation-list p { margin: 0 0 5px; color: #82a8ba; font-size: 12px; }
 .admin-quotation-value { display: grid; justify-items: end; gap: 3px; }
 .admin-quotation-value span { color: var(--admin-muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; }
 .admin-quotation-value strong { font-size: 16px; }
+.admin-quotation-actions { max-width: 390px; flex-wrap: wrap; justify-content: flex-end; }
+.admin-quotation-actions button:disabled { cursor: not-allowed; opacity: 0.38; }
+.admin-delivery-status { display: inline-flex; width: max-content; margin-top: 7px; padding: 4px 8px; border: 1px solid rgba(127, 164, 181, 0.28); border-radius: 20px; color: #9bb8c6; background: rgba(127, 164, 181, 0.08); font: 700 8px var(--font-geist-mono), monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+.admin-delivery-status.status-submitted,
+.admin-delivery-status.status-sent,
+.admin-delivery-status.status-deferred { border-color: rgba(47, 139, 255, 0.36); color: #78b5ff; background: rgba(47, 139, 255, 0.08); }
+.admin-delivery-status.status-delivered,
+.admin-delivery-status.status-opened,
+.admin-delivery-status.status-clicked { border-color: rgba(73, 224, 168, 0.36); color: #65e7b5; background: rgba(73, 224, 168, 0.08); }
+.admin-delivery-status.status-soft_bounce,
+.admin-delivery-status.status-hard_bounce,
+.admin-delivery-status.status-blocked,
+.admin-delivery-status.status-invalid,
+.admin-delivery-status.status-spam,
+.admin-delivery-status.status-error { border-color: rgba(255, 91, 116, 0.38); color: #ff8295; background: rgba(255, 91, 116, 0.08); }
+.admin-delivery-reason { color: #ff8295 !important; }
+.admin-form-success { border-color: rgba(73, 224, 168, 0.32) !important; color: #65e7b5 !important; background: rgba(73, 224, 168, 0.08) !important; }
 .admin-quotation-modal { width: min(1240px, 100%); }
 .admin-quote-form-section { margin-bottom: 18px; padding: 19px; border: 1px solid var(--admin-line); border-radius: 17px; background: rgba(5, 19, 29, 0.48); }
 .admin-quote-form-section > .admin-field + .admin-field { margin-top: 13px; }
@@ -512,6 +530,16 @@
 .admin-quotation-totals .grand { margin-top: 4px; padding: 13px; border: 0; border-radius: 10px; background: linear-gradient(120deg, var(--admin-cyan), var(--admin-blue)); color: #02111a; }
 .admin-quotation-totals .grand strong { font-size: 18px; }
 .admin-quotation-totals small { color: var(--admin-muted); text-align: right; }
+.admin-email-history-modal { width: min(720px, 100%); }
+.admin-email-history-modal header p { margin: 8px 0 0; color: var(--admin-muted); font-size: 11px; }
+.admin-email-history-body { padding: 20px 26px 28px; }
+.admin-email-event-list { display: grid; gap: 9px; }
+.admin-email-event-list article { display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: start; padding: 14px; border: 1px solid var(--admin-line); border-radius: 12px; background: #061721; }
+.admin-email-event-list article .admin-delivery-status { margin-top: 0; }
+.admin-email-event-list article div { display: grid; gap: 4px; }
+.admin-email-event-list strong { font-size: 12px; }
+.admin-email-event-list small { color: var(--admin-muted); font-size: 10px; }
+.admin-email-event-list p { margin: 2px 0 0; color: #ff9aaa; font-size: 10px; }
 
 @media (max-width: 900px) {
   .admin-app { display: block; }
@@ -567,8 +595,10 @@
   .admin-quotation-guidance { align-items: flex-start; flex-direction: column; }
   .admin-quotation-list > article { grid-template-columns: 1fr; gap: 12px; }
   .admin-quotation-list .admin-record-actions { justify-content: flex-start; }
+  .admin-quotation-actions { max-width: none; }
   .admin-form-grid-3 { grid-template-columns: 1fr; }
   .admin-quotation-items > article { grid-template-columns: 34px minmax(0, 1fr); }
   .admin-quotation-item-total { grid-column: 2; justify-items: start; padding-top: 0; }
   .admin-quotation-totals { width: 100%; }
+  .admin-email-event-list article { grid-template-columns: 1fr; }
 }
