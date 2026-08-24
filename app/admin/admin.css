@@ -560,6 +560,15 @@
 .admin-payment-list article > div:nth-child(2) { display: grid; gap: 5px; }
 .admin-payment-list article > div:nth-child(2) { justify-items: end; }
 .admin-payment-list small { color: var(--admin-muted); font-size: 10px; }
+.admin-inline-actions { display: flex; align-items: center; gap: 9px; }
+.admin-inline-actions select { min-width: 220px; padding: 10px 12px; border: 1px solid var(--admin-line); border-radius: 10px; background: #061721; color: #d8eef7; }
+.admin-email-history { display: grid; gap: 9px; padding: 22px 26px 28px; }
+.admin-email-history article { display: grid; grid-template-columns: 130px 1fr; gap: 5px 15px; padding: 13px; border: 1px solid var(--admin-line); border-radius: 12px; background: #061721; }
+.admin-email-history strong { color: var(--admin-cyan); text-transform: uppercase; }
+.admin-email-history span { color: #d8eef7; }
+.admin-email-history small { grid-column: 2; color: var(--admin-muted); }
+.admin-business-dashboard { max-width: 1600px; }
+.admin-aging-stats article small { margin-top: 7px; color: var(--admin-muted); font-size: 10px; }
 
 @media (max-width: 900px) {
   .admin-app { display: block; }
@@ -624,4 +633,8 @@
   .admin-account-grid { grid-template-columns: 1fr; }
   .admin-payment-list > article { grid-template-columns: 1fr; }
   .admin-payment-list article > div:nth-child(2) { justify-items: start; }
+  .admin-inline-actions { align-items: stretch; flex-direction: column; width: 100%; }
+  .admin-inline-actions select { width: 100%; }
+  .admin-email-history article { grid-template-columns: 1fr; }
+  .admin-email-history small { grid-column: 1; }
 }

@@ -14,10 +14,12 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   if (!readAdminSessionFromRequest(request, true)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const { id } = await context.params;
-    const previousResponse = await supabaseAdminFetch(`/rest/v1/business_payments?select=invoice_id&id=eq.${encodeURIComponent(id)}&limit=1`);
-    const previous = previousResponse.ok ? await previousResponse.json() as Array<{ invoice_id: string }> : [];
+    const previousResponse = await supabaseAdminFetch(`/rest/v1/business_payments?select=invoice_id,receipt_number,status&id=eq.${encodeURIComponent(id)}&limit=1`);
+    const previous = previousResponse.ok ? await previousResponse.json() as Array<{ invoice_id: string; receipt_number?: string; status: string }> : [];
     const record = normalizePaymentInput(await request.json());
-    const response = await supabaseAdminFetch(`/rest/v1/business_payments?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify(record) });
+    let receiptNumber = previous[0]?.receipt_number || null;
+    if (record.status === "confirmed" && !receiptNumber) { const numberResponse = await supabaseAdminFetch("/rest/v1/rpc/next_receipt_number", { method: "POST", body: "{}" }); if (!numberResponse.ok) throw new Error("Nomor kwitansi belum dapat dibuat."); receiptNumber = await numberResponse.json() as string; }
+    const response = await supabaseAdminFetch(`/rest/v1/business_payments?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ ...record, receipt_number: receiptNumber }) });
     if (!response.ok) throw new Error("Pembayaran belum dapat diperbarui.");
     const rows = await response.json() as Array<{ id: string }>;
     if (!rows.length) return NextResponse.json({ error: "Pembayaran tidak ditemukan." }, { status: 404 });

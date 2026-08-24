@@ -45,11 +45,22 @@ export type Invoice = {
   payment_account_snapshot: PaymentAccountSnapshot;
   payment_terms: string;
   notes: string;
+  delivery_status?: string;
+  last_email_recipient?: string;
+  email_attempts?: number;
+  sent_at?: string;
+  last_email_at?: string;
+  last_email_event_at?: string;
+  delivered_at?: string;
+  bounce_reason?: string;
+  reminder_enabled: boolean;
+  last_reminder_at?: string;
+  reminder_count?: number;
   created_at?: string;
   updated_at?: string;
 };
 
-export type InvoiceInput = Omit<Invoice, "id" | "invoice_number" | "payment_account_snapshot" | "created_at" | "updated_at">;
+export type InvoiceInput = Omit<Invoice, "id" | "invoice_number" | "payment_account_snapshot" | "delivery_status" | "last_email_recipient" | "email_attempts" | "sent_at" | "last_email_at" | "last_email_event_at" | "delivered_at" | "bounce_reason" | "last_reminder_at" | "reminder_count" | "created_at" | "updated_at">;
 
 export type Payment = {
   id: string;
@@ -61,11 +72,34 @@ export type Payment = {
   reference_number: string;
   status: PaymentStatus;
   notes: string;
+  receipt_number?: string;
   created_at?: string;
   updated_at?: string;
 };
 
-export type PaymentInput = Omit<Payment, "id" | "created_at" | "updated_at">;
+export type PaymentInput = Omit<Payment, "id" | "receipt_number" | "created_at" | "updated_at">;
+
+export type Customer = {
+  id: string;
+  company_name: string;
+  contact_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  notes: string;
+  is_active: boolean;
+};
+
+export type Product = {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  description: string;
+  unit: string;
+  unit_price: number;
+  is_active: boolean;
+};
 
 function text(value: unknown, field: string, max: number, required = false) {
   const result = String(value ?? "").trim().replace(/\r\n/g, "\n");
@@ -154,7 +188,20 @@ export function normalizeInvoiceInput(value: unknown): InvoiceInput {
     payment_account_id: uuid(input.payment_account_id, "Rekening pembayaran", true),
     payment_terms: text(input.payment_terms, "Syarat pembayaran", 1000),
     notes: text(input.notes, "Catatan", 1200),
+    reminder_enabled: input.reminder_enabled === true,
   };
+}
+
+export function normalizeCustomerInput(value: unknown): Omit<Customer, "id"> {
+  const input = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  const email = text(input.email, "Email customer", 180);
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Email customer tidak valid.");
+  return { company_name: text(input.company_name, "Nama perusahaan", 180, true), contact_name: text(input.contact_name, "Nama PIC", 140, true), email, phone: text(input.phone, "Telepon", 40), address: text(input.address, "Alamat", 500), notes: text(input.notes, "Catatan", 800), is_active: input.is_active !== false };
+}
+
+export function normalizeProductInput(value: unknown): Omit<Product, "id"> {
+  const input = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  return { code: text(input.code, "Kode", 40, true).toUpperCase(), name: text(input.name, "Nama layanan", 160, true), category: text(input.category || "Service", "Kategori", 80, true), description: text(input.description, "Deskripsi", 700), unit: text(input.unit || "paket", "Satuan", 30, true), unit_price: money(input.unit_price, "Harga"), is_active: input.is_active !== false };
 }
 
 export function normalizePaymentInput(value: unknown): PaymentInput {

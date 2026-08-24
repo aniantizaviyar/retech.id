@@ -21,7 +21,9 @@ export async function POST(request: Request) {
   if (!readAdminSessionFromRequest(request, true)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const record = normalizePaymentInput(await request.json());
-    const response = await supabaseAdminFetch("/rest/v1/business_payments", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify(record) });
+    let receiptNumber: string | null = null;
+    if (record.status === "confirmed") { const numberResponse = await supabaseAdminFetch("/rest/v1/rpc/next_receipt_number", { method: "POST", body: "{}" }); if (!numberResponse.ok) throw new Error("Nomor kwitansi belum dapat dibuat."); receiptNumber = await numberResponse.json() as string; }
+    const response = await supabaseAdminFetch("/rest/v1/business_payments", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({ ...record, receipt_number: receiptNumber }) });
     if (!response.ok) throw new Error("Pembayaran belum dapat disimpan.");
     const rows = await response.json() as Array<{ id: string }>;
     await syncInvoicePaymentStatus(record.invoice_id);

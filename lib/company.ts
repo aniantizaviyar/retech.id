@@ -2,6 +2,7 @@ export const companyContact = {
   legalName: "PT. Retech Digital Solution",
   brandName: "RETECH",
   email: "sales@retech.id",
+  billingEmail: "billing@retech.id",
   whatsappDisplay: "+62 877-9834-7007",
   whatsappE164: "+6287798347007",
   whatsappUrl:
