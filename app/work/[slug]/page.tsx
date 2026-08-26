@@ -11,6 +11,10 @@ import { getLocale } from "@/lib/i18n-server";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
+function absoluteMediaUrl(src: string) {
+  return /^https:\/\//i.test(src) ? src : `https://retech.id${src}`;
+}
+
 export function generateStaticParams() {
   return fallbackProjects.map((project) => ({ slug: project.slug }));
 }
@@ -55,7 +59,7 @@ export default async function ProjectPage({ params }: PageProps) {
     inLanguage: localeConfig[locale].schemaLang,
     creator: { "@id": "https://retech.id/#organization" },
     keywords: project.services.join(", "),
-    image: project.gallery.map((image) => `https://retech.id${image.src}`),
+    image: project.gallery.map((image) => absoluteMediaUrl(image.src)),
     about: project.category,
   };
 

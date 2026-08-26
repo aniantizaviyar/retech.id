@@ -17,6 +17,15 @@ const contentSecurityPolicy = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ualuzwkvplgfqiobgvrf.supabase.co",
+        pathname: "/storage/v1/object/public/cms-media/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {
