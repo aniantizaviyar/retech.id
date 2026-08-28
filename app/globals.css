@@ -447,6 +447,12 @@ h2 { margin: 18px 0 0; font-size: clamp(42px, 4.2vw, 66px); line-height: 1.03; l
 .chat-input button { width: 42px; border: 0; border-radius: 12px; color: #02131b; background: linear-gradient(135deg,var(--cyan),var(--blue)); font-size: 20px; cursor: pointer; }
 
 @media (max-width: 1020px) {
+  .site-header { width: calc(100% - 32px); }
+  .site-header nav { display: none; }
+  .site-footer { width: calc(100% - 32px); grid-template-columns: 210px minmax(0,1fr); gap: 38px 32px; }
+  .footer-contact { grid-template-columns: 1fr; }
+  .footer-contact a:first-child { grid-row: auto; }
+  .footer-nav { grid-column: 1 / -1; grid-template-columns: repeat(4,auto); justify-content: start; }
   .hero { grid-template-columns: 1fr; padding-top: 90px; }
   .hero-copy { text-align: center; }.status-pill,.hero-actions { margin-left: auto; margin-right: auto; }.hero-copy > p { margin-left: auto; margin-right: auto; }.trust-row { justify-content: center; margin-top: 48px; }
   .hero-visual { width: min(650px,92vw); margin: 20px auto 0; }

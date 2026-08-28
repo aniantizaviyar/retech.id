@@ -8,7 +8,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   return (
     <header className="site-header">
       <Link className="brand" href={localePath(locale, "/")} aria-label="RETECH home">
-        <Image src="/retech-logo-transparent.png" alt="RETECH Digital Solution" width={500} height={430} priority />
+        <Image src="/retech-logo-transparent.png" alt="RETECH Digital Solution" width={500} height={430} priority unoptimized />
       </Link>
       <nav aria-label="Main navigation">
         <Link href={localePath(locale, "/services")}>{en ? "Services" : "Layanan"}</Link>

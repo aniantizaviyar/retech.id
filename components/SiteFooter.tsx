@@ -8,7 +8,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
   return (
     <footer className="site-footer">
       <div className="footer-brand">
-        <Image src="/retech-logo-transparent.png" alt="RETECH Digital Solution" width={500} height={430} />
+        <Image src="/retech-logo-transparent.png" alt="RETECH Digital Solution" width={500} height={430} unoptimized />
         <p>PT. Retech Digital Solution<br />IT solutions that move business forward.</p>
       </div>
       <address className="footer-contact">

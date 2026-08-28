@@ -11,6 +11,7 @@ import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 import { getPageContent, getProducts, getServices as getCmsServices } from "@/lib/cms-data";
+import styles from "./home.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -94,35 +95,56 @@ export default async function Home() {
     <main>
       <SiteHeader locale={locale} />
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <div className="status-pill"><span /> {String(pageContent.heroBadge || "Your IT partner for what's next")}</div>
+      <section className={styles.hero} id="top">
+        <div className={styles.heroCopy}>
+          <div className={styles.statusPill}><span /> {String(pageContent.heroBadge || "Your IT partner for what's next")}</div>
           <h1>
             {String(pageContent.heroTitle || "Technology that works.")}<br />
             <em>{String(pageContent.heroTitleAccent || "Business that grows.")}</em>
           </h1>
           <p>{String(pageContent.heroIntro || "")}</p>
-          <div className="hero-actions">
+          <div className={styles.heroActions}>
             <a className="button button-primary" href="#contact" data-analytics="contact_cta_click" data-analytics-source="home_hero">{en ? "Start a project" : "Mulai project"} <span>↗</span></a>
             <Link className="button button-secondary" href={localePath(locale, "/work")}>{en ? "View our work" : "Lihat hasil kerja"} <span>↘</span></Link>
           </div>
-          <div className="trust-row">
+          <div className={styles.trustRow}>
             <span>DIGITAL PRODUCT</span><i />
             <span>MANAGED OPERATIONS</span><i />
             <span>SERVER DEPLOYMENT</span>
           </div>
         </div>
 
-        <div className="hero-visual" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="hero-core">
-            <Image src="/retech-logo-transparent.png" alt="" width={500} height={430} priority />
+        <div className={styles.saasConsole}>
+          <div className={styles.consoleHeader}>
+            <div>
+              <span className={styles.consoleMark}>R</span>
+              <div><strong>RETECH OPERATIONS CLOUD</strong><small>{en ? "Subscription workspace" : "Workspace berlangganan"}</small></div>
+            </div>
+            <span className={styles.liveBadge}><i /> LIVE</span>
           </div>
-          <div className="floating-card card-top"><span>UPTIME</span><strong>Always on</strong></div>
-          <div className="floating-card card-bottom"><span>SOLUTION</span><strong>Built to fit</strong></div>
-          <div className="signal-dot dot-one" />
-          <div className="signal-dot dot-two" />
+          <div className={styles.consoleMetrics}>
+            <article><span>{en ? "PRODUCTS" : "PRODUK"}</span><strong>02</strong><small>{en ? "Focused solutions" : "Solusi terarah"}</small></article>
+            <article><span>TENANT</span><strong>ISO</strong><small>{en ? "Data isolated" : "Data terpisah"}</small></article>
+            <article><span>LIFECYCLE</span><strong>AUTO</strong><small>Trial → Active</small></article>
+          </div>
+          <div className={styles.consoleProducts}>
+            {products.slice(0, 2).map((product, index) => {
+              const plan = product.plans.find((item) => item.featured) || product.plans[0];
+              return (
+                <Link href={localePath(locale, `/products/${product.slug}`)} key={product.slug}>
+                  <span className={styles.productIcon}>{index === 0 ? "Q" : "A"}</span>
+                  <div><strong>{product.shortTitle}</strong><small>{plan?.price} {plan?.unit}</small></div>
+                  <span className={styles.productState}>{index === 0 ? "PILOT" : "READY"}</span>
+                  <b>↗</b>
+                </Link>
+              );
+            })}
+          </div>
+          <div className={styles.consoleFooter}>
+            <span><i /> {en ? "Privacy by design" : "Privacy by design"}</span>
+            <span><i /> {en ? "Role-based access" : "Akses berbasis role"}</span>
+            <span><i /> {en ? "Payment-controlled" : "Aktivasi terkendali"}</span>
+          </div>
         </div>
       </section>
 
@@ -156,9 +178,26 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="home-products">
+      <section className={styles.productsSection}>
         <div className="section-heading"><div><span className="kicker">RETECH PRODUCTS</span><h2>{en ? "Subscription software." : "Software berlangganan."}<br /><em>{en ? "Built from real operations." : "Lahir dari operasional nyata."}</em></h2></div><p>{en ? "Focused products for F&B commerce and workforce attendance, designed on a secure multi-tenant foundation." : "Produk terarah untuk perdagangan F&B dan absensi tenaga kerja, dirancang dengan fondasi multi-tenant yang aman."}</p></div>
-        <div className="home-product-grid">{products.map((product)=><Link href={localePath(locale, `/products/${product.slug}`)} className="home-product-card" key={product.slug}><div className="home-product-image"><Image src={product.heroImage} alt={product.heroAlt} fill sizes="(max-width: 720px) 100vw, 50vw" /></div><div><span>{product.eyebrow}</span><h3>{product.title}</h3><p>{product.summary}</p><b>{en ? "Explore product" : "Lihat produk"} ↗</b></div></Link>)}</div>
+        <div className={styles.productGrid}>{products.map((product) => {
+          const plan = product.plans.find((item) => item.featured) || product.plans[0];
+          return (
+            <Link href={localePath(locale, `/products/${product.slug}`)} className={styles.productCard} key={product.slug}>
+              <div className={styles.productImage}>
+                <Image src={product.heroImage} alt={product.heroAlt} width={1536} height={1024} sizes="(max-width: 720px) 100vw, 50vw" unoptimized />
+                <span>{en ? "PRIVACY-SAFE PRODUCT VIEW" : "VISUAL PRODUK AMAN"}</span>
+              </div>
+              <div className={styles.productCopy}>
+                <span>{product.eyebrow}</span>
+                <h3>{product.title}</h3>
+                <p>{product.summary}</p>
+                <div className={styles.productPrice}><small>{en ? "RECOMMENDED PLAN" : "PAKET REKOMENDASI"}</small><strong>{plan?.price}</strong><span>{plan?.unit}</span></div>
+                <b>{en ? "Explore product" : "Lihat produk"} <span>↗</span></b>
+              </div>
+            </Link>
+          );
+        })}</div>
         <Link className="work-link" href={localePath(locale, "/products")}>{en ? "View all products" : "Lihat semua produk"} <span>↗</span></Link>
       </section>
 
