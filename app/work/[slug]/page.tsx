@@ -93,7 +93,7 @@ export default async function ProjectPage({ params }: PageProps) {
         </header>
 
         {project.gallery.length ? (
-          <section className={`case-gallery${project.slug === "android-attendance-app" ? " case-gallery-mobile" : ""}`} aria-label={`${en ? "Gallery" : "Galeri"} ${project.title}`}>
+          <section className="case-gallery" aria-label={`${en ? "Gallery" : "Galeri"} ${project.title}`}>
             {project.gallery.map((image, index) => (
               <figure className={index === 0 ? "case-shot case-shot-wide" : "case-shot"} key={image.src}>
                 <div className="browser-frame">

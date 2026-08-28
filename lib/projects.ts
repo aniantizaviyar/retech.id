@@ -30,10 +30,7 @@ export const fallbackProjects: Project[] = [
     outcome:
       "Pelanggan dapat mengenali layanan, melacak kiriman, dan mengecek tarif lebih cepat dari satu kanal digital yang terstruktur.",
     services: ["Shipment Tracking", "Rate Checker", "Operations CMS", "Responsive Web"],
-    gallery: [
-      { src: "/case-studies/logistics/tracking-and-rate-v2.png", alt: "Website pelacakan kiriman dan pengecekan tarif" },
-      { src: "/case-studies/logistics/cms-dashboard.png", alt: "Dashboard CMS untuk shipment, konten, dan pesan customer" },
-    ],
+    gallery: [{ src: "/privacy-safe/logistics-platform.png", alt: "Visual konseptual platform logistik dengan tracking, status rute, dan estimasi tarif" }],
     featured: true,
     sortOrder: 1,
   },
@@ -51,14 +48,7 @@ export const fallbackProjects: Project[] = [
     outcome:
       "Tim dapat membaca kondisi operasional dan memperbarui konten dari satu area kerja yang konsisten.",
     services: ["Web App", "Dashboard", "CMS", "Campaign Administration", "Role-based Admin"],
-    gallery: [
-      { src: "/case-studies/dashboard-cms/news-cms.png", alt: "Pengelolaan artikel dan alur publikasi News CMS" },
-      { src: "/case-studies/dashboard-cms/analytics-dashboard.png", alt: "Dashboard analytics untuk metrik penggunaan dan pertumbuhan" },
-      { src: "/case-studies/dashboard-cms/shipment-cms.png", alt: "Pengelolaan shipment dan pembaruan status operasional" },
-      { src: "/case-studies/dashboard-cms/contest-login-privacy.webp", alt: "Login aman untuk dashboard administrasi campaign" },
-      { src: "/case-studies/dashboard-cms/contest-dashboard-privacy.webp", alt: "Dashboard campaign dengan ringkasan submission dan distribusi tema" },
-      { src: "/case-studies/dashboard-cms/contest-submissions-privacy.webp", alt: "Pengelolaan dan pemeriksaan detail submission pada CMS" },
-    ],
+    gallery: [{ src: "/privacy-safe/operations-cms.png", alt: "Visual konseptual dashboard CMS dengan workflow konten, approval, dan analitik" }],
     featured: true,
     sortOrder: 2,
   },
@@ -76,13 +66,7 @@ export const fallbackProjects: Project[] = [
     outcome:
       "Pemantauan kehadiran menjadi lebih ringkas dan keputusan administratif dapat dibuat dengan data yang lebih mudah dibaca.",
     services: ["HRMS", "Attendance", "Leave Approval", "Leave Balance", "Reporting", "Dashboard Analytics"],
-    gallery: [
-      { src: "/case-studies/hrms/login-privacy.webp", alt: "Halaman login aman untuk portal administrasi HRMS" },
-      { src: "/case-studies/hrms/dashboard-overview-privacy.webp", alt: "Dashboard HRMS dengan tren absensi dan status check-in" },
-      { src: "/case-studies/hrms/attendance-analysis-privacy.webp", alt: "Analitik keterlambatan, shift, dan komposisi check-in" },
-      { src: "/case-studies/hrms/leave-approval-privacy.webp", alt: "Administrasi approval dan status pengajuan cuti" },
-      { src: "/case-studies/hrms/leave-balances-privacy.webp", alt: "Pengelolaan kuota, pemakaian, dan sisa cuti karyawan" },
-    ],
+    gallery: [{ src: "/privacy-safe/hrms-attendance.png", alt: "Visual konseptual HRMS dengan analitik kehadiran, shift, dan approval cuti" }],
     featured: true,
     sortOrder: 3,
   },
@@ -100,11 +84,7 @@ export const fallbackProjects: Project[] = [
     outcome:
       "Tim IT memperoleh visibilitas terpusat untuk menjaga stabilitas layanan dan merespons anomali lebih awal.",
     services: ["Network Monitoring", "Server Monitoring", "Alerting", "Managed IT"],
-    gallery: [
-      { src: "/case-studies/infrastructure-monitoring/network-monitor-v2.png", alt: "Dashboard monitoring jaringan, utilisasi link, dan bandwidth real-time" },
-      { src: "/case-studies/infrastructure-monitoring/server-monitor-v2.png", alt: "Dashboard utilisasi resource, runtime, dan layanan server" },
-      { src: "/case-studies/infrastructure-monitoring/server-monitoring.png", alt: "Monitoring kesehatan server, endpoint, layanan, dan sertifikat" },
-    ],
+    gallery: [{ src: "/privacy-safe/infrastructure-observability.png", alt: "Visual konseptual monitoring infrastruktur dengan health score, bandwidth, dan status layanan" }],
     featured: true,
     sortOrder: 4,
   },
@@ -122,13 +102,7 @@ export const fallbackProjects: Project[] = [
     outcome:
       "Tim HR memperoleh data absensi dan administrasi cuti yang lebih mudah diaudit, sementara karyawan dapat mengelola kehadiran langsung dari perangkat Android.",
     services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Attendance Calendar", "Leave Management", "Admin Hub", "HRMS Sync"],
-    gallery: [
-      { src: "/case-studies/android-attendance/mobile-dashboard-privacy.webp", alt: "Beranda aplikasi Android dengan check-in, check-out, lokasi, dan timestamp" },
-      { src: "/case-studies/android-attendance/mobile-overview-privacy.webp", alt: "Ringkasan kehadiran dan akses cepat pada aplikasi Android" },
-      { src: "/case-studies/android-attendance/attendance-calendar.jpg", alt: "Kalender absensi dengan ringkasan hadir, terlambat, dan shift" },
-      { src: "/case-studies/android-attendance/admin-hub.jpg", alt: "Admin Hub untuk attendance, kedisiplinan, approval cuti, dan manajemen kuota" },
-      { src: "/case-studies/android-attendance/leave-request.jpg", alt: "Pengajuan cuti, sisa kuota, dan riwayat status persetujuan" },
-    ],
+    gallery: [{ src: "/privacy-safe/android-attendance.png", alt: "Visual konseptual aplikasi Android untuk check-in aman, validasi lokasi, dan riwayat kehadiran" }],
     featured: false,
     sortOrder: 5,
   },
@@ -145,7 +119,7 @@ export const englishProjectContent: Record<string, ProjectTranslation> = {
     solution: "RETECH designed the company profile, tracking-number search, rate checker, and CMS dashboard for monitoring shipments and managing content and inquiries.",
     outcome: "Customers can understand services, track shipments, and check rates faster through one structured digital channel.",
     services: ["Shipment Tracking", "Rate Checker", "Operations CMS", "Responsive Web"],
-    galleryAlt: ["Shipment tracking and rate-checking website", "CMS dashboard for shipments, content, and customer messages"],
+    galleryAlt: ["Conceptual logistics platform with tracking, route status, and rate estimation"],
   },
   "operations-dashboard-cms": {
     title: "Operations Dashboard & CMS",
@@ -155,7 +129,7 @@ export const englishProjectContent: Record<string, ProjectTranslation> = {
     solution: "RETECH built a concise dashboard, content management modules, search, pagination, data controls, submission analytics, and campaign administration in one system.",
     outcome: "The team can understand operational conditions and update content from one consistent workspace.",
     services: ["Web App", "Dashboard", "CMS", "Campaign Administration", "Role-based Admin"],
-    galleryAlt: ["News CMS article management and publishing workflow", "Analytics dashboard for usage and growth metrics", "Shipment management and operational status updates", "Secure login for the campaign administration dashboard", "Campaign dashboard with submission and theme distribution summaries", "CMS submission management and detail review"],
+    galleryAlt: ["Conceptual CMS dashboard with content workflow, approvals, and analytics"],
   },
   "hrms-attendance-platform": {
     title: "HRMS & Attendance Platform",
@@ -165,7 +139,7 @@ export const englishProjectContent: Record<string, ProjectTranslation> = {
     solution: "RETECH combined attendance dashboards, lateness analytics, period filters, leave approval, leave-balance management, and user administration in a centralized platform.",
     outcome: "Attendance monitoring is more concise and administrative decisions can be made with easier-to-read data.",
     services: ["HRMS", "Attendance", "Leave Approval", "Leave Balance", "Reporting", "Dashboard Analytics"],
-    galleryAlt: ["Secure login page for the HRMS administration portal", "HRMS dashboard with attendance trends and check-in status", "Lateness, shift, and check-in composition analytics", "Leave request approval and status administration", "Employee leave quota, usage, and balance management"],
+    galleryAlt: ["Conceptual HRMS with attendance analytics, shifts, and leave approvals"],
   },
   "infrastructure-monitoring": {
     title: "Infrastructure Monitoring",
@@ -175,7 +149,7 @@ export const englishProjectContent: Record<string, ProjectTranslation> = {
     solution: "RETECH built network and server monitoring dashboards with capacity indicators, endpoint availability, response time, service health, TLS certificates, real-time charts, and operational thresholds.",
     outcome: "The IT team gains centralized visibility to maintain service stability and respond to anomalies earlier.",
     services: ["Network Monitoring", "Server Monitoring", "Alerting", "Managed IT"],
-    galleryAlt: ["Real-time network, link utilization, and bandwidth monitoring dashboard", "Server resource, runtime, and service monitoring dashboard", "Server, endpoint, service, and certificate health monitoring"],
+    galleryAlt: ["Conceptual infrastructure monitoring with health score, bandwidth, and service status"],
   },
   "android-attendance-app": {
     title: "Android Attendance App",
@@ -185,7 +159,7 @@ export const englishProjectContent: Record<string, ProjectTranslation> = {
     solution: "RETECH built check-in and check-out flows with photo evidence, location validation, audit timestamps, fake GPS and mock-location detection, an attendance calendar and history, leave requests, an Admin Hub, and HRMS synchronization.",
     outcome: "HR teams receive attendance and leave data that is easier to audit, while employees manage attendance directly from Android devices.",
     services: ["Photo Attendance", "Location Validation", "Anti Fake/Mock Location", "Attendance Calendar", "Leave Management", "Admin Hub", "HRMS Sync"],
-    galleryAlt: ["Android app home screen with check-in, check-out, location, and timestamp", "Attendance summary and quick access in the Android app", "Attendance calendar with present, late, and shift summaries", "Admin Hub for attendance, discipline, leave approval, and quota management", "Leave request, remaining quota, and approval-status history"],
+    galleryAlt: ["Conceptual Android application for secure check-in, location validation, and attendance history"],
   },
 };
 
@@ -203,7 +177,8 @@ function localizeProject(project: Project, locale: Locale): Project {
 function normalizeProject(row: Record<string, unknown>, locale: Locale): Project | null {
   if (typeof row.slug !== "string" || typeof row.title !== "string") return null;
   const translation = locale === "en" ? englishProjectContent[row.slug] : undefined;
-  const gallery = Array.isArray(row.gallery)
+  const privacySafeFallback = fallbackProjects.find((project) => project.slug === row.slug);
+  const databaseGallery = Array.isArray(row.gallery)
     ? row.gallery.filter(
         (item): item is { src: string; alt: string; alt_en?: string } =>
           typeof item === "object" && item !== null &&
@@ -211,6 +186,12 @@ function normalizeProject(row: Record<string, unknown>, locale: Locale): Project
           typeof (item as { alt?: unknown }).alt === "string",
       ).map((item, index) => ({ src: item.src, alt: locale === "en" ? (typeof item.alt_en === "string" ? item.alt_en : translation?.galleryAlt[index] || item.alt) : item.alt }))
     : [];
+  // Existing portfolio rows may still contain historic customer screenshots.
+  // Known public case studies always use RETECH's fictional privacy-safe visual,
+  // even before the database migration has propagated.
+  const gallery = privacySafeFallback
+    ? localizeProject(privacySafeFallback, locale).gallery
+    : databaseGallery;
 
   return {
     slug: row.slug,

@@ -80,6 +80,26 @@ export const cmsPageSeeds: CmsPageSeed[] = [
     dataEn: { heroTitle: "Technology in action.", heroTitleAccent: "Built for real work.", heroIntro: "Websites, operational applications, HRMS platforms, and infrastructure monitoring designed for day-to-day business needs.", privacyNote: "Customer names, logos, emails, addresses, and sensitive data are not displayed.", ctaTitle: "Facing a similar challenge?", ctaIntro: "We can begin with a short discovery to map requirements, risks, and the most practical implementation path." },
   },
   {
+    slug: "products",
+    label: "Products Directory",
+    dataId: {
+      heroTitle: "Software operasional.",
+      heroTitleAccent: "Tumbuh bersama bisnis.",
+      heroIntro: "Dua produk berlangganan yang dibangun dari pengalaman RETECH mengembangkan sistem operasional: QR Order & POS untuk bisnis F&B dan Attendance untuk pengelolaan kehadiran.",
+      ctaTitle: "Mulai dari pilot terarah.",
+      ctaTitleAccent: "Scale setelah terbukti.",
+      ctaIntro: "Pilot membantu menguji workflow, kesiapan user, dan dampak operasional sebelum rollout lebih luas.",
+    },
+    dataEn: {
+      heroTitle: "Operational software.",
+      heroTitleAccent: "Ready to grow with you.",
+      heroIntro: "Two subscription products built from RETECH's operational-system experience: QR Order & POS for F&B businesses and Attendance for workforce operations.",
+      ctaTitle: "Choose a focused pilot.",
+      ctaTitleAccent: "Scale after it works.",
+      ctaIntro: "A pilot validates workflows, user readiness, and operational impact before a wider rollout.",
+    },
+  },
+  {
     slug: "pricing",
     label: "Pricing Page",
     dataId: { heroIntro: "Harga berikut adalah estimasi awal untuk membantu perencanaan. Penawaran final dibuat setelah kebutuhan, kompleksitas, dan timeline dipahami.", heroNote: "Harga mulai dari • Bukan tarif tetap", developmentIntro: "Mulai dari website profesional hingga sistem bisnis dan aplikasi mobile custom.", supportIntro: "Pilih bantuan insidental atau pengelolaan rutin sesuai kapasitas dan tingkat risiko sistem.", hostingIntro: "Domain dan cloud adalah biaya berulang. Akun dan kepemilikan tetap atas nama customer; RETECH membantu setup dan pengelolaannya.", hostingDisclaimer: "Harga perpanjangan mengikuti tarif registrar dan cloud provider. Pemakaian resource tinggi, storage besar, email hosting, lisensi, dan layanan pihak ketiga dihitung terpisah.", ctaIntro: "Konsultasi awal membantu menentukan pendekatan, prioritas, biaya, dan timeline yang paling masuk akal." },

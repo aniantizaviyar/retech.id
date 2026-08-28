@@ -10,7 +10,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
-import { getPageContent, getServices as getCmsServices } from "@/lib/cms-data";
+import { getPageContent, getProducts, getServices as getCmsServices } from "@/lib/cms-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -71,6 +71,7 @@ export default async function Home() {
   const locale = await getLocale();
   const en = locale === "en";
   const projects = (await getProjects(locale)).filter((project) => project.featured).slice(0, 4);
+  const products = await getProducts(locale);
   const cmsServices = await getCmsServices(locale);
   const homeServices = cmsServices.length ? cmsServices.map((service, index) => ({
     number: String(index + 1).padStart(2, "0"),
@@ -153,6 +154,12 @@ export default async function Home() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="home-products">
+        <div className="section-heading"><div><span className="kicker">RETECH PRODUCTS</span><h2>{en ? "Subscription software." : "Software berlangganan."}<br /><em>{en ? "Built from real operations." : "Lahir dari operasional nyata."}</em></h2></div><p>{en ? "Focused products for F&B commerce and workforce attendance, designed on a secure multi-tenant foundation." : "Produk terarah untuk perdagangan F&B dan absensi tenaga kerja, dirancang dengan fondasi multi-tenant yang aman."}</p></div>
+        <div className="home-product-grid">{products.map((product)=><Link href={localePath(locale, `/products/${product.slug}`)} className="home-product-card" key={product.slug}><div className="home-product-image"><Image src={product.heroImage} alt={product.heroAlt} fill sizes="(max-width: 720px) 100vw, 50vw" /></div><div><span>{product.eyebrow}</span><h3>{product.title}</h3><p>{product.summary}</p><b>{en ? "Explore product" : "Lihat produk"} ↗</b></div></Link>)}</div>
+        <Link className="work-link" href={localePath(locale, "/products")}>{en ? "View all products" : "Lihat semua produk"} <span>↗</span></Link>
       </section>
 
       <section className="featured-work" id="work">

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getProjects } from "@/lib/projects";
 import { getServices } from "@/lib/cms-data";
+import { productSeeds } from "@/lib/products";
 import { localePath } from "@/lib/i18n";
 
 const siteUrl = "https://retech.id";
@@ -15,6 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/pricing", changeFrequency: "monthly" as const, priority: 0.8 },
     { path: "/about", changeFrequency: "monthly" as const, priority: 0.7 },
     { path: "/work", changeFrequency: "weekly" as const, priority: 0.9 },
+    { path: "/products", changeFrequency: "weekly" as const, priority: 0.9 },
+    ...productSeeds.map((product) => ({ path: `/products/${product.slug}`, changeFrequency: "weekly" as const, priority: 0.9 })),
     { path: "/services", changeFrequency: "monthly" as const, priority: 0.9 },
     ...services.map((service) => ({ path: `/services/${service.slug}`, changeFrequency: "monthly" as const, priority: 0.8 })),
     { path: "/faq", changeFrequency: "monthly" as const, priority: 0.6 },

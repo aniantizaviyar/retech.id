@@ -1,4 +1,4 @@
-export const CMS_RESOURCES = ["pages", "services", "faqs", "pricing", "projects"] as const;
+export const CMS_RESOURCES = ["pages", "services", "products", "faqs", "pricing", "projects"] as const;
 export type CmsResource = typeof CMS_RESOURCES[number];
 
 const SLUG = /^[a-z0-9][a-z0-9-]{1,79}$/;
@@ -48,7 +48,7 @@ export function normalizeCmsRecord(resource: CmsResource, input: unknown) {
   if (resource === "pages") return {
     slug: slug(record.slug), label: text(record.label, 120), data_id: object(record.data_id), data_en: object(record.data_en), published: boolean(record.published, true),
   };
-  if (resource === "services") return {
+  if (resource === "services" || resource === "products") return {
     slug: slug(record.slug), data_id: object(record.data_id), data_en: object(record.data_en), published: boolean(record.published, true), sort_order: integer(record.sort_order),
   };
   if (resource === "faqs") return {

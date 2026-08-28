@@ -6,7 +6,7 @@ import { isCmsResource, normalizeCmsRecord, type CmsResource } from "@/lib/cms-v
 import { supabaseAdminFetch } from "@/lib/supabase-admin";
 
 const tableByResource: Record<CmsResource, string> = {
-  pages: "cms_pages", services: "cms_services", faqs: "cms_faqs", pricing: "cms_pricing", projects: "portfolio_projects",
+  pages: "cms_pages", services: "cms_services", products: "cms_products", faqs: "cms_faqs", pricing: "cms_pricing", projects: "portfolio_projects",
 };
 
 function refreshPublicContent() {

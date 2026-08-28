@@ -4,7 +4,7 @@ import { ADMIN_EMAIL, readAdminSessionFromRequest } from "@/lib/admin-auth";
 import { isCmsResource, normalizeCmsRecord, type CmsResource } from "@/lib/cms-validation";
 import { supabaseAdminFetch } from "@/lib/supabase-admin";
 
-const tableByResource: Record<CmsResource, string> = { pages: "cms_pages", services: "cms_services", faqs: "cms_faqs", pricing: "cms_pricing", projects: "portfolio_projects" };
+const tableByResource: Record<CmsResource, string> = { pages: "cms_pages", services: "cms_services", products: "cms_products", faqs: "cms_faqs", pricing: "cms_pricing", projects: "portfolio_projects" };
 
 async function audit(action: string, resource: string, recordId: string) {
   await supabaseAdminFetch("/rest/v1/cms_audit_log", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify({ actor_email: ADMIN_EMAIL, action, resource, record_id: recordId }) });

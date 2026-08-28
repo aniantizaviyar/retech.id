@@ -5,6 +5,7 @@ import { faqs, englishFaqs } from "./faqs";
 import { englishServices, getFallbackServices, services, type ServiceDefinition } from "./services";
 import { fallbackPricing, pricingSeeds, type PricingRecord } from "./pricing";
 import { englishProjectContent } from "./projects";
+import { getFallbackProducts, productSeeds, type ProductDefinition } from "./products";
 import { getSupabaseAdminConfig, supabaseAdminFetch } from "./supabase-admin";
 
 function cmsHeaders() {
@@ -45,6 +46,22 @@ export async function getServices(locale: Locale): Promise<ServiceDefinition[]> 
 
 export async function getService(slug: string, locale: Locale) {
   return (await getServices(locale)).find((service) => service.slug === slug);
+}
+
+export async function getProducts(locale: Locale): Promise<ProductDefinition[]> {
+  try {
+    const response = await publicCmsFetch("/rest/v1/cms_products?select=slug,data_id,data_en&published=eq.true&order=sort_order.asc");
+    if (!response.ok) return getFallbackProducts(locale);
+    const rows = await response.json() as Array<{ slug: string; data_id: Omit<ProductDefinition, "slug">; data_en: Omit<ProductDefinition, "slug"> }>;
+    const normalized = rows.map((row) => ({ slug: row.slug, ...(locale === "en" ? row.data_en : row.data_id) })).filter((item) => item.title && Array.isArray(item.plans));
+    return normalized.length ? normalized : getFallbackProducts(locale);
+  } catch {
+    return getFallbackProducts(locale);
+  }
+}
+
+export async function getProduct(slug: string, locale: Locale) {
+  return (await getProducts(locale)).find((product) => product.slug === slug);
 }
 
 export async function getFaqs(locale: Locale) {
@@ -92,6 +109,9 @@ export async function ensureCmsSeeded() {
       const { slug, ...dataId } = service;
       return { slug, data_id: dataId, data_en: englishServices[slug] || dataId, published: true, sort_order: index + 1 };
     }));
+  }
+  if (await tableIsEmpty("cms_products")) {
+    await insertRows("cms_products", productSeeds.map((product) => ({ slug: product.slug, data_id: product.dataId, data_en: product.dataEn, published: true, sort_order: product.sortOrder })));
   }
   if (await tableIsEmpty("cms_faqs")) {
     await insertRows("cms_faqs", faqs.map((faq, index) => ({ question_id: faq.question, answer_id: faq.answer, question_en: englishFaqs[index]?.question || faq.question, answer_en: englishFaqs[index]?.answer || faq.answer, published: true, sort_order: index + 1 })));

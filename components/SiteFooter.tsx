@@ -34,6 +34,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
       <nav className="footer-nav" aria-label="Footer navigation">
         <Link href={localePath(locale, "/about")}>{en ? "About" : "Tentang"}</Link>
         <Link href={localePath(locale, "/services")}>{en ? "Services" : "Layanan"}</Link>
+        <Link href={localePath(locale, "/products")}>{en ? "Products" : "Produk"}</Link>
         <Link href={localePath(locale, "/work")}>Case Studies</Link>
         <Link href={localePath(locale, "/pricing")}>Pricing</Link>
         <Link href={localePath(locale, "/faq")}>FAQ</Link>

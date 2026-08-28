@@ -113,7 +113,7 @@ export default async function RootLayout({
         {children}
         {!isAdmin && <AnalyticsEvents />}
         {!isAdmin && <Analytics />}
-        {!isAdmin && <GoogleTagManager gtmId="GTM-MX3X63MF" />}
+        {!isAdmin && process.env.NODE_ENV === "production" && <GoogleTagManager gtmId="GTM-MX3X63MF" />}
       </body>
     </html>
   );
