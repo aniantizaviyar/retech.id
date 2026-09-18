@@ -153,6 +153,13 @@ export default async function AboutPage() {
           <span className="kicker">COMPANY INFORMATION</span>
           <h2>Reach RETECH.<br /><em>Start with a conversation.</em></h2>
           <p>{String(pageContent.companyIntro || "")}</p>
+          <a
+            className="button button-secondary"
+            href="/documents/retech-company-profile.pdf"
+            download
+          >
+            {en ? "Download company profile" : "Unduh company profile"} <span>↓</span>
+          </a>
         </div>
         <address>
           <a href={companyContact.mapUrl} target="_blank" rel="noreferrer">
