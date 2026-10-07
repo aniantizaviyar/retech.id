@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { getPageContent, getServices } from "@/lib/cms-data";
 import { absoluteLocaleUrl, languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
+import type { ServiceDefinition } from "@/lib/services";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -19,6 +20,32 @@ export default async function ServicesPage() {
   const locale = await getLocale();
   const en = locale === "en";
   const services = await getServices(locale);
+  const vpsService: ServiceDefinition = en ? {
+    slug: "vps",
+    eyebrow: "INFRASTRUCTURE",
+    title: "VPS & Cloud Server",
+    shortTitle: "VPS & Cloud Server",
+    summary: "Flexible VPS options for business websites, applications, databases, Windows workloads, and dedicated infrastructure. Pricing is provided by quotation.",
+    description: "VPS configurations sized around your workload, with optional control panel licenses and separately scoped operations support.",
+    includes: ["RDS Lite and performance options", "Linux or Windows Server", "Optional Plesk, cPanel, or no panel", "Quotation-based configuration"],
+    outcomes: [],
+    process: [],
+    bestFor: [],
+    relatedWork: [],
+  } : {
+    slug: "vps",
+    eyebrow: "INFRASTRUKTUR",
+    title: "Layanan VPS & Cloud Server",
+    shortTitle: "VPS & Cloud Server",
+    summary: "Pilihan VPS untuk website bisnis, aplikasi, database, workload Windows, dan infrastruktur dedicated. Harga disampaikan melalui penawaran.",
+    description: "Konfigurasi VPS disesuaikan dengan workload, dengan lisensi control panel opsional dan dukungan operasional yang dapat diatur terpisah.",
+    includes: ["Opsi RDS Lite dan performa", "Linux atau Windows Server", "Plesk, cPanel, atau tanpa panel", "Konfigurasi melalui penawaran"],
+    outcomes: [],
+    process: [],
+    bestFor: [],
+    relatedWork: [],
+  };
+  const directoryServices = [...services.filter((service) => service.slug !== "vps"), vpsService];
   const pageContent = await getPageContent("services", locale);
   const pageUrl = absoluteLocaleUrl(locale, "/services");
   const offerCatalogSchema = {
@@ -27,7 +54,7 @@ export default async function ServicesPage() {
     "@id": `${pageUrl}#catalog`,
     name: "RETECH IT Services",
     url: pageUrl,
-    itemListElement: services.map((service) => ({
+    itemListElement: directoryServices.map((service) => ({
       "@type": "OfferCatalog",
       name: service.shortTitle,
       itemListElement: [{
@@ -55,7 +82,7 @@ export default async function ServicesPage() {
         <p>{String(pageContent.heroIntro || (en ? "One partner to build digital products, maintain infrastructure, and deliver server solutions with a clear direction." : "Satu partner untuk membangun produk digital, menjaga infrastruktur, dan menyelesaikan kebutuhan server secara terarah."))}</p>
       </section>
       <section className="service-directory" aria-label={en ? "RETECH services" : "Daftar layanan RETECH"}>
-        {services.map((service, index) => (
+        {directoryServices.map((service, index) => (
           <article className="service-directory-card" key={service.slug}>
             <div className="service-directory-index">0{index + 1} / {service.eyebrow}</div>
             <h2>{service.title}</h2>

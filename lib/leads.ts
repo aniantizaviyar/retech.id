@@ -4,12 +4,14 @@ export const SERVICE_OPTIONS_ID = [
   "Digital Product & Application Development",
   "Managed Infrastructure & IT Operations",
   "Remote IT & Server Deployment",
+  "VPS & Cloud Server",
   "Konsultasi kebutuhan lainnya",
 ] as const;
 export const SERVICE_OPTIONS_EN = [
   "Digital Product & Application Development",
   "Managed Infrastructure & IT Operations",
   "Remote IT & Server Deployment",
+  "VPS & Cloud Server",
   "Other consulting needs",
 ] as const;
 export const SERVICE_OPTIONS = [...new Set([...SERVICE_OPTIONS_ID, ...SERVICE_OPTIONS_EN])] as string[];
