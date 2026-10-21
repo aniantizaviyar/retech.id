@@ -9,6 +9,7 @@ import { getProduct } from "@/lib/cms-data";
 import { absoluteLocaleUrl, languageAlternates, localeConfig, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 import { productSeeds } from "@/lib/products";
+import { AttendanceLanding } from "@/components/AttendanceLanding";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -16,7 +17,13 @@ export function generateStaticParams() { return productSeeds.map((product) => ({
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const locale = await getLocale();
-  const product = await getProduct((await params).slug, locale);
+  const slug = (await params).slug;
+  if (slug === "attendance") {
+    const en = locale === "en";
+    const description = en ? "ReTendance connects Android selfie and GPS attendance, shifts, employee history and leave approvals to your company dashboard. Explore Free, Pro and Business plans." : "ReTendance menghubungkan absensi selfie dan GPS Android, shift, riwayat karyawan, serta persetujuan izin/cuti ke dashboard perusahaan. Lihat paket Free, Pro dan Bisnis.";
+    return { title: en ? "ReTendance - Android Attendance & Company Dashboard" : "ReTendance - Attendance Android & Dashboard Perusahaan", description, alternates: { canonical: localePath(locale, "/products/attendance"), languages: languageAlternates("/products/attendance") }, openGraph: { title: "ReTendance | RETECH", description, url: localePath(locale, "/products/attendance"), images: [{ url: "/attendance/retendance-logo.png", alt: "ReTendance" }] }, twitter: { card: "summary", title: "ReTendance | RETECH", description, images: ["/attendance/retendance-logo.png"] } };
+  }
+  const product = await getProduct(slug, locale);
   if (!product) return { title: "Product" };
   const path = `/products/${product.slug}`;
   const canonical = localePath(locale, path);
@@ -32,7 +39,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ProductDetailPage({ params }: PageProps) {
   const locale = await getLocale();
   const en = locale === "en";
-  const product = await getProduct((await params).slug, locale);
+  const slug = (await params).slug;
+  if (slug === "attendance") return <AttendanceLanding locale={locale} />;
+  const product = await getProduct(slug, locale);
   if (!product) notFound();
   const productUrl = absoluteLocaleUrl(locale, `/products/${product.slug}`);
   const productSchema = {
