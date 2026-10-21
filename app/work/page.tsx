@@ -24,7 +24,7 @@ export default async function WorkPage() {
   const pageContent = await getPageContent("work", locale);
 
   return (
-    <main>
+    <main className="public-site">
       <SiteHeader locale={locale} />
       <section className="work-hero">
         <span className="kicker">CASE STUDIES</span>

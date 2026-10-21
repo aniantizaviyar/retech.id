@@ -74,7 +74,7 @@ export default async function ProjectPage({ params }: PageProps) {
   };
 
   return (
-    <main>
+    <main className="public-site">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
       <SiteHeader locale={locale} />

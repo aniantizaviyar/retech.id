@@ -29,7 +29,7 @@ export default async function ProductsPage() {
   const products = await getProducts(locale);
   const page = await getPageContent("products", locale);
   return (
-    <main>
+    <main className="public-site">
       <SiteHeader locale={locale} />
       <section className="products-hero">
         <span className="kicker">RETECH PRODUCTS</span>

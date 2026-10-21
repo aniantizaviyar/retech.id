@@ -3,3 +3,62 @@
 @media(max-width:720px){.content{padding:0 20px}.hero{grid-template-columns:1fr;padding:35px 0 40px;gap:35px}.back{margin-bottom:25px}.hero h1{font-size:clamp(42px,10vw,64px)}.heroCopy>p{font-size:16px}.heroVisual{max-width:490px;width:100%;margin:auto;padding:22px 15px 16px}.phone{max-width:280px}.signalCard{right:12px;bottom:85px}.trustStrip{justify-content:flex-start;font-size:11px;gap:20px;width:100%}.trustStrip span{width:calc(50% - 10px)}.section,.workflow,.support,.faq{padding:58px 0}.sectionHeading,.workflow,.faq{grid-template-columns:1fr;gap:25px}.sectionHeading h2,.workflow h2,.support h2,.faq h2,.finalCta h2{font-size:34px}.sectionHeading>p{font-size:14px}.features{gap:12px}.features article{padding:20px}.features h3{font-size:16px}.features p{font-size:12px}.icon{margin-bottom:20px}.workflow ol{margin-top:12px}.pricing{margin:0 -8px;padding:35px 18px 25px;border-radius:22px}.plans{grid-template-columns:1fr}.plans article,.plans .featuredPlan{padding:25px}.plans article>p{min-height:0}.price strong{font-size:37px}.planBadge{font-size:8px}.pricingNotes{grid-template-columns:1fr;gap:10px}.supportIntro{grid-template-columns:105px 1fr;gap:20px}.supportIntro>img{width:100px;height:190px;border-width:3px;border-radius:16px}.supportIntro h2{font-size:29px}.supportIntro p{font-size:13px}.supportIntro small{grid-column:1/-1;font-size:10px}.helpCards{grid-template-columns:1fr}.helpCards a{padding:25px}.helpCards h3{margin-top:18px}.faq{padding-top:35px}.finalCta{padding:50px 0 60px}.finalCta nav{gap:16px}.heroActions{gap:15px}}
 @media(max-width:400px){.features{grid-template-columns:1fr}.supportIntro{grid-template-columns:1fr}.supportIntro>img{display:none}.signalCard{position:relative;right:auto;bottom:auto;margin:18px 5px 0;justify-content:center}.phone{transform:none}.hero h1{font-size:43px}.visualLabel{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.phone{transform:none}.faq summary span{transition:none}}
+
+/* Editorial Blue visual theme; attendance workflow and VPS content are unchanged. */
+.page .brand img{background:#061722;border-color:#17374b;padding:5px}
+.page.page{background:var(--surface);color:var(--ink)}
+.page .back{color:var(--muted)}
+.page .brand img{border:1px solid var(--line)}
+.page .brand span,.page .eyebrow{color:var(--blue)}
+.page .hero h1 em{color:var(--blue)}
+.page .heroCopy>p{color:var(--muted)}
+.page .secondaryButton{border-bottom:1px solid var(--line);color:var(--ink)}
+.page .heroNote{color:var(--muted)}
+.page .heroNote>span{background:var(--surface)}
+.page .dashboardLink{color:var(--muted)}
+.page .heroVisual{border:1px solid var(--line);background:var(--surface-soft)}
+.page .visualLabel{color:var(--muted)}
+.page .visualLabel span{color:var(--blue)}
+.page .signalCard{border:1px solid var(--line);background:var(--surface);box-shadow:none}
+.page .signalCard>svg{color:var(--blue)}
+.page .signalCard span{color:var(--muted)}
+.page .illustrationLabel{color:var(--muted)}
+.page .trustStrip{color:var(--muted)}
+.page .trustStrip svg{color:var(--blue)}
+.page .sectionHeading>p,.page .workflow>div>p,.page .supportIntro p{color:var(--muted)}
+.page .features article{border:1px solid var(--line);background:var(--surface)}
+.page .icon{background:var(--surface);color:var(--blue)}
+.page .features p{color:var(--muted)}
+.page .workflow{border-top:1px solid var(--line)}
+.page .workflow a{color:var(--blue)}
+.page .workflow li{border-bottom:1px solid var(--line)}
+.page .workflow li>b{color:var(--blue)}
+.page .workflow li p{color:var(--muted)}
+.page .pricing{background:var(--surface);color:var(--muted)}
+.page .pricing .eyebrow{color:var(--muted)}
+.page .pricing .sectionHeading>p{color:var(--muted)}
+.page .plans article{border:1px solid var(--line);background:#fff}
+.page .plans .featuredPlan{border:2px solid var(--line)}
+.page .planBadge{background:var(--surface);color:var(--muted)}
+.page .plans article>p{color:var(--muted)}
+.page .price{border-bottom:1px solid var(--line)}
+.page .price span{color:var(--muted)}
+.page .plans li{color:var(--muted)}
+.page .plans li span{color:var(--muted)}
+.page .plans article>a{background:var(--surface);color:var(--muted)}
+.page .featuredPlan>a{background:var(--surface)!important;color:var(--ink)!important}
+.page .pricingNotes p{color:var(--muted)}
+.page .supportIntro>img{border:5px solid var(--line);box-shadow:none}
+.page .support small{color:var(--muted)}
+.page .helpCards a{border:1px solid var(--line);background:var(--surface)}
+.page .helpCards svg{color:var(--blue)}
+.page .helpCards p{color:var(--muted)}
+.page .helpCards span{color:var(--blue)}
+.page .faq{border-top:1px solid var(--line)}
+.page .faq details{border-bottom:1px solid var(--line)}
+.page .faq summary span{color:var(--blue)}
+.page .faq details p{color:var(--muted)}
+.page .finalCta{border-top:1px solid var(--line)}
+.page .finalCta>p{color:var(--muted)}
+.page .finalCta nav{color:var(--muted)}
+.page.page{background:#fafbfc;color:var(--ink)}.page .hero h1 em{color:var(--blue);-webkit-text-fill-color:var(--blue)}.page .heroVisual{border-radius:16px;box-shadow:0 16px 50px #163f6810;background:#eaf2fc}.page .phone{box-shadow:0 24px 60px #173a5a22}.page .signalCard{background:#fff;border-color:#d3e0ed;box-shadow:0 10px 25px #153a5c12}.page .signalCard strong{color:var(--ink)}.page .pricing{background:#edf3fa;border-radius:17px}.page .plans article{background:#fff;border-radius:12px}.page .plans .featuredPlan{border-color:var(--blue)}.page .featuredPlan>a{background:var(--blue)!important;color:#fff!important}.page .plans article>a{background:#edf3fa;color:#1b559e}.page .phone h3{color:#112738}.page .phone p{color:#637087}.page .dailyCard p{color:#a4b4bd}.page .dailyCard p b{color:#f2f7fb}.page .heroNote>span{background:#217b59}.page .helpCards a,.page .features article{background:#fff;border-radius:12px;border-color:var(--line)}.page .supportIntro>img{box-shadow:0 15px 40px #153a5c14;border-color:#d0dce7}.page .finalCta{border-color:var(--line)}

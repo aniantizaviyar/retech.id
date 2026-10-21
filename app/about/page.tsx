@@ -88,7 +88,7 @@ export default async function AboutPage() {
   };
 
   return (
-    <main>
+    <main className="public-site">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
       <SiteHeader locale={locale} />

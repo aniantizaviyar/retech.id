@@ -7,6 +7,7 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { SiteFooter } from "@/components/SiteFooter";
 import { companyContact } from "@/lib/company";
 import { SiteHeader } from "@/components/SiteHeader";
+import { HomeProductPreview } from "@/components/HomeProductPreview";
 import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
@@ -92,7 +93,7 @@ export default async function Home() {
     : [];
 
   return (
-    <main>
+    <main className="public-site">
       <SiteHeader locale={locale} />
 
       <section className={styles.hero} id="top">
@@ -114,38 +115,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className={styles.saasConsole}>
-          <div className={styles.consoleHeader}>
-            <div>
-              <span className={styles.consoleMark}>R</span>
-              <div><strong>RETECH OPERATIONS CLOUD</strong><small>{en ? "Subscription workspace" : "Workspace berlangganan"}</small></div>
-            </div>
-            <span className={styles.liveBadge}><i /> LIVE</span>
-          </div>
-          <div className={styles.consoleMetrics}>
-            <article><span>{en ? "PRODUCTS" : "PRODUK"}</span><strong>02</strong><small>{en ? "Focused solutions" : "Solusi terarah"}</small></article>
-            <article><span>TENANT</span><strong>ISO</strong><small>{en ? "Data isolated" : "Data terpisah"}</small></article>
-            <article><span>LIFECYCLE</span><strong>AUTO</strong><small>Trial → Active</small></article>
-          </div>
-          <div className={styles.consoleProducts}>
-            {products.slice(0, 2).map((product, index) => {
-              const plan = product.plans.find((item) => item.featured) || product.plans[0];
-              return (
-                <Link href={localePath(locale, `/products/${product.slug}`)} key={product.slug}>
-                  <span className={styles.productIcon}>{index === 0 ? "Q" : "A"}</span>
-                  <div><strong>{product.shortTitle}</strong><small>{plan?.price} {plan?.unit}</small></div>
-                  <span className={styles.productState}>{index === 0 ? "PILOT" : "READY"}</span>
-                  <b>↗</b>
-                </Link>
-              );
-            })}
-          </div>
-          <div className={styles.consoleFooter}>
-            <span><i /> {en ? "Privacy by design" : "Privacy by design"}</span>
-            <span><i /> {en ? "Role-based access" : "Akses berbasis role"}</span>
-            <span><i /> {en ? "Payment-controlled" : "Aktivasi terkendali"}</span>
-          </div>
-        </div>
+        <HomeProductPreview english={en} />
       </section>
 
       <section className="services-section" id="services">

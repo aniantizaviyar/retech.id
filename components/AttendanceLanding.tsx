@@ -71,7 +71,7 @@ export function AttendanceLanding({ locale }: { locale: Locale }) {
     ["Apakah pengingat absensi harian sudah tersedia?", "Pengingat absensi harian terjadwal belum tersedia. Izin notifikasi bersifat opsional; menolaknya tidak menghalangi fungsi inti absensi."],
   ];
   const schema = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "ReTendance", applicationCategory: "BusinessApplication", operatingSystem: "Android, Web", url: `https://retech.id${localePath(locale, "/products/attendance")}`, downloadUrl: links.app, softwareVersion: "1.11.1", provider: { "@type": "Organization", name: "PT. Retech Digital Solution", url: "https://retech.id" } };
-  return <main className={styles.page}>
+  return <main className={`public-site ${styles.page}`}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
     <SiteHeader locale={locale} />
     <article className={styles.content}>

@@ -69,7 +69,7 @@ export default async function PricingPage() {
   const localizedHosting = cmsHosting.length ? cmsHosting : (en ? englishHosting : hosting);
   const localizedSupport = cmsSupport.length ? cmsSupport : (en ? englishSupport : support);
   return (
-    <main>
+    <main className="public-site">
       <SiteHeader locale={locale} />
       <section className="pricing-hero">
         <span className="kicker">PRICING GUIDE</span>

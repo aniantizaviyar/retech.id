@@ -154,7 +154,7 @@ export default async function VpsServicePage() {
   const emailHref = `mailto:${companyContact.email}?subject=${encodeURIComponent(en ? "RETECH VPS Quote Request" : "Permintaan Penawaran VPS RETECH")}`;
 
   return (
-    <main>
+    <main className="public-site">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
       <SiteHeader locale={locale} />

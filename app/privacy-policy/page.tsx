@@ -52,7 +52,7 @@ export default async function PrivacyPolicyPage() {
   };
 
   return (
-    <main>
+    <main className="public-site">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema).replace(/</g, "\\u003c") }} />
       <SiteHeader locale={locale} />
 

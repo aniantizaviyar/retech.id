@@ -33,7 +33,7 @@ export default async function FaqPage() {
   };
 
   return (
-    <main>
+    <main className="public-site">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
       <SiteHeader locale={locale} />
       <section className="faq-hero"><span className="kicker">FREQUENTLY ASKED QUESTIONS</span><h1>Clear answers.<br /><em>Before we start.</em></h1><p>{String(pageContent.heroIntro || (en ? "Essential information to help you understand service options, pricing, account ownership, and the RETECH delivery process." : "Informasi dasar untuk membantu Anda memahami pilihan layanan, biaya, kepemilikan akun, dan proses kerja RETECH."))}</p></section>

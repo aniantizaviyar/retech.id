@@ -167,3 +167,37 @@
 @media (prefers-reduced-motion: reduce) {
   .faqItem summary i { transition: none; }
 }
+
+/* Editorial Blue visual theme; attendance workflow and VPS content are unchanged. */
+.page .heroCopy :global(.back-link){color:var(--muted)}
+.page .heroCopy h1 em,.page .sectionHeading h2 em,.page .slaCopy h2 em,.page .faqSection h2 em,.page .finalCta h2 em{background:var(--surface-soft)}
+.page .heroNote{color:var(--muted)}
+.page .heroPanel{border:1px solid var(--line);background:var(--surface-soft);box-shadow:none}
+.page .heroPanel::before{background:var(--surface-soft)}
+.page .panelMark{border:1px solid var(--line);background:var(--surface-soft)}
+.page .panelPulse{background:var(--surface);box-shadow:none}
+.page .panelEyebrow{color:var(--blue)}
+.page .panelStatus{border:1px solid var(--line);background:var(--surface-soft)}
+.page .panelStatus > span{color:var(--ink)}
+.page .panelStatus small{color:var(--muted)}
+.page .panelFooter{color:var(--muted)}
+.page .panelNotice{border:1px solid var(--line);background:var(--surface-soft)}
+.page .panelNoticeIcon{border:1px solid var(--line);background:var(--surface-soft)}
+.page .panelNoticeBadge{border:1px solid var(--line);color:var(--blue)}
+.page .packageCard{background:var(--surface-soft);box-shadow:none}
+.page .featuredCard{border-color:var(--line);background:var(--surface-soft);box-shadow:none}
+.page .packageTop{color:var(--muted)}
+.page .packageBadge{border:1px solid var(--line);color:var(--muted)}
+.page .specList span{color:var(--ink)}
+.page .packageFooter{color:var(--muted)}
+.page .packageFooter a{border:1px solid var(--line)}
+.page .technicalNote{color:var(--muted)}
+.page .addonCard{background:var(--surface-soft)}
+.page .addonCard li{color:var(--ink)}
+.page .slaCard{border:1px solid var(--line);background:var(--surface-soft)}
+.page .slaStats > div{background:var(--surface-soft)}
+.page .slaStats strong{color:var(--ink)}
+.page .slaStats span{color:var(--muted)}
+.page .slaFootnote{color:var(--muted)}
+.page .finalCta{border:1px solid var(--line);background:var(--surface-soft)}
+.page .hero{min-height:590px;padding-block:65px 75px}.page .heroCopy h1{font-size:clamp(48px,5vw,68px);line-height:1.08}.page .heroCopy h1 em,.page .sectionHeading h2 em,.page .slaCopy h2 em,.page .faqSection h2 em,.page .finalCta h2 em{background:none;-webkit-text-fill-color:var(--blue);color:var(--blue)}.page .heroPanel{border-radius:15px;background:#fff;box-shadow:0 18px 55px #173a5a12}.page .heroPanel:before{display:none}.page .heroPanel strong{color:var(--ink)}.page .panelPulse{background:#217b59;box-shadow:none}.page .panelMark{background:#edf3fa;color:var(--blue);border-color:var(--line)}.page .panelNotice,.page .slaCard,.page .finalCta{background:#edf3fa;border-color:var(--line);border-radius:15px}.page .panelNoticeBadge{background:#e9f5ef;border-color:#c7dfd2;color:#216747}.page .packageCard,.page .addonCard{background:#fff;border-radius:12px;box-shadow:none}.page .featuredCard{border-color:var(--blue)}.page .sectionHeading h2,.page .slaCopy h2,.page .faqSection h2,.page .finalCta h2{font-size:clamp(32px,3.5vw,48px);line-height:1.13}.page .packageSection,.page .addonSection,.page .slaSection,.page .faqSection{margin-bottom:85px}.page .slaStats>div{background:#fff}.page .slaStats strong{color:var(--ink)}@media(max-width:760px){.page .hero{padding-block:40px 60px;min-height:0}.page .heroCopy h1{font-size:clamp(40px,10.5vw,56px)}.page .packageSection,.page .addonSection,.page .slaSection,.page .faqSection{margin-bottom:60px}}
