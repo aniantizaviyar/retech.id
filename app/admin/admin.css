@@ -151,21 +151,28 @@
   line-height: 1.55;
 }
 
-.admin-app { display: grid; grid-template-columns: 250px minmax(0, 1fr); transition: grid-template-columns 180ms ease; }
+.admin-app {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: clip;
+  transition: grid-template-columns 180ms ease;
+}
 .admin-app.admin-app-collapsed { grid-template-columns: 78px minmax(0, 1fr); }
 
 .admin-sidebar {
-  position: sticky;
-  top: 0;
-  align-self: start;
+  position: relative;
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
   min-width: 0;
   min-height: 0;
-  height: 100vh;
-  height: 100dvh;
+  height: 100%;
   padding: 18px 12px 14px;
   border-right: 1px solid var(--admin-line);
   background: rgba(5, 17, 26, 0.96);
@@ -281,7 +288,15 @@
 .admin-app-collapsed .admin-sidebar-footer button { justify-content: center; padding-right: 0; padding-left: 0; }
 .admin-app-collapsed .admin-sidebar nav i,
 .admin-app-collapsed .admin-sidebar-footer i { flex-basis: 24px; width: 24px; font-size: 15px; }
-.admin-workspace { min-width: 0; }
+.admin-workspace {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .admin-app, .admin-sidebar, .admin-sidebar nav .admin-nav-toggle b { transition: none; }
@@ -612,8 +627,9 @@
 }
 
 @media (max-width: 900px) {
-  .admin-app { display: block; }
+  .admin-app { display: block; height: auto; min-height: 100vh; min-height: 100dvh; overflow: visible; }
   .admin-sidebar { position: static; height: auto; padding: 14px; border-right: 0; border-bottom: 1px solid var(--admin-line); }
+  .admin-workspace { height: auto; overflow: visible; scrollbar-gutter: auto; }
   .admin-sidebar-collapse { display: none; }
   .admin-brand { min-height: 40px; padding-bottom: 0; }
   .admin-app-collapsed .admin-brand { justify-content: flex-start; padding-right: 8px; padding-left: 8px; }
