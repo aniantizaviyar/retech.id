@@ -11,6 +11,7 @@ import { PaymentsPanel } from "./PaymentsPanel";
 import { BusinessDashboardPanel } from "./BusinessDashboardPanel";
 import { CustomerPanel, ProductPanel } from "./MasterDataPanels";
 import { SubscriptionPanel, TenantPanel } from "./SaasPanels";
+import { AdminSidebar, type AdminNavigationGroup } from "./AdminSidebar";
 
 type CmsRecord = Record<string, unknown> & { id?: string | number; slug?: string; published?: boolean; sort_order?: number };
 type MediaRecord = { name: string; url: string; created_at?: string; metadata?: { size?: number; mimetype?: string } };
@@ -34,6 +35,11 @@ const businessTabs: Array<{ id: BusinessTab; label: string; icon: string }> = [
 ];
 const mailTabs: Array<{ id: MailTab; label: string; icon: string }> = [{ id: "mail-users", label: "User", icon: "@" }, { id: "mail-delivery", label: "Delivery & Bounce", icon: "↯" }];
 const allTabs = [...websiteTabs, ...businessTabs, ...mailTabs];
+const navigationGroups: AdminNavigationGroup<Tab>[] = [
+  { id: "website", label: "Website", icon: "⌂", items: websiteTabs },
+  { id: "business", label: "Business", icon: "▣", items: businessTabs },
+  { id: "mail", label: "MAIL", icon: "✉", items: mailTabs },
+];
 
 function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)); }
 function lines(value: unknown) { return Array.isArray(value) ? value.join("\n") : ""; }
@@ -133,8 +139,6 @@ function RecordEditor({ resource, record, onClose, onSaved }: { resource: CmsRes
 
 export function AdminDashboard({ email }: { email: string }) {
   const [tab, setTab] = useState<Tab>("pages");
-  const [websiteOpen, setWebsiteOpen] = useState(true);
-  const [businessOpen, setBusinessOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [records, setRecords] = useState<CmsRecord[]>([]);
   const [media, setMedia] = useState<MediaRecord[]>([]);
@@ -161,13 +165,15 @@ export function AdminDashboard({ email }: { email: string }) {
   async function removeMedia(item: MediaRecord) { if (!window.confirm(`Hapus file ${item.name} dari storage? Pastikan file tidak sedang digunakan.`)) return; const response = await fetch(`/api/admin/media?path=${encodeURIComponent(item.name)}`, { method: "DELETE" }); const result = await response.json() as { error?: string }; if (!response.ok) setError(result.error || "Gagal menghapus media."); refresh(); }
 
   return <main className={`admin-app ${sidebarCollapsed ? "admin-app-collapsed" : ""}`}>
-    <aside className="admin-sidebar">
-      <button className="admin-sidebar-collapse" type="button" onClick={() => setSidebarCollapsed((collapsed) => !collapsed)} aria-label={sidebarCollapsed ? "Tampilkan sidebar" : "Ringkas sidebar"} aria-pressed={sidebarCollapsed} title={sidebarCollapsed ? "Tampilkan sidebar" : "Ringkas sidebar"}>{sidebarCollapsed ? "›" : "‹"}</button>
-      <div className="admin-brand"><Image src="/retech-logo-transparent.png" alt="RETECH" width={500} height={430} priority /><div><strong>RETECH CMS</strong><span>Content Operations</span></div></div><nav>
-      <div className="admin-nav-group"><button className={`admin-nav-toggle ${websiteTabs.some((item) => item.id === tab) ? "current" : ""}`} onClick={() => sidebarCollapsed ? setSidebarCollapsed(false) : setWebsiteOpen((open) => !open)} aria-expanded={websiteOpen || sidebarCollapsed} title="Website"><i>⌂</i><span className="admin-nav-label">Website</span><b>{websiteOpen ? "⌃" : "⌄"}</b></button>{(websiteOpen || sidebarCollapsed) && <div className="admin-subnav">{websiteTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)} title={item.label} aria-label={item.label}><i>{item.icon}</i><span className="admin-nav-label">{item.label}</span></button>)}</div>}</div>
-      <div className="admin-nav-group admin-business-group"><button className={`admin-nav-toggle ${businessTabs.some((item) => item.id === tab) ? "current" : ""}`} onClick={() => sidebarCollapsed ? setSidebarCollapsed(false) : setBusinessOpen((open) => !open)} aria-expanded={businessOpen || sidebarCollapsed} title="Business"><i>▣</i><span className="admin-nav-label">Business</span><b>{businessOpen ? "⌃" : "⌄"}</b></button>{(businessOpen || sidebarCollapsed) && <div className="admin-subnav">{businessTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)} title={item.label} aria-label={item.label}><i>{item.icon}</i><span className="admin-nav-label">{item.label}</span></button>)}</div>}</div>
-      <div className="admin-nav-section"><span>MAIL</span>{mailTabs.map((item) => <button key={item.id} className={tab === item.id ? "active" : ""} onClick={() => selectTab(item.id)} title={item.label} aria-label={item.label}><i>{item.icon}</i><span className="admin-nav-label">{item.label}</span></button>)}</div>
-    </nav><div className="admin-sidebar-footer"><a href="https://retech.id" target="_blank" rel="noreferrer" title="Lihat website"><i>↗</i><span className="admin-footer-label">Lihat website</span></a><button onClick={logout} title="Logout"><i>⇥</i><span className="admin-footer-label">Logout</span></button></div></aside>
+    <AdminSidebar
+      logo={<Image src="/retech-logo-transparent.png" alt="RETECH" width={500} height={430} priority />}
+      groups={navigationGroups}
+      activeTab={tab}
+      collapsed={sidebarCollapsed}
+      onCollapsedChange={setSidebarCollapsed}
+      onSelect={selectTab}
+      onLogout={logout}
+    />
     <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / {tab.startsWith("business-") ? "BUSINESS OPERATIONS" : tab.startsWith("mail-") ? "MAIL OPERATIONS" : "CONTENT MANAGEMENT"}</span><h1>{activeTab?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
       {tab === "mail-users" ? <MailUsersPanel /> : tab === "business-dashboard" ? <BusinessDashboardPanel /> : tab === "business-customers" ? <CustomerPanel /> : tab === "business-products" ? <ProductPanel /> : tab === "business-tenants" ? <TenantPanel /> : tab === "business-subscriptions" ? <SubscriptionPanel /> : tab === "business-quotations" ? <QuotationPanel /> : tab === "business-invoices" ? <InvoicePanel /> : tab === "business-payments" ? <PaymentsPanel /> : !isCmsTab ? <ComingSoonPanel id={tab} title={activeTab?.label || "Coming Soon"} /> : <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{cmsTab === "media" ? media.length : records.length}</strong></article><article><span>{cmsTab === "media" ? "Storage media" : "Published"}</span><strong>{cmsTab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
         <div className="admin-list-header"><div><h2>{cmsTab === "media" ? "Media library" : `Kelola ${activeTab?.label}`}</h2><p>{cmsTab === "projects" ? "Tambah case study, edit konten bilingual, upload, urutkan, atau hapus gambar." : cmsTab === "pages" ? "Edit copy per halaman dalam Bahasa Indonesia dan English." : "Perubahan published akan tampil pada website setelah disimpan."}</p></div>{cmsTab === "media" ? <label className="admin-primary-button">Upload media<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadMedia(file); event.currentTarget.value = ""; }} /></label> : <button className="admin-primary-button" onClick={() => setEditing(emptyRecord(cmsTab))}>+ Tambah data</button>}</div>
