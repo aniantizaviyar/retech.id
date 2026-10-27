@@ -1,0 +1,11 @@
+/* No initial hidden state: everything stays readable without JavaScript. */
+.motionRoot [data-motion-reveal="visible"]{animation:retech-reveal .6s cubic-bezier(.2,.65,.3,1) var(--motion-delay,0ms) backwards}
+.motionRoot [data-motion-spotlight][data-motion-pointer]{background-image:radial-gradient(280px circle at var(--motion-x,50%) var(--motion-y,50%),#1762dc0b,transparent 78%);border-color:#a5c3ec}
+.motionRoot [data-motion-spotlight]:focus-within{border-color:#8ab1e8}
+.motionRoot [data-motion-step]{position:relative}
+.motionRoot [data-motion-step]::after{content:"";position:absolute;pointer-events:none;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,#1762dc,#5c9bed66);transform:scaleX(0);transform-origin:left}
+.motionRoot [data-motion-step][data-motion-reveal="visible"]::after{animation:retech-timeline .8s cubic-bezier(.2,.65,.3,1) calc(var(--motion-delay,0ms) + .15s) both}
+.motionRoot [data-motion-step]>span:first-child,.motionRoot [data-motion-step]>b:first-child{position:relative;z-index:1}
+@keyframes retech-reveal{from{opacity:.55;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes retech-timeline{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.motionRoot [data-motion-reveal="visible"],.motionRoot [data-motion-step][data-motion-reveal="visible"]::after{animation:none}.motionRoot [data-motion-spotlight][data-motion-pointer]{background-image:none}.motionRoot [data-motion-step]::after{display:none}}

@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { companyContact } from "@/lib/company";
 import { localePath, type Locale } from "@/lib/i18n";
+import { PublicMotion } from "./PublicMotion";
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   const en = locale === "en";
   return (
     <footer className="site-footer">
+      <PublicMotion />
       <div className="footer-brand">
         <Image src="/retech-logo-transparent.png" alt="RETECH Digital Solution" width={500} height={430} unoptimized />
         <p>PT. Retech Digital Solution<br />IT solutions that move business forward.</p>

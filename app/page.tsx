@@ -7,7 +7,7 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { SiteFooter } from "@/components/SiteFooter";
 import { companyContact } from "@/lib/company";
 import { SiteHeader } from "@/components/SiteHeader";
-import { HomeProductPreview } from "@/components/HomeProductPreview";
+import { OrbitEcosystem } from "@/components/OrbitEcosystem";
 import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
@@ -115,7 +115,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <HomeProductPreview english={en} />
+        <OrbitEcosystem locale={locale} />
       </section>
 
       <section className="services-section" id="services">
@@ -153,7 +153,7 @@ export default async function Home() {
         <div className={styles.productGrid}>{products.map((product) => {
           const plan = product.plans.find((item) => item.featured) || product.plans[0];
           return (
-            <Link href={localePath(locale, `/products/${product.slug}`)} className={styles.productCard} key={product.slug}>
+            <Link href={localePath(locale, `/products/${product.slug}`)} className={styles.productCard} key={product.slug} data-motion-card>
               <div className={styles.productImage}>
                 <Image src={product.heroImage} alt={product.heroAlt} width={1536} height={1024} sizes="(max-width: 720px) 100vw, 50vw" unoptimized />
                 <span>{en ? "PRIVACY-SAFE PRODUCT VIEW" : "VISUAL PRODUK AMAN"}</span>

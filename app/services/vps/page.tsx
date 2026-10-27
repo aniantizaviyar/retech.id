@@ -200,7 +200,7 @@ export default async function VpsServicePage() {
           </div>
           <div className={styles.packageGrid}>
             {plans.map((plan) => (
-              <article className={`${styles.packageCard} ${plan.featured ? styles.featuredCard : ""}`} key={plan.number}>
+              <article className={`${styles.packageCard} ${plan.featured ? styles.featuredCard : ""}`} key={plan.number} data-motion-card>
                 <div className={styles.packageTop}><span>{plan.number} / {plan.category}</span><span className={styles.packageBadge}>{plan.badge}</span></div>
                 <h3>{plan.name}</h3>
                 <p>{plan.summary}</p>

@@ -74,7 +74,7 @@ export function AttendanceLanding({ locale }: { locale: Locale }) {
   return <main className={`public-site ${styles.page}`}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
     <SiteHeader locale={locale} />
-    <article className={styles.content}>
+    <article className={styles.content} data-motion-content>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <Link className={styles.back} href={localePath(locale, "/products")}>← {en ? "All products" : "Semua produk"}</Link>
