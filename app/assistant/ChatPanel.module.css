@@ -1,0 +1,381 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 660px;
+  max-height: calc(100dvh - 112px);
+  min-height: 260px;
+  overflow: hidden;
+  background: #fff;
+  color: #112738;
+  border: 1px solid #d9e4ee;
+  border-radius: 18px;
+  box-shadow: 0 18px 64px #11273826;
+  font:
+    14px/1.55 Arial,
+    sans-serif;
+  text-align: left;
+}
+.header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 18px;
+  background: #10293e;
+  color: #fff;
+}
+.header strong {
+  display: block;
+  font-size: 14px;
+}
+.header small {
+  display: block;
+  color: #c5d9e7;
+  font-size: 11px;
+  margin-top: 2px;
+}
+.header button {
+  margin-left: auto;
+  border: 1px solid #ffffff30;
+  background: transparent;
+  color: white;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  font-size: 23px;
+  cursor: pointer;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: #1762dc;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+}
+.log {
+  flex: 1;
+  min-height: 90px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 14px;
+  background: #fafcfe;
+}
+.message {
+  flex: none;
+  max-width: 94%;
+  border-radius: 13px;
+  padding: 12px 14px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.message p {
+  white-space: pre-wrap;
+  margin: 0;
+}
+.agent {
+  align-self: flex-start;
+  background: #edf3fa;
+  color: #25445b;
+}
+.user {
+  align-self: flex-end;
+  background: #1762dc;
+  color: white;
+}
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+.sources a {
+  font-size: 11px;
+  color: #155cc8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.modelNote {
+  display: block;
+  font-size: 10px;
+  margin-top: 8px;
+  color: #536e80;
+}
+.progress {
+  margin: 0;
+  font-size: 12px;
+  color: #566f83;
+}
+.tools {
+  flex: none;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 13px;
+  border-top: 1px solid #e1e9f0;
+  scrollbar-width: thin;
+  max-width: 100%;
+}
+.tools button {
+  flex: none;
+  border: 1px solid #d9e4ee;
+  border-radius: 18px;
+  background: #fff;
+  color: #25445b;
+  font-size: 11px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+.tools button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.check {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+}
+.check input {
+  width: 15px !important;
+  min-height: 15px !important;
+  height: 15px;
+  flex: none;
+  margin: 3px 0 0;
+  accent-color: #1762dc;
+}
+.aiConsent {
+  padding: 6px 15px;
+  margin: 0;
+  flex: none;
+}
+.check a,
+.footer a {
+  color: #155cc8;
+  text-decoration: underline;
+}
+.challenge {
+  flex: none;
+  padding: 0 12px 6px;
+  max-height: 100px;
+  overflow: auto;
+}
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 10px 13px;
+  border-top: 1px solid #e1e9f0;
+  flex: none;
+}
+.composer input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #d4e0eb;
+  border-radius: 9px;
+  padding: 11px 12px;
+  background: white;
+  color: #112738;
+  font: inherit;
+  font-size: 13px;
+}
+.composer button {
+  width: 42px;
+  border: 0;
+  border-radius: 9px;
+  background: #1762dc;
+  color: white;
+  font-size: 23px;
+  cursor: pointer;
+}
+.composer button:disabled,
+.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.footer {
+  flex: none;
+  padding: 0 15px 12px;
+  color: #647d90;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.footer a {
+  white-space: nowrap;
+}
+.error {
+  flex: none;
+  margin: 0;
+  padding: 7px 14px;
+  color: #a72c35;
+  background: #fff2f3;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.textButton {
+  border: 0;
+  background: transparent;
+  padding: 5px;
+  color: #155cc8;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 11px;
+}
+.requestForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid #cfddea;
+}
+.requestForm label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.requestForm input,
+.requestForm textarea {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid #bdcfdf;
+  background: #fff;
+  color: #112738;
+  padding: 9px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+}
+.requestForm textarea {
+  resize: vertical;
+}
+.requestForm small {
+  font-size: 10px;
+  font-weight: 400;
+  color: #546f83;
+}
+.summary {
+  font-size: 12px;
+  white-space: pre-wrap;
+  background: #fff;
+  padding: 9px;
+  border-radius: 7px;
+}
+.primary {
+  padding: 11px;
+  border: 0;
+  border-radius: 8px;
+  background: #1762dc;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  border-top: 1px solid #bed8cb;
+  padding-top: 12px;
+  color: #246343;
+}
+.receipt code {
+  font-size: 10px;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.receipt small {
+  font-size: 10px;
+}
+.panel :is(button, input, textarea, a):focus-visible {
+  outline: 3px solid #68a3ff;
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .panel {
+    height: calc(100dvh - 110px);
+    max-height: calc(100dvh - 110px);
+    border-radius: 14px;
+  }
+  .header {
+    padding: 12px 14px;
+  }
+  .log {
+    padding: 14px 10px;
+  }
+  .message {
+    max-width: 96%;
+  }
+  .composer input {
+    font-size: 16px;
+  }
+  .requestForm input,
+  .requestForm textarea {
+    font-size: 16px;
+  }
+  .tools {
+    padding: 8px 10px;
+  }
+  .footer {
+    font-size: 9px;
+  }
+  .aiConsent {
+    font-size: 10px !important;
+  }
+  .challenge {
+    max-height: 160px;
+  }
+}
+@media (max-height: 540px) {
+  .panel {
+    min-height: 0;
+  }
+  .header {
+    padding: 8px 12px;
+  }
+  .log {
+    min-height: 24px;
+    padding: 8px;
+  }
+  .tools,
+  .footer {
+    display: none;
+  }
+  .composer {
+    padding: 8px;
+  }
+  .challenge {
+    max-height: 80px;
+  }
+  .error {
+    max-height: 45px;
+    overflow: auto;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .panel {
+    animation: appear 0.18s ease-out;
+  }
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

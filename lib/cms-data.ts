@@ -13,9 +13,9 @@ function cmsHeaders() {
   return { apikey: key, Authorization: `Bearer ${key}` };
 }
 
-async function publicCmsFetch(path: string) {
+async function publicCmsFetch(path: string, signal?: AbortSignal) {
   const { url } = getSupabaseAdminConfig();
-  return fetch(`${url}${path}`, { headers: cmsHeaders(), next: { revalidate: 60, tags: ["cms-content"] } });
+  return fetch(`${url}${path}`, { headers: cmsHeaders(), next: { revalidate: 60, tags: ["cms-content"] }, ...(signal ? { signal } : {}) });
 }
 
 export async function getPageContent(slug: string, locale: Locale): Promise<PageContent> {
@@ -32,9 +32,9 @@ export async function getPageContent(slug: string, locale: Locale): Promise<Page
   }
 }
 
-export async function getServices(locale: Locale): Promise<ServiceDefinition[]> {
+export async function getServices(locale: Locale, signal?: AbortSignal): Promise<ServiceDefinition[]> {
   try {
-    const response = await publicCmsFetch("/rest/v1/cms_services?select=slug,data_id,data_en&published=eq.true&order=sort_order.asc");
+    const response = await publicCmsFetch("/rest/v1/cms_services?select=slug,data_id,data_en&published=eq.true&order=sort_order.asc", signal);
     if (!response.ok) return getFallbackServices(locale);
     const rows = await response.json() as Array<{ slug: string; data_id: Omit<ServiceDefinition, "slug">; data_en: Omit<ServiceDefinition, "slug"> }>;
     const normalized = rows.map((row) => ({ slug: row.slug, ...(locale === "en" ? row.data_en : row.data_id) })).filter((item) => item.title && Array.isArray(item.includes));
@@ -48,9 +48,9 @@ export async function getService(slug: string, locale: Locale) {
   return (await getServices(locale)).find((service) => service.slug === slug);
 }
 
-export async function getProducts(locale: Locale): Promise<ProductDefinition[]> {
+export async function getProducts(locale: Locale, signal?: AbortSignal): Promise<ProductDefinition[]> {
   try {
-    const response = await publicCmsFetch("/rest/v1/cms_products?select=slug,data_id,data_en&published=eq.true&order=sort_order.asc");
+    const response = await publicCmsFetch("/rest/v1/cms_products?select=slug,data_id,data_en&published=eq.true&order=sort_order.asc", signal);
     if (!response.ok) return getFallbackProducts(locale);
     const rows = await response.json() as Array<{ slug: string; data_id: Omit<ProductDefinition, "slug">; data_en: Omit<ProductDefinition, "slug"> }>;
     const normalized = rows.map((row) => ({ slug: row.slug, ...(locale === "en" ? row.data_en : row.data_id) })).filter((item) => item.title && Array.isArray(item.plans));
@@ -64,9 +64,9 @@ export async function getProduct(slug: string, locale: Locale) {
   return (await getProducts(locale)).find((product) => product.slug === slug);
 }
 
-export async function getFaqs(locale: Locale) {
+export async function getFaqs(locale: Locale, signal?: AbortSignal) {
   try {
-    const response = await publicCmsFetch("/rest/v1/cms_faqs?select=question_id,answer_id,question_en,answer_en&published=eq.true&order=sort_order.asc");
+    const response = await publicCmsFetch("/rest/v1/cms_faqs?select=question_id,answer_id,question_en,answer_en&published=eq.true&order=sort_order.asc", signal);
     if (!response.ok) return locale === "en" ? englishFaqs : faqs;
     const rows = await response.json() as Array<{ question_id: string; answer_id: string; question_en: string; answer_en: string }>;
     const normalized = rows.map((row) => locale === "en" ? { question: row.question_en, answer: row.answer_en } : { question: row.question_id, answer: row.answer_id });
@@ -76,9 +76,9 @@ export async function getFaqs(locale: Locale) {
   }
 }
 
-export async function getPricing(locale: Locale): Promise<PricingRecord[]> {
+export async function getPricing(locale: Locale, signal?: AbortSignal): Promise<PricingRecord[]> {
   try {
-    const response = await publicCmsFetch("/rest/v1/cms_pricing?select=id,slug,section,data_id,data_en,sort_order&published=eq.true&order=section.asc,sort_order.asc");
+    const response = await publicCmsFetch("/rest/v1/cms_pricing?select=id,slug,section,data_id,data_en,sort_order&published=eq.true&order=section.asc,sort_order.asc", signal);
     if (!response.ok) return fallbackPricing(locale);
     const rows = await response.json() as Array<{ id: string; slug: string; section: PricingRecord["section"]; data_id: PricingRecord["data"]; data_en: PricingRecord["data"]; sort_order: number }>;
     const normalized = rows.map((row) => ({ id: row.id, slug: row.slug, section: row.section, data: locale === "en" ? row.data_en : row.data_id, sortOrder: row.sort_order }));

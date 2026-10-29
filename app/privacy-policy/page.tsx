@@ -48,7 +48,7 @@ export default async function PrivacyPolicyPage() {
     inLanguage: localeConfig[locale].schemaLang,
     isPartOf: { "@id": "https://retech.id/#website" },
     about: { "@id": "https://retech.id/#organization" },
-    dateModified: "2026-08-20",
+    dateModified: "2026-10-29",
   };
 
   return (
@@ -61,7 +61,7 @@ export default async function PrivacyPolicyPage() {
         <h1>{en ? "Transparent about data." : "Transparan tentang data."}<br /><em>{en ? "Serious about security." : "Serius soal keamanannya."}</em></h1>
         <div className="privacy-hero-meta">
           <p>{String(pageContent.intro || "")}</p>
-          <span>{en ? "Last updated" : "Terakhir diperbarui"}<br /><strong>{en ? "August 20, 2026" : "20 Agustus 2026"}</strong></span>
+          <span>{en ? "Last updated" : "Terakhir diperbarui"}<br /><strong>{en ? "October 29, 2026" : "29 Oktober 2026"}</strong></span>
         </div>
       </section>
 
@@ -105,6 +105,9 @@ export default async function PrivacyPolicyPage() {
                 <li>{en ? "A Cloudflare Turnstile verification token to confirm that a form submission comes from a legitimate user." : "Token verifikasi Cloudflare Turnstile untuk memastikan pengiriman form berasal dari pengguna yang sah."}</li>
               </ul>
               <p className="privacy-callout">{en ? "Do not include passwords, private keys, payment-card data, health data, or other sensitive information in the requirements field." : "Jangan mencantumkan password, private key, data kartu pembayaran, data kesehatan, atau informasi sensitif lain di kolom kebutuhan."}</p>
+              <h3>RETECH Assistant</h3>
+              <p>{en ? "Chat content is held in the current widget memory and is not saved as a conversation in our inquiry database. A signed, essential security-session cookie lasts up to 30 minutes; rate-limit fingerprints are stored separately. Closing the widget clears its conversation view, but does not delete a request you explicitly submitted. Consultation/support submissions store the contact details, approved summary, notes and preferred time as an inquiry pending team confirmation." : "Isi chat berada di memori widget saat ini dan tidak disimpan sebagai percakapan dalam database inquiry. Cookie sesi keamanan bertanda tangan berlaku hingga 30 menit; fingerprint pembatasan akses disimpan terpisah. Menutup widget menghapus tampilan percakapannya, tetapi tidak menghapus permintaan yang telah Anda kirim. Pengajuan konsultasi/support menyimpan data kontak, ringkasan yang disetujui, catatan, dan preferensi waktu sebagai inquiry yang menunggu konfirmasi tim."}</p>
+              <p>{en ? "When optional AI is available, it is off until you opt in. Cloudflare Workers AI may receive an unclear question, up to three recent user messages, and limited public reference text. We automatically mask common email, phone/number and credential patterns, but this is not guaranteed anonymization. Contact-form fields, cookies, API keys and customer records are not sent to the model. You may continue in guided mode without AI." : "Saat AI opsional tersedia, fitur ini tidak digunakan sebelum Anda menyetujuinya. Cloudflare Workers AI dapat menerima pertanyaan ambigu, hingga tiga pesan pengguna terakhir, dan kutipan referensi publik terbatas. Pola email, telepon/angka, dan kredensial umum disamarkan otomatis, tetapi bukan jaminan anonimisasi. Kolom formulir kontak, cookie, API key, dan data customer tidak dikirim ke model. Anda tetap dapat menggunakan mode panduan tanpa AI."}</p>
             </div>
           </article>
 
@@ -131,6 +134,7 @@ export default async function PrivacyPolicyPage() {
                 <div><strong>Vercel</strong><p>{en ? "Hosting, application delivery, technical logs, and aggregated web analytics." : "Hosting, delivery aplikasi, log teknis, dan web analytics agregat."}</p></div>
                 <div><strong>Supabase</strong><p>{en ? "Inquiry database storage and rate-limiting functions." : "Penyimpanan database inquiry serta fungsi rate limiting."}</p></div>
                 <div><strong>Cloudflare Turnstile</strong><p>{en ? "Form security verification and automated-traffic detection." : "Verifikasi keamanan form dan deteksi trafik otomatis."}</p></div>
+                <div><strong>Cloudflare Workers AI (optional)</strong><p>{en ? "Interprets unclear questions only after visitor opt-in, when enabled. Standard stateless inference follows Cloudflare's data-usage terms, including exceptions and operational metadata; we do not enable AI Gateway content logging or model training." : "Membantu memahami pertanyaan ambigu setelah persetujuan pengunjung, jika diaktifkan. Inferensi stateless mengikuti ketentuan penggunaan data Cloudflare, termasuk pengecualian dan metadata operasional; kami tidak mengaktifkan pencatatan isi melalui AI Gateway atau pelatihan model."} <a href="https://developers.cloudflare.com/workers-ai/platform/data-usage/" target="_blank" rel="noopener noreferrer">{en ? "Provider terms" : "Ketentuan penyedia"} ↗</a></p></div>
                 <div><strong>Google Tag Manager</strong><p>{en ? "Management of website-interaction measurement tags." : "Pengelolaan tag pengukuran interaksi website."}</p></div>
                 <div><strong>Microsoft Clarity</strong><p>{en ? "Analysis of usage patterns such as clicks, scrolling, and display performance, with input masking." : "Analisis pola penggunaan seperti klik, scroll, dan performa tampilan dengan masking pada input."}</p></div>
                 <div><strong>Email infrastructure</strong><p>{en ? "Inquiry notifications and follow-up communications, including the Brevo email relay." : "Pengiriman notifikasi inquiry dan komunikasi tindak lanjut, termasuk relay email Brevo."}</p></div>
