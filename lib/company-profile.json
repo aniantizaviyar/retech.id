@@ -1,0 +1,85 @@
+{
+  "revision": "2026-10-29",
+  "experience": "9+",
+  "npwp": "1000 0000 1028 0991",
+  "download": "/documents/retech-company-profile.pdf?v=20261029",
+  "id": {
+    "intro": "PT. Retech Digital Solution (RETECH) adalah partner teknologi B2B berbasis di Bekasi. Kami menghubungkan pengembangan aplikasi, produk berlangganan, dan pengelolaan infrastruktur agar teknologi mendukung proses kerja serta pertumbuhan bisnis.",
+    "vision": "Menjadi partner teknologi tepercaya yang membantu bisnis bertumbuh melalui solusi digital yang relevan, aman, dan dapat dioperasikan secara berkelanjutan.",
+    "mission": [
+      "Menerjemahkan kebutuhan bisnis menjadi website, aplikasi, dan workflow yang mudah digunakan.",
+      "Menyiapkan dan memelihara server, database, serta jaringan dengan perubahan yang terukur.",
+      "Mengembangkan produk operasional dengan pemisahan data dan akses sesuai peran.",
+      "Menjaga kejelasan scope, dokumentasi, pengujian, dan handover dalam setiap pekerjaan."
+    ],
+    "experienceNote": "Pengalaman teknis lintas proyek lebih dari 9 tahun; bukan keterangan tanggal pendirian badan usaha.",
+    "value": [
+      { "title": "Satu konteks, end-to-end", "copy": "Development, deployment, database, dan operasional dipertimbangkan sebagai satu sistem, bukan pekerjaan yang terputus." },
+      { "title": "Teknologi yang proporsional", "copy": "Arsitektur dan stack mengikuti kebutuhan, kapasitas tim, risiko, serta biaya operasional." },
+      { "title": "Delivery yang jelas", "copy": "Ruang lingkup, asumsi, milestone, uji penerimaan, dan dukungan lanjutan dijelaskan dalam penawaran." },
+      { "title": "Privasi dan maintainability", "copy": "Akses dibatasi sesuai kebutuhan; dokumentasi, pemantauan, dan rencana pemulihan menjadi perhatian sejak awal." }
+    ],
+    "services": [
+      { "title": "Digital Product & Application Development", "label": "BUILD", "href": "/services/digital-product-development", "summary": "Website dan aplikasi bisnis yang dirancang mengikuti pengguna, proses operasional, dan identitas perusahaan.", "scope": ["Website, landing page, dan CMS", "Web application, CRM, dan dashboard", "Aplikasi Android dan iOS sesuai kebutuhan", "Backend, database, integrasi API, serta UI/UX"], "outcome": "Dari discovery dan desain hingga testing, deployment, dan handover." },
+      { "title": "Managed Infrastructure & IT Operations", "label": "OPERATE", "href": "/services/managed-it-services", "summary": "Pemeliharaan dan visibilitas infrastruktur untuk membantu tim menjaga kontinuitas layanan.", "scope": ["Administrasi server dan patch terjadwal", "Monitoring server, jaringan, endpoint, dan TLS", "Database maintenance serta peninjauan kapasitas", "Verifikasi backup, restore support, dan incident support"], "outcome": "Pemeriksaan dan laporan teknis sesuai ruang lingkup layanan." },
+      { "title": "Remote IT, Migration & Server Hardening", "label": "DEPLOY & SECURE", "href": "/services/remote-server-support", "summary": "Pekerjaan teknis berbasis scope untuk instalasi, migrasi, troubleshooting, dan penguatan konfigurasi.", "scope": ["Instalasi Linux, web stack, dan database", "Migrasi website, aplikasi, database, dan mail server", "Konfigurasi DNS, TLS, serta autentikasi email", "Hardening, review akses, cutover, dan rencana rollback"], "outcome": "Perubahan bertahap, pengujian, dokumentasi, dan handover yang terarah." },
+      { "title": "VPS & Cloud Server", "label": "INFRASTRUCTURE", "href": "/services/vps", "summary": "Pilihan resource virtual dan dedicated yang disesuaikan dengan karakter workload dan kebutuhan bisnis.", "scope": ["RDS Lite, RDS PRO, RDS Windows, dan RDS Dedicated", "Sizing CPU, RAM, storage, dan sistem operasi", "Pilihan Plesk, cPanel, atau tanpa control panel", "Add-on storage, snapshot, serta backup sesuai penawaran"], "outcome": "Harga melalui permintaan penawaran. Lisensi, SLA, backup, dan Manage Server mengikuti konfigurasi serta scope yang disepakati." }
+    ],
+    "products": [
+      { "title": "ReTendance / Attendance", "category": "WORKFORCE OPERATIONS", "status": "Android tersedia", "href": "/products/attendance", "image": "/attendance/app-guide.png", "summary": "Aplikasi attendance untuk pencatatan kehadiran, izin/cuti, dan pengelolaan tim melalui aplikasi Android serta dashboard perusahaan.", "features": ["Selfie, verifikasi wajah, GPS, dan geofence", "Jadwal dan shift, termasuk lintas hari", "Izin/cuti dengan alur persetujuan sesuai paket", "Kalender, riwayat, laporan, dan akses berbasis peran"], "note": "Paket Free, Pro, dan Bisnis. Kapasitas, lokasi, shift, serta tingkat persetujuan mengikuti paket. Verifikasi wajah dan sinyal perangkat membantu pemeriksaan, bukan jaminan bebas kecurangan." },
+      { "title": "RETECH QR Order & POS", "category": "F&B COMMERCE PLATFORM", "status": "Pilot terarah", "href": "/products/qr-order-pos", "image": "/privacy-safe/qr-order-pos.png", "summary": "Solusi untuk cafe, restoran, dan coffee shop yang menghubungkan menu digital, pemesanan, kasir, serta laporan operasional.", "features": ["Menu digital dan QR per meja", "Antrean serta status pemesanan", "Alur kasir dan transaksi sesuai scope pilot", "Pengelolaan menu dan insight penjualan"], "note": "Rollout dilakukan bertahap melalui pilot. Ketersediaan fitur, kebutuhan outlet, perangkat, payment gateway, dan integrasi dikonfirmasi sebelum implementasi; bukan klaim seluruh fitur telah tersedia umum." }
+    ],
+    "subscriptionNote": "Setiap customer memiliki workspace dan akses sesuai peran. Aktivasi atau perpanjangan mengikuti pembayaran yang telah diverifikasi serta ketentuan paket. Onboarding, kapasitas, dan kebutuhan khusus dikonfirmasi bersama tim melalui quotation atau invoice.",
+    "privacyNote": "Identitas klien, logo, kontak, alamat, dan data operasional rahasia tidak ditampilkan. Visual merupakan ilustrasi konseptual, bukan screenshot data customer. Informasi proyek disajikan secara ringkas dengan tetap menjaga kerahasiaan klien.",
+    "cases": [
+      { "title": "Platform Website Logistik", "href": "/work/logistics-company-website", "image": "/privacy-safe/logistics-platform.png", "summary": "Website responsif dengan pelacakan kiriman, pengecekan tarif, dan CMS untuk konten serta inquiry.", "outcome": "Informasi layanan dan proses pencarian kiriman tersusun dalam satu kanal digital.", "tags": "Responsive web / shipment tracking / rate checker / CMS" },
+      { "title": "Dashboard Operasional & CMS", "href": "/work/operations-dashboard-cms", "image": "/privacy-safe/operations-cms.png", "summary": "Dashboard dan modul pengelolaan konten untuk merangkum aktivitas, pencarian, serta administrasi operasional.", "outcome": "Tim mengelola konten dan meninjau informasi dari area kerja yang konsisten.", "tags": "Web app / dashboard / CMS / role-based admin" },
+      { "title": "Attendance Web Platform", "href": "/work/hrms-attendance-platform", "image": "/privacy-safe/hrms-attendance.png", "summary": "Dashboard kehadiran, keterlambatan, jadwal, izin/cuti, persetujuan, dan laporan administratif.", "outcome": "Data kehadiran dan proses persetujuan lebih mudah ditinjau oleh pengelola berwenang.", "tags": "Attendance / leave approval / reporting / dashboard" },
+      { "title": "Android Attendance App", "href": "/work/android-attendance-app", "image": "/privacy-safe/android-attendance.png", "summary": "Alur check-in/check-out dengan foto, validasi lokasi, timestamp, kalender, serta riwayat kehadiran.", "outcome": "Karyawan mencatat kehadiran melalui Android; pengelola meninjau bukti serta pengecualian.", "tags": "Mobile app / photo attendance / location / audit trail" },
+      { "title": "Infrastructure Monitoring", "href": "/work/infrastructure-monitoring", "image": "/privacy-safe/infrastructure-observability.png", "summary": "Pemantauan traffic, kapasitas jaringan, kesehatan server, endpoint, response time, dan sertifikat TLS.", "outcome": "Tim IT memiliki visibilitas terpusat untuk meninjau kondisi serta anomali layanan.", "tags": "Server / network / service health / monitoring" }
+    ],
+    "process": [
+      { "title": "Discover & Assess", "copy": "Memetakan tujuan, pengguna, aset, dependensi, risiko, dan kondisi awal." },
+      { "title": "Scope & Plan", "copy": "Menyepakati deliverable, asumsi, batas pekerjaan, jadwal, serta biaya melalui quotation/SOW." },
+      { "title": "Build & Verify", "copy": "Menjalankan implementasi bertahap, pengujian fungsi penting, dan validasi bersama customer." },
+      { "title": "Launch & Operate", "copy": "Deployment/cutover, dokumentasi, handover, serta dukungan lanjutan sesuai kesepakatan." }
+    ]
+  },
+  "en": {
+    "intro": "PT. Retech Digital Solution (RETECH) is a B2B technology partner based in Bekasi, Indonesia. We connect application development, subscription products, and infrastructure operations so technology supports daily work and business growth.",
+    "vision": "To be a trusted technology partner that helps businesses grow through relevant, secure digital solutions that can be operated sustainably.",
+    "mission": ["Translate business needs into usable websites, applications, and workflows.", "Prepare and maintain servers, databases, and networks through controlled changes.", "Develop operational products with data separation and role-based access.", "Keep scope, documentation, testing, and handover clear throughout delivery."],
+    "experienceNote": "More than 9 years of technical experience across projects; not the incorporation date of the legal entity.",
+    "value": [
+      { "title": "One context, end to end", "copy": "Development, deployment, databases, and operations are considered as one system rather than disconnected tasks." },
+      { "title": "Proportionate technology", "copy": "Architecture and technology follow requirements, team capacity, risks, and operating costs." },
+      { "title": "Clear delivery", "copy": "Scope, assumptions, milestones, acceptance tests, and ongoing support are explained in the proposal." },
+      { "title": "Privacy and maintainability", "copy": "Access is limited to need; documentation, monitoring, and recovery planning are considered from the start." }
+    ],
+    "services": [
+      { "title": "Digital Product & Application Development", "label": "BUILD", "href": "/services/digital-product-development", "summary": "Business websites and applications designed around users, operational processes, and brand identity.", "scope": ["Websites, landing pages, and CMS", "Web applications, CRM, and dashboards", "Android and iOS applications to fit the requirement", "Backend, databases, API integration, and UI/UX"], "outcome": "From discovery and design to testing, deployment, and handover." },
+      { "title": "Managed Infrastructure & IT Operations", "label": "OPERATE", "href": "/services/managed-it-services", "summary": "Infrastructure maintenance and visibility to help teams maintain service continuity.", "scope": ["Server administration and scheduled patching", "Server, network, endpoint, and TLS monitoring", "Database maintenance and capacity review", "Backup verification, restore support, and incident support"], "outcome": "Technical checks and reporting within the agreed service scope." },
+      { "title": "Remote IT, Migration & Server Hardening", "label": "DEPLOY & SECURE", "href": "/services/remote-server-support", "summary": "Scope-based technical work for installation, migration, troubleshooting, and configuration hardening.", "scope": ["Linux, web stack, and database installation", "Website, application, database, and mail-server migration", "DNS, TLS, and email authentication configuration", "Hardening, access review, cutover, and rollback planning"], "outcome": "Controlled changes, testing, documentation, and a clear handover." },
+      { "title": "VPS & Cloud Server", "label": "INFRASTRUCTURE", "href": "/services/vps", "summary": "Virtual and dedicated resource options selected for the workload and business requirements.", "scope": ["RDS Lite, RDS PRO, RDS Windows, and RDS Dedicated", "CPU, RAM, storage, and operating-system sizing", "Optional Plesk, cPanel, or no control panel", "Storage, snapshots, and backup add-ons by quotation"], "outcome": "Pricing is quotation-based. Licenses, SLA, backup, and Manage Server follow the selected configuration and agreed scope." }
+    ],
+    "products": [
+      { "title": "ReTendance / Attendance", "category": "WORKFORCE OPERATIONS", "status": "Available on Android", "href": "/products/attendance", "image": "/attendance/app-guide.png", "summary": "An attendance application for daily attendance, leave requests, and team administration through Android and a company dashboard.", "features": ["Selfies, face verification, GPS, and geofencing", "Schedules and shifts, including overnight work", "Leave requests with plan-based approval levels", "Calendar, history, reporting, and role-based access"], "note": "Free, Pro, and Business plans. Employee capacity, locations, shifts, and approval levels follow the selected plan. Face and device checks support review, not a guarantee of zero fraud." },
+      { "title": "RETECH QR Order & POS", "category": "F&B COMMERCE PLATFORM", "status": "Focused pilot", "href": "/products/qr-order-pos", "image": "/privacy-safe/qr-order-pos.png", "summary": "A solution for cafes, restaurants, and coffee shops that connects digital menus, ordering, cashier workflows, and operational reporting.", "features": ["Digital menus and table QR codes", "Order queues and status", "Cashier and transaction workflows within pilot scope", "Menu management and sales insight"], "note": "Rollout follows a phased pilot. Feature availability, outlets, devices, payment gateways, and integrations are confirmed before implementation; this does not claim every feature is generally available." }
+    ],
+    "subscriptionNote": "Each customer has a workspace and role-based access. Activation and renewal follow verified payments and the selected plan. Onboarding, capacity, and custom needs are confirmed with the team through a quotation or invoice.",
+    "privacyNote": "Confidential client identities, logos, contacts, addresses, and operational records are not shown. Visuals are conceptual illustrations, not customer-data screenshots. Project information is summarized while respecting client confidentiality.",
+    "cases": [
+      { "title": "Logistics Web Platform", "href": "/work/logistics-company-website", "image": "/privacy-safe/logistics-platform.png", "summary": "A responsive website with shipment tracking, rate checking, and a CMS for content and inquiries.", "outcome": "Service information and shipment searches share one structured digital channel.", "tags": "Responsive web / shipment tracking / rate checker / CMS" },
+      { "title": "Operations Dashboard & CMS", "href": "/work/operations-dashboard-cms", "image": "/privacy-safe/operations-cms.png", "summary": "A dashboard and content-management modules for activity summaries, search, and operational administration.", "outcome": "Teams manage content and review information in a consistent workspace.", "tags": "Web app / dashboard / CMS / role-based admin" },
+      { "title": "Attendance Web Platform", "href": "/work/hrms-attendance-platform", "image": "/privacy-safe/hrms-attendance.png", "summary": "Attendance, lateness, schedule, leave-approval, and administrative reporting dashboards.", "outcome": "Authorized managers can review attendance and approval workflows more clearly.", "tags": "Attendance / leave approval / reporting / dashboard" },
+      { "title": "Android Attendance App", "href": "/work/android-attendance-app", "image": "/privacy-safe/android-attendance.png", "summary": "Photo check-in/check-out with location validation, timestamps, a calendar, and attendance history.", "outcome": "Employees record attendance on Android while managers review evidence and exceptions.", "tags": "Mobile app / photo attendance / location / audit trail" },
+      { "title": "Infrastructure Monitoring", "href": "/work/infrastructure-monitoring", "image": "/privacy-safe/infrastructure-observability.png", "summary": "Monitoring for traffic, network capacity, server health, endpoints, response times, and TLS certificates.", "outcome": "IT teams gain a centralized view of service conditions and anomalies.", "tags": "Server / network / service health / monitoring" }
+    ],
+    "process": [
+      { "title": "Discover & Assess", "copy": "Map goals, users, assets, dependencies, risks, and the starting condition." },
+      { "title": "Scope & Plan", "copy": "Agree deliverables, assumptions, boundaries, schedule, and cost through a quotation/SOW." },
+      { "title": "Build & Verify", "copy": "Implement in stages, test important functions, and validate with the customer." },
+      { "title": "Launch & Operate", "copy": "Deploy or cut over, document, hand over, and support within the agreed scope." }
+    ]
+  }
+}

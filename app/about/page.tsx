@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ChatWidget } from "../ChatWidget";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -7,12 +8,14 @@ import { companyContact } from "@/lib/company";
 import { absoluteLocaleUrl, languageAlternates, localeConfig, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 import { getPageContent } from "@/lib/cms-data";
+import companyProfile from "@/lib/company-profile.json";
+import styles from "./about.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const en = locale === "en";
   const canonical = localePath(locale, "/about");
-  const description = en ? "Meet PT. Retech Digital Solution, a B2B technology partner for digital product development, managed IT operations, and server deployment." : "Kenali PT. Retech Digital Solution, partner teknologi B2B untuk digital product development, managed IT operations, dan server deployment.";
+  const description = en ? "Explore RETECH's company profile: web and mobile development, managed IT, migration and hardening, VPS, ReTendance, QR Order & POS, and anonymized case studies." : "Profil RETECH: pengembangan web dan mobile, managed IT, migrasi dan hardening, VPS, ReTendance, QR Order & POS, serta case studies anonim.";
   return { title: "About Us", description, alternates: { canonical, languages: languageAlternates("/about") }, openGraph: { type: "website", url: canonical, title: "About RETECH | PT. Retech Digital Solution", description, images: ["/og.png"] }, twitter: { card: "summary_large_image", title: "About RETECH | PT. Retech Digital Solution", description, images: ["/og.png"] } };
 }
 
@@ -39,12 +42,6 @@ const principles = [
   },
 ];
 
-const capabilities = [
-  ["Digital Product", "Company profile, CMS, web application, API, Android, dan iOS."],
-  ["Managed Operations", "Server maintenance, monitoring, helpdesk, backup, dan pemulihan data."],
-  ["Server Deployment", "Instalasi, konfigurasi, migrasi, troubleshooting, dan hardening."],
-];
-
 const englishPrinciples = [
   { number: "01", title: "Business before technology", copy: "We begin with goals, risks, users, and operational processes before selecting the right architecture and technology." },
   { number: "02", title: "Security by design", copy: "Validation, access control, data protection, hardening, and observability are considered from the start—not added just before launch." },
@@ -52,17 +49,11 @@ const englishPrinciples = [
   { number: "04", title: "Built to operate", copy: "Solutions are designed to be maintained, monitored, and extended after go-live—not only to look good in a demo." },
 ];
 
-const englishCapabilities = [
-  ["Digital Product", "Company profiles, CMS platforms, web applications, APIs, Android, and iOS."],
-  ["Managed Operations", "Server maintenance, monitoring, helpdesk, backup, and data recovery."],
-  ["Server Deployment", "Installation, configuration, migration, troubleshooting, and hardening."],
-];
-
 export default async function AboutPage() {
   const locale = await getLocale();
   const en = locale === "en";
   const localizedPrinciples = en ? englishPrinciples : principles;
-  const localizedCapabilities = en ? englishCapabilities : capabilities;
+  const profile = en ? companyProfile.en : companyProfile.id;
   const pageContent = await getPageContent("about", locale);
   const pageUrl = absoluteLocaleUrl(locale, "/about");
   const aboutSchema = {
@@ -101,6 +92,25 @@ export default async function AboutPage() {
         <div className="about-hero-copy">
           <p>{String(pageContent.heroIntro || "")}</p>
           <span>BUILD · OPERATE · SUPPORT</span>
+          <div className={styles.actions}>
+            <a className="button button-primary" href={companyProfile.download} download>{en ? "Download company profile" : "Unduh company profile"} <span aria-hidden="true">↓</span></a>
+            <a className="button button-secondary" href="#company-products">{en ? "Our products" : "Produk kami"} <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="company-profile-heading">
+        <span className="kicker">COMPANY AT A GLANCE</span>
+        <h2 id="company-profile-heading">{en ? "Technology connected to " : "Teknologi yang terhubung dengan "}<em>{en ? "your business." : "bisnis Anda."}</em></h2>
+        <p>{profile.intro}</p>
+        <div className={styles.summary}>
+          <div><strong>{companyProfile.experience}</strong><span>{en ? "Years of technical experience" : "Tahun pengalaman teknis"}</span><small>{profile.experienceNote}</small></div>
+          <div><strong>4</strong><span>{en ? "Connected service areas" : "Area layanan terhubung"}</span><small>Development / Managed IT / Deployment / VPS</small></div>
+          <div><strong>Bekasi</strong><span>Indonesia</span><small>{en ? "Business visits by appointment." : "Kunjungan bisnis berdasarkan janji temu."}</small></div>
+        </div>
+        <div className={styles.missionGrid}>
+          <div><h3>{en ? "Our vision" : "Visi kami"}</h3><p>{profile.vision}</p></div>
+          <div><h3>{en ? "Our mission" : "Misi kami"}</h3><ul>{profile.mission.map(item => <li key={item}>{item}</li>)}</ul></div>
         </div>
       </section>
 
@@ -135,17 +145,53 @@ export default async function AboutPage() {
         <div>
           <span className="kicker">WHAT WE CONNECT</span>
           <h2>From idea to<br /><em>daily operations.</em></h2>
-          <p>{String(pageContent.capabilitiesIntro || "")}</p>
+          <p>{en ? "From websites and business applications to infrastructure operations, server migration, hardening, and VPS. Each engagement follows a defined scope." : "Dari website dan aplikasi bisnis hingga pengelolaan infrastruktur, migrasi, hardening server, serta VPS. Setiap pekerjaan mengikuti ruang lingkup yang disepakati."}</p>
           <Link className="button button-secondary" href={localePath(locale, "/services")}>{en ? "Explore services" : "Jelajahi layanan"} <span>↗</span></Link>
         </div>
         <div className="capability-list">
-          {localizedCapabilities.map(([title, copy], index) => (
-            <article key={title}>
+          {profile.services.map((service, index) => (
+            <article key={service.href}>
               <span>0{index + 1}</span>
-              <div><h3>{title}</h3><p>{copy}</p></div>
+              <div><h3>{service.title}</h3><p>{service.summary}</p><ul className={styles.serviceScope}>{service.scope.map(item => <li key={item}>{item}</li>)}</ul><Link className={styles.serviceLink} href={localePath(locale, service.href)}>{en ? "Explore this service" : "Lihat detail layanan"} <span aria-hidden="true">↗</span></Link></div>
             </article>
           ))}
         </div>
+      </section>
+
+      <section id="company-products" className={styles.section} aria-labelledby="company-products-heading">
+        <span className="kicker">RETECH PRODUCTS</span>
+        <h2 id="company-products-heading">{en ? "Software for " : "Software untuk "}<em>{en ? "daily operations." : "operasional nyata."}</em></h2>
+        <div className={styles.productGrid}>
+          {profile.products.map((product, index) => <article className={styles.product} key={product.href}>
+            <span className={styles.badge}>{product.status}</span>
+            <h3>{product.title}</h3><p>{product.summary}</p>
+            <ul>{product.features.map(feature => <li key={feature}>{feature}</li>)}</ul>
+            <small>{product.note}</small>
+            <div className={styles.actions}>
+              <Link className="button button-secondary" href={localePath(locale, product.href)}>{en ? "Product details" : "Detail produk"} <span aria-hidden="true">↗</span></Link>
+              {index === 0 && <a className={styles.serviceLink} href="https://play.google.com/store/apps/details?id=com.absen.project" target="_blank" rel="noopener noreferrer">Google Play <span aria-hidden="true">↗</span></a>}
+            </div>
+          </article>)}
+        </div>
+        <p className={styles.note}>{profile.subscriptionNote}</p>
+      </section>
+
+      <section className={styles.section} aria-labelledby="company-cases-heading">
+        <span className="kicker">SELECTED CASE STUDIES</span>
+        <h2 id="company-cases-heading">{en ? "Built for " : "Dibangun untuk "}<em>{en ? "real work." : "kebutuhan kerja."}</em></h2>
+        <p>{profile.privacyNote}</p>
+        <div className={styles.caseGrid}>
+          {profile.cases.map(project => <article className={styles.case} key={project.href}>
+            <Image src={project.image} alt={`${en ? "Conceptual illustration" : "Ilustrasi konseptual"}: ${project.title}`} width={960} height={540} sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 600px" />
+            <div className={styles.caseBody}><h3>{project.title}</h3><p>{project.summary}</p><p>{project.outcome}</p><small>{project.tags}</small><Link className={styles.serviceLink} href={localePath(locale, project.href)}>{en ? "Read case study" : "Baca case study"} <span aria-hidden="true">↗</span></Link></div>
+          </article>)}
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="company-process-heading">
+        <span className="kicker">HOW WE DELIVER</span>
+        <h2 id="company-process-heading">{en ? "Clear scope. " : "Scope jelas. "}<em>{en ? "A deliberate next step." : "Langkah terarah."}</em></h2>
+        <div className={styles.process}>{profile.process.map((step, index) => <article key={step.title}><span>0{index + 1}</span><h3>{step.title}</h3><p>{step.copy}</p></article>)}</div>
       </section>
 
       <section className="about-company-info">
@@ -155,14 +201,15 @@ export default async function AboutPage() {
           <p>{String(pageContent.companyIntro || "")}</p>
           <a
             className="button button-secondary"
-            href="/documents/retech-company-profile.pdf"
+            href={companyProfile.download}
             download
           >
             {en ? "Download company profile" : "Unduh company profile"} <span>↓</span>
           </a>
+          <small className={styles.downloadMeta}>{en ? "Indonesian PDF · Updated 29 October 2026" : "PDF Bahasa Indonesia · Diperbarui 29 Oktober 2026"}</small>
         </div>
         <address>
-          <a href={companyContact.mapUrl} target="_blank" rel="noreferrer">
+          <a href={companyContact.mapUrl} target="_blank" rel="noopener noreferrer">
             <span>{en ? "BUSINESS ADDRESS" : "ALAMAT BISNIS"}</span>
             {companyContact.address}
             <b>Open Maps ↗</b>
@@ -170,7 +217,7 @@ export default async function AboutPage() {
           <a
             href={en ? companyContact.whatsappUrlEn : companyContact.whatsappUrl}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             data-analytics="whatsapp_click"
             data-analytics-source="about_company_info"
           >

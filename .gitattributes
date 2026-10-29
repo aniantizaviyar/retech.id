@@ -1,0 +1,2 @@
+# Preserve PDF byte offsets and embedded streams across Windows/Linux checkouts.
+public/documents/*.pdf binary
