@@ -2,6 +2,7 @@ import "server-only";
 import nodemailer from "nodemailer";
 import { validateLeadInput } from "../leads";
 import { actionInput } from "./contracts";
+import { markHistoryRequestSubmitted } from "./history";
 import {
   assertOrigin,
   AssistantError,
@@ -194,6 +195,7 @@ export async function handleRequest(request: Request) {
           "duplicate",
           "Referensi ini sudah dikirim dengan data berbeda. Buat permintaan baru / reference already submitted with different details.",
         );
+      await markHistoryRequestSubmitted(session.id, draft.id);
       return result(true, "unchanged");
     }
     await verifyChallenge(data.turnstileToken, request, "lead_submit");
@@ -218,6 +220,7 @@ export async function handleRequest(request: Request) {
         "Permintaan sedang diproses. Coba sekali lagi / request processing; retry once.",
       );
     if (!inserted.ok) throw new Error("Insert failed");
+    await markHistoryRequestSubmitted(session.id, draft.id);
     // Store before notifying; a replay cannot cause another email. SMTP acceptance is not delivery.
     const notification = await notify(
       reference(draft.id),

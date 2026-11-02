@@ -256,6 +256,7 @@ export default function ChatPanel({
   const [sessionValid, setSessionValid] = useState(false);
   const [aiAvailable, setAiAvailable] = useState(false);
   const [aiConsent, setAiConsent] = useState(false);
+  const [historyConsent, setHistoryConsent] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const autoScroll = useRef(true);
@@ -342,6 +343,7 @@ export default function ChatPanel({
           locale,
           history,
           aiConsent: aiAvailable && aiConsent,
+          historyConsent,
           ...(challenge ? { turnstileToken: challenge } : {}),
         }),
         signal: AbortSignal.any([
@@ -554,6 +556,11 @@ export default function ChatPanel({
             {message.answer?.action && (
               <RequestForm draft={message.answer.action} locale={locale} />
             )}
+            {message.answer?.historySaved !== undefined && <small className={styles.modelNote}>
+              {message.answer.historySaved
+                ? (en ? "Saved for RETECH admin review · 7-day retention." : "Tersimpan untuk ditinjau admin RETECH · retensi 7 hari.")
+                : (en ? "This exchange could not be saved to admin history." : "Percakapan ini belum tersimpan di riwayat admin.")}
+            </small>}
           </article>
         ))}
         {busy && (
@@ -574,6 +581,16 @@ export default function ChatPanel({
           </button>
         ))}
       </div>
+      <details className={styles.consentOptions}>
+      <summary>{historyConsent
+        ? (en ? "History enabled · 7 days" : "Riwayat aktif · 7 hari")
+        : (en ? "Privacy & optional permissions · 7-day history" : "Privasi & izin opsional · riwayat 7 hari")}
+        {aiAvailable && aiConsent ? (en ? " · AI allowed" : " · AI diizinkan") : ""}</summary>
+      <label className={`${styles.check} ${styles.aiConsent}`}>
+        <input type="checkbox" checked={historyConsent} disabled={busy}
+          onChange={(event) => setHistoryConsent(event.target.checked)} />
+        <span>{en ? "Allow the next messages and replies to be saved for admin review for 7 days. No passwords or sensitive data." : "Izinkan pesan berikut dan balasannya disimpan 7 hari untuk ditinjau admin. Jangan kirim data sensitif."} <a href={localePath(locale, "/privacy-policy#assistant")}>{en ? "Privacy" : "Privasi"}</a></span>
+      </label>
       {aiAvailable && (
         <label className={`${styles.check} ${styles.aiConsent}`}>
           <input
@@ -592,6 +609,7 @@ export default function ChatPanel({
           </span>
         </label>
       )}
+      </details>
       {!sessionValid && (
         <div className={styles.challenge}>
           <TurnstileWidget

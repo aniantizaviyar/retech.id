@@ -24,6 +24,7 @@ export const chatInput = z
       .default([]),
     turnstileToken: z.string().max(2048).optional(),
     aiConsent: z.boolean().default(false),
+    historyConsent: z.boolean().default(false),
   })
   .strict();
 export const toolCall = z.discriminatedUnion("name", [
@@ -109,6 +110,7 @@ export type Answer = {
   };
   action?: ActionDraft;
   provider?: "guided" | "cloudflare";
+  historySaved?: boolean;
 };
 export const actionInput = z
   .object({

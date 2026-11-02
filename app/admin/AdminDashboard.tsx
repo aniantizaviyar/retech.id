@@ -12,13 +12,14 @@ import { BusinessDashboardPanel } from "./BusinessDashboardPanel";
 import { CustomerPanel, ProductPanel } from "./MasterDataPanels";
 import { SubscriptionPanel, TenantPanel } from "./SaasPanels";
 import { AdminSidebar, type AdminNavigationGroup } from "./AdminSidebar";
+import { AssistantHistoryPanel } from "./AssistantHistoryPanel";
 
 type CmsRecord = Record<string, unknown> & { id?: string | number; slug?: string; published?: boolean; sort_order?: number };
 type MediaRecord = { name: string; url: string; created_at?: string; metadata?: { size?: number; mimetype?: string } };
 type WebsiteTab = CmsResource | "media";
 type BusinessTab = "business-dashboard" | "business-leads" | "business-customers" | "business-contacts" | "business-pipeline" | "business-quotations" | "business-invoices" | "business-payments" | "business-products" | "business-tenants" | "business-subscriptions" | "business-templates";
 type MailTab = "mail-users" | "mail-delivery";
-type Tab = WebsiteTab | BusinessTab | MailTab;
+type Tab = WebsiteTab | BusinessTab | MailTab | "assistant-history";
 
 const websiteTabs: Array<{ id: WebsiteTab; label: string; icon: string }> = [
   { id: "pages", label: "Pages", icon: "▤" }, { id: "projects", label: "Case Studies", icon: "◫" },
@@ -34,11 +35,13 @@ const businessTabs: Array<{ id: BusinessTab; label: string; icon: string }> = [
   { id: "business-subscriptions", label: "Subscriptions", icon: "S" }, { id: "business-templates", label: "PDF Templates", icon: "▧" },
 ];
 const mailTabs: Array<{ id: MailTab; label: string; icon: string }> = [{ id: "mail-users", label: "User", icon: "@" }, { id: "mail-delivery", label: "Delivery & Bounce", icon: "↯" }];
-const allTabs = [...websiteTabs, ...businessTabs, ...mailTabs];
+const assistantTabs = [{ id: "assistant-history" as const, label: "Riwayat Chat", icon: "◌" }];
+const allTabs = [...websiteTabs, ...businessTabs, ...mailTabs, ...assistantTabs];
 const navigationGroups: AdminNavigationGroup<Tab>[] = [
   { id: "website", label: "Website", icon: "⌂", items: websiteTabs },
   { id: "business", label: "Business", icon: "▣", items: businessTabs },
   { id: "mail", label: "MAIL", icon: "✉", items: mailTabs },
+  { id: "assistant", label: "AI Assistant", icon: "✧", items: assistantTabs },
 ];
 
 function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)); }
@@ -174,8 +177,8 @@ export function AdminDashboard({ email }: { email: string }) {
       onSelect={selectTab}
       onLogout={logout}
     />
-    <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / {tab.startsWith("business-") ? "BUSINESS OPERATIONS" : tab.startsWith("mail-") ? "MAIL OPERATIONS" : "CONTENT MANAGEMENT"}</span><h1>{activeTab?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
-      {tab === "mail-users" ? <MailUsersPanel /> : tab === "business-dashboard" ? <BusinessDashboardPanel /> : tab === "business-customers" ? <CustomerPanel /> : tab === "business-products" ? <ProductPanel /> : tab === "business-tenants" ? <TenantPanel /> : tab === "business-subscriptions" ? <SubscriptionPanel /> : tab === "business-quotations" ? <QuotationPanel /> : tab === "business-invoices" ? <InvoicePanel /> : tab === "business-payments" ? <PaymentsPanel /> : !isCmsTab ? <ComingSoonPanel id={tab} title={activeTab?.label || "Coming Soon"} /> : <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{cmsTab === "media" ? media.length : records.length}</strong></article><article><span>{cmsTab === "media" ? "Storage media" : "Published"}</span><strong>{cmsTab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
+    <section className="admin-workspace"><header className="admin-topbar"><div><span className="admin-kicker">RETECH / {tab.startsWith("business-") ? "BUSINESS OPERATIONS" : tab.startsWith("mail-") ? "MAIL OPERATIONS" : tab === "assistant-history" ? "AI ASSISTANT" : "CONTENT MANAGEMENT"}</span><h1>{activeTab?.label}</h1></div><div className="admin-user"><span><i />Secure session</span><strong>{email}</strong></div></header>
+      {tab === "assistant-history" ? <AssistantHistoryPanel /> : tab === "mail-users" ? <MailUsersPanel /> : tab === "business-dashboard" ? <BusinessDashboardPanel /> : tab === "business-customers" ? <CustomerPanel /> : tab === "business-products" ? <ProductPanel /> : tab === "business-tenants" ? <TenantPanel /> : tab === "business-subscriptions" ? <SubscriptionPanel /> : tab === "business-quotations" ? <QuotationPanel /> : tab === "business-invoices" ? <InvoicePanel /> : tab === "business-payments" ? <PaymentsPanel /> : !isCmsTab ? <ComingSoonPanel id={tab} title={activeTab?.label || "Coming Soon"} /> : <div className="admin-content"><section className="admin-stats"><article><span>Total data</span><strong>{cmsTab === "media" ? media.length : records.length}</strong></article><article><span>{cmsTab === "media" ? "Storage media" : "Published"}</span><strong>{cmsTab === "media" ? "8 MB max" : publishedCount}</strong></article><article><span>Last refresh</span><strong>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</strong></article></section>
         <div className="admin-list-header"><div><h2>{cmsTab === "media" ? "Media library" : `Kelola ${activeTab?.label}`}</h2><p>{cmsTab === "projects" ? "Tambah case study, edit konten bilingual, upload, urutkan, atau hapus gambar." : cmsTab === "pages" ? "Edit copy per halaman dalam Bahasa Indonesia dan English." : "Perubahan published akan tampil pada website setelah disimpan."}</p></div>{cmsTab === "media" ? <label className="admin-primary-button">Upload media<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadMedia(file); event.currentTarget.value = ""; }} /></label> : <button className="admin-primary-button" onClick={() => setEditing(emptyRecord(cmsTab))}>+ Tambah data</button>}</div>
         {error && <p className="admin-form-message" role="alert">{error}</p>}{loading ? <div className="admin-loading">Memuat data CMS…</div> : cmsTab === "media" ? <div className="admin-media-grid">{media.map((item) => <article key={item.name}><Image src={item.url} alt={item.name} width={360} height={220} unoptimized /><div><strong>{item.name}</strong><small>{item.metadata?.size ? `${Math.round(item.metadata.size / 1024)} KB` : "Media"}</small><button onClick={() => navigator.clipboard.writeText(item.url)}>Salin URL</button><button className="danger" onClick={() => removeMedia(item)}>Hapus</button></div></article>)}</div> : <div className="admin-record-list">{records.map((record) => <article key={String(record.id)}><div className="admin-record-order">{String(record.sort_order ?? "—").padStart(2, "0")}</div><div><span className={record.published === false ? "status-draft" : "status-live"}>{record.published === false ? "DRAFT" : "PUBLISHED"}</span><h3>{labelFor(record, cmsTab)}</h3><p>{record.slug ? `/${record.slug}` : cmsTab === "faqs" ? String(record.answer_id || "").slice(0, 130) : "Content record"}</p></div><div className="admin-record-actions"><button onClick={() => setEditing(clone(record))}>Edit</button><button className="danger" onClick={() => remove(record)}>Hapus</button></div></article>)}</div>}
       </div>}

@@ -21,6 +21,7 @@ import {
 } from "./security";
 
 type Dependencies = {
+  recordExchange?(input: ChatInput, answer: Answer, session: Session): Promise<boolean>;
   loadKnowledge(locale: "id" | "en", signal: AbortSignal): Promise<Knowledge>;
   modelRoute(
     input: ChatInput,
@@ -125,6 +126,10 @@ export function createChatHandler(deps: Dependencies) {
             }
             const chunks = answer.text.match(/[\s\S]{1,120}/gu) ?? [];
             for (const text of chunks) send("delta", { text });
+            if (input.historyConsent && !cancelled && !request.signal.aborted) {
+              try { answer.historySaved = await deps.recordExchange?.(input, answer, session) ?? false; }
+              catch { answer.historySaved = false; }
+            }
             send("done", answer);
           } catch {
             send("error", {

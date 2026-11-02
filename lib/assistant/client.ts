@@ -45,6 +45,7 @@ export function readAnswer(value: unknown): Answer | null {
     skill: v.skill,
     sources,
     provider: v.provider === "cloudflare" ? "cloudflare" : "guided",
+    ...(typeof v.historySaved === "boolean" ? { historySaved: v.historySaved } : {}),
   };
   if (v.action !== undefined) {
     if (!v.action || typeof v.action !== "object") return null;

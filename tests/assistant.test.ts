@@ -493,6 +493,20 @@ test("SSE returns verified answer metadata and establishes a signed session", as
   assert.match(stream, /event: done/);
   assert.match(stream, /Verified catalog answer/);
 });
+
+test("SSE records only after separate history opt-in and reports best-effort result", async () => {
+  let recorded = 0;
+  const handler = createChatHandler({ ...deps(), recordExchange: async (current, actual) => {
+    recorded++; assert.equal(current.message, "layanan VPS");
+    assert.equal(actual.text, "Verified catalog answer"); return true;
+  } });
+  const off = await (await handler(request("/api/assistant/chat", input("layanan VPS")))).text();
+  assert.equal(recorded, 0); assert.doesNotMatch(off, /historySaved/);
+  const on = await (await handler(request("/api/assistant/chat", { ...input("layanan VPS"), historyConsent: true }))).text();
+  assert.equal(recorded, 1); assert.match(on, /"historySaved":true/);
+  const failed = await (await createChatHandler({ ...deps(), recordExchange: async () => { throw new Error("secret DB failure"); } })(request("/api/assistant/chat", { ...input("layanan VPS"), historyConsent: true }))).text();
+  assert.match(failed, /event: done/); assert.match(failed, /"historySaved":false/); assert.doesNotMatch(failed, /secret DB/);
+});
 test("injection guard does not call knowledge, tools or provider", async () => {
   let executions = 0;
   const response = await createChatHandler({

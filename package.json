@@ -12,7 +12,7 @@
     "start": "vinext start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern portfolio-mreza --ignore-pattern tmp",
-    "test:assistant": "node --import ./tests/assistant-register.mjs --import tsx --test tests/assistant.test.ts tests/assistant-runtime-regression.test.ts",
+    "test:assistant": "node --import ./tests/assistant-register.mjs --import tsx --test tests/assistant.test.ts tests/assistant-runtime-regression.test.ts tests/assistant-history.test.ts",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
