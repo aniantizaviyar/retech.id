@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import styles from "./ChatWidget.module.css";
-const ChatPanel = dynamic(() => import("./assistant/ChatPanel"), {
+const ChatPanel = dynamic(() => import("./assistant/AgentPanel"), {
   ssr: false,
   loading: () => (
     <div

@@ -2,6 +2,7 @@ import "server-only";
 import { getFaqs, getPricing, getProducts, getServices } from "../cms-data";
 import { companyContact } from "../company";
 import { ATTENDANCE_PRICES } from "../attendance-catalog";
+import { getProjects } from "../projects";
 import type { Locale } from "../i18n";
 import type { CatalogItem, Document, Knowledge } from "./contracts";
 import { parseCatalogPrice } from "./domain";
@@ -15,11 +16,12 @@ export async function loadKnowledge(
     signal ?? new AbortController().signal,
     AbortSignal.timeout(5000),
   ]);
-  const [services, products, pricing, faqs] = await Promise.all([
+  const [services, products, pricing, faqs, projects] = await Promise.all([
     getServices(locale, deadline),
     getProducts(locale, deadline),
     getPricing(locale, deadline),
     getFaqs(locale, deadline),
+    getProjects(locale, deadline),
   ]);
   const en = locale === "en";
   const serviceKeywords: Record<string, string[]> = {
@@ -71,6 +73,16 @@ export async function loadKnowledge(
         ...(serviceKeywords[service.slug] ?? []),
       ],
     }));
+  for (const service of services.slice(0,20)) documents.push({
+    id:`workflow:${service.slug}`,title:`${en?"Workflow":"Alur layanan"}: ${service.title}`.slice(0,150),href:`/services/${service.slug}`,
+    text:(service.process??[]).map((step,i)=>`${i+1}. ${step.title}: ${step.description}`).join("\n").slice(0,1200),
+    keywords:["workflow","alur","proses","tahapan",...(serviceKeywords[service.slug]??[])],
+  });
+  for (const project of projects.slice(0,20)) documents.push({
+    id:`case:${project.slug}`,title:project.title.slice(0,150),href:`/work/${project.slug}`,
+    text:`${project.summary}\n${en?"Challenge":"Tantangan"}: ${project.challenge}\n${en?"Solution":"Solusi"}: ${project.solution}\n${en?"Outcome":"Hasil"}: ${project.outcome}`.slice(0,1200),
+    keywords:[project.slug,"case studies","portofolio",...project.services],
+  });
   for (const product of products
     .filter((p) => p.slug !== "attendance")
     .slice(0, 20))
@@ -93,6 +105,15 @@ export async function loadKnowledge(
       ],
     });
   documents.push(
+    {
+      id: "migration",
+      title: en ? "Server installation, migration & hardening" : "Instalasi, migrasi & hardening server",
+      href: "/services/remote-server-support",
+      keywords: ["migrasi", "migration", "mail server", "pindah server", "hardening", "instalasi"],
+      text: en
+        ? "RETECH provides remote server installation, migration, configuration and hardening support, including web stacks, databases, mail servers and SMTP relay. The team reviews requirements, access, impact and safeguards, executes changes step by step, then verifies results before handover. Migration scope, schedule, compatibility, backup/rollback arrangements and fees require an assessment and quotation; a monthly maintenance package is not automatically a migration price."
+        : "RETECH menyediakan dukungan instalasi, migrasi, konfigurasi, dan hardening server secara remote, termasuk web stack, database, mail server, serta SMTP relay. Tim meninjau kebutuhan, akses, dampak, dan pengamanan, menjalankan perubahan bertahap, lalu memverifikasi hasil sebelum handover. Scope migrasi, jadwal, kompatibilitas, pengaturan backup/rollback, serta biaya perlu dikonfirmasi melalui assessment dan penawaran; harga maintenance bulanan bukan otomatis harga migrasi.",
+    },
     {
       id: "about",
       title: en ? "About RETECH" : "Tentang RETECH",
@@ -169,8 +190,8 @@ export async function loadKnowledge(
         "tagihan",
       ],
       text: en
-        ? "The assistant cannot access accounts, customer data, invoices, passwords, private servers or employee records. Do not send credentials or sensitive data. ReTendance account-deletion and tutorial resources are linked from its product page; use those official resources or contact the team for account-specific support."
-        : "Asisten tidak mempunyai akses ke akun, data customer, invoice, password, server privat, atau data karyawan. Jangan mengirim kredensial atau data sensitif. Permintaan penghapusan akun dan tutorial ReTendance tersedia melalui tautan resmi pada halaman produknya; gunakan kanal tersebut atau hubungi tim untuk dukungan khusus akun.",
+        ? "RETECH Chat uses internal rules and official public information, not an external LLM. Name, email, phone and chat are stored only after explicit contact-form consent, for admin follow-up with 7-day retention. A signed essential session cookie lasts 30 minutes; a pending question may be held temporarily in the current browser tab. Administrators can delete chat and its contact profile. Never send passwords/tokens. The agent cannot access accounts, invoices, private servers or employee records. Attendance deletion/tutorial resources are linked from the product page."
+        : "RETECH Chat menggunakan aturan internal dan informasi publik resmi, bukan LLM eksternal. Nama, email, telepon, dan chat disimpan setelah persetujuan eksplisit pada form kontak untuk tindak lanjut admin dengan retensi 7 hari. Cookie sesi esensial berlaku 30 menit; pertanyaan sementara dapat disimpan pada tab browser. Admin dapat menghapus chat beserta profil kontaknya. Jangan kirim password/token. Agent tidak dapat mengakses akun, invoice, server privat, atau data karyawan. Tautan penghapusan akun/tutorial Attendance tersedia di halaman produk.",
     },
     {
       id: "portfolio",

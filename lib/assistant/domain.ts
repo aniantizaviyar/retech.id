@@ -72,6 +72,8 @@ export function routeIntent(input: ChatInput): ToolCall | null {
       name: "request_consultation",
       arguments: { topic: input.message.slice(0, 500) },
     };
+  if (/migrasi|migration|pindah server|hardening|instalasi|installasi|installation/.test(current))
+    return {name:"search_information",arguments:{query:input.message.slice(0,500)}};
   const quantityPattern =
     /(?:^|\s)(-?\d{1,6}(?:[.,]\d+)?)\s*(?:orang|karyawan|pegawai|slot|seats?|users?|employees?|people|outlets?|cabang)\b/;
   const quantityMatch = current.match(quantityPattern);
@@ -149,7 +151,7 @@ export function routeIntent(input: ChatInput): ToolCall | null {
     };
   }
   if (
-    /retech|layanan|service|produk|product|absen|attendance|retendance|\bqr\b|\bpos\b|website|aplikasi|app|server|vps|kontak|contact|alamat|privacy|privasi|hapus|tutorial|halo|hello|hai|\bhi\b|terima kasih|thanks|portfolio|case stud/i.test(
+    /retech|layanan|service|produk|product|absen|attendance|retendance|\bqr\b|\bpos\b|website|aplikasi|app|server|migrasi|migration|hardening|instalasi|installation|workflow|alur|tahapan|proses|server|vps|kontak|contact|alamat|privacy|privasi|hapus|tutorial|halo|hello|hai|\bhi\b|terima kasih|thanks|portfolio|case stud/i.test(
       current,
     )
   )
@@ -189,9 +191,23 @@ const tokens = (text: string) =>
   );
 export function retrieve(query: string, documents: Document[]) {
   const text = query.toLowerCase();
+  if(/alur|workflow|tahapan|proses (?:kerja|layanan)|how.*work/.test(text)) {
+    const flows=documents.filter(d=>d.id.startsWith("workflow:"));
+    const target=/migrasi|migration|hardening|instalasi|deploy/.test(text)?"remote-server-support":/managed|monitoring|maintenance/.test(text)?"managed-it-services":/web|aplikasi|mobile/.test(text)?"digital-product-development":null;
+    const selected=target?flows.filter(d=>d.id.endsWith(target)):flows.slice(0,3); if(selected.length)return selected;
+  }
+  if(/case stud|portofolio|portfolio|contoh proyek/.test(text)) {
+    const words=tokens(query).filter(w=>!["case","studies","study","portfolio","portofolio","contoh","proyek"].includes(w));
+    const cases=documents.filter(d=>d.id.startsWith("case:"));
+    const ranked=cases.map(doc=>({doc,score:words.reduce((n,w)=>n+Number((doc.title+" "+doc.text+" "+doc.keywords.join(" ")).toLowerCase().includes(w)),0)}));
+    const selected=words.length?ranked.filter(r=>r.score>0).sort((a,b)=>b.score-a.score).slice(0,3).map(r=>r.doc):cases.slice(0,3);
+    if(selected.length)return selected;
+  }
   const direct =
     /privasi|privacy|password|hapus|private-account|invoice|tagihan/.test(text)
       ? ["privacy"]
+      : /migrasi|migration|pindah server|hardening|instalasi|installasi|installation/.test(text)
+        ? [documents.some(d => d.id === "migration") ? "migration" : "service:remote-server-support"]
       : /\b(?:kontak|contact|alamat|office|kantor|whatsapp|email)\b/.test(
             text,
           ) && !/server|smtp|migrasi|migration|dns/.test(text)

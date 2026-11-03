@@ -42,6 +42,9 @@
 .sources { display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:11px;color:#68cce8; }
 .requestStatus { font-size:11px;color:#a7c9d9;line-height:1.8; }
 .requestStatus code { display:block;overflow-wrap:anywhere; }
+.filter{display:flex;align-items:center;gap:12px;margin:0 0 20px;font-size:12px;color:#a7c9d9;flex-wrap:wrap}
+.filter select,.contactCard select{border:1px solid #31576b;background:#0b2534;color:#e8f4fc;padding:10px 12px;border-radius:9px;font:inherit;max-width:100%}
+.contactCard{display:grid;gap:8px;padding:22px;border-bottom:1px solid #254252;overflow-wrap:anywhere}.contactCard>strong{font-size:18px}.contactCard>span{font-size:12px;color:#a9ccdf}.contactCard small{font-size:10px;color:#88acbf;line-height:1.7}.contactCard label{display:grid;gap:8px;font-size:12px;margin:8px 0}.contactActions{display:flex;gap:12px;flex-wrap:wrap;margin:4px 0}.contactActions a{padding:8px 12px;background:#10394b;border:1px solid #24617c;border-radius:8px;font-size:12px;color:#8ee2fc}
 .error { color:#ffb2c0;padding:15px;background:#361d28;border-radius:10px;font-size:13px; }
 .deleteDialog { color:#edf7ff;background:#0b202c;border:1px solid #3b5b6c;border-radius:18px;width:min(520px,calc(100vw - 32px));padding:28px;max-height:calc(100dvh - 40px);overflow-y:auto; }
 .deleteDialog::backdrop { background:#020c16cc;backdrop-filter:blur(4px); }

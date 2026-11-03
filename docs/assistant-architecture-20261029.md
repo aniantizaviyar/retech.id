@@ -1,5 +1,7 @@
 # RETECH Assistant — architecture and operator guide
 
+> Historical design, superseded by the [internal chat agent](internal-chat-agent-20261103.md) on 2026-11-03. Production chat no longer calls Workers AI and now uses a required, consented contact form with a private lead inbox.
+
 Implementation date: 29 October 2026. Scope: the public retech.id assistant, not a customer-account agent.
 
 ## What changed

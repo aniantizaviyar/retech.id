@@ -2,7 +2,7 @@ import type { Answer, Source } from "./contracts";
 
 export function safeSource(href: string) {
   return (
-    /^\/(?:en\/)?(?:products\/[a-z0-9-]+|services\/[a-z0-9-]+|pricing|faq|work|about|privacy-policy|#contact)$/.test(
+    /^\/(?:en\/)?(?:products\/[a-z0-9-]+|services\/[a-z0-9-]+|work\/[a-z0-9-]+|pricing|faq|work|about|privacy-policy|#contact)$/.test(
       href,
     ) || ["https://retech.id/", "https://absensi.retech.id/"].includes(href)
   );

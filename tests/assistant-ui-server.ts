@@ -5,6 +5,9 @@ import { createChatHandler } from "../lib/assistant/chat-handler";
 import { loadKnowledge } from "../lib/assistant/knowledge";
 import { executeSkill } from "../lib/assistant/executor";
 import { handleRequest } from "../lib/assistant/intake";
+import { createAgentHandlers } from "../lib/assistant/agent-handler";
+import type { AgentSession } from "../lib/assistant/agent-contracts";
+import { redactHistoryText } from "../lib/assistant/history-policy";
 
 Object.assign(process.env, {
   NODE_ENV: "development",
@@ -19,6 +22,12 @@ delete process.env.VERCEL;
 const nativeFetch = globalThis.fetch;
 const leads = new Map<string, Record<string, unknown>>();
 const json = (value: unknown, status = 200) => Response.json(value, { status });
+const agentSessions=new Map<string,AgentSession>();
+const agent=createAgentHandlers({loadKnowledge,execute:executeSkill,store:{
+  async session(id){return agentSessions.get(id)??null;},
+  async register(id,data){if(agentSessions.has(id))return true;agentSessions.set(id,{id,contact_name:data.name,expires_at:new Date(Date.now()+7*86400_000).toISOString(),pending_question:redactHistoryText(data.question,1200),pending_message_id:data.messageId,exchanges:[]});return true;},
+  async save(id,mid,question,answer){const row=agentSessions.get(id)!;const old=row.exchanges.find(e=>e.client_message_id===mid);if(old)return {saved:true,exchange:old};const exchange={id:crypto.randomUUID(),client_message_id:mid,question:redactHistoryText(question,1200),answer:redactHistoryText(answer.text),skill:answer.skill,sources:answer.sources,created_at:new Date().toISOString()};row.exchanges.push(exchange);row.pending_question=null;row.pending_message_id=null;return {saved:true,exchange};},
+}});
 globalThis.fetch = async (input, init = {}) => {
   const url = String(input),
     body = typeof init.body === "string" ? JSON.parse(init.body) : {};
@@ -96,7 +105,11 @@ const server = createServer(async (req, res) => {
         });
         result =
           path === "/api/assistant/chat"
-            ? await chat(request)
+            ? await agent.chat(request)
+            : path === "/api/assistant/session"
+              ? await agent.session(request)
+            : path === "/api/assistant/profile"
+              ? await agent.profile(request)
             : path === "/api/assistant/requests"
               ? await handleRequest(request)
               : json({}, 404);

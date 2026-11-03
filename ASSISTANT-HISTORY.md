@@ -1,5 +1,7 @@
 # RETECH assistant history
 
+> Historical initial design. Superseded on 2026-11-03 by the [internal chat agent](docs/internal-chat-agent-20261103.md): required consented contact form, private lead inbox and no production LLM calls. Contact profiles share the conversation's 7-day retention and are removed with administrator deletion.
+
 ## Behavior
 
 - Admin: **AI Assistant → Riwayat Chat**. Existing admin authentication is unchanged.

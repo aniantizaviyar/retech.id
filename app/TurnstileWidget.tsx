@@ -17,7 +17,7 @@ type TurnstileWidgetProps = {
   onVerify: (token: string) => void;
   onUnavailable: () => void;
   locale?: "id" | "en";
-  action?: "lead_submit" | "admin_login" | "assistant_chat";
+  action?: "lead_submit" | "admin_login" | "assistant_chat" | "assistant_profile";
   responsive?: boolean;
 };
 

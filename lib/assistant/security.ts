@@ -280,7 +280,7 @@ export async function rateRequest(
 export async function verifyChallenge(
   token: string | undefined,
   request: Request,
-  action: "assistant_chat" | "lead_submit",
+  action: "assistant_chat" | "lead_submit" | "assistant_profile",
 ) {
   const key =
     process.env.TURNSTILE_SECRET_KEY ||

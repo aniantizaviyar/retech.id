@@ -1,10 +1,11 @@
-import { providerReady } from "@/lib/assistant/provider";
 export const runtime = "nodejs";
 export function GET() {
   return Response.json(
     {
-      aiAvailable: providerReady(),
-      mode: "guided-with-optional-ai",
+      aiAvailable: false,
+      mode: "internal-knowledge-agent",
+      profileRequired: true,
+      retentionDays: 7,
       skills: [
         "search_information",
         "estimate_price",

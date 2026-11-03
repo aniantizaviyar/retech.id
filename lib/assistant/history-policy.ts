@@ -27,6 +27,12 @@ export type HistoryConversation = {
   preview: string;
   exchange_count: number;
   followup_status: "none" | "draft" | "submitted";
+  contact_name?: string | null;
+  contact_email?: string | null;
+  contact_phone?: string | null;
+  contact_consented_at?: string | null;
+  lead_status?: "new" | "contacted" | "in_progress" | "closed";
+  pending_question?: string | null;
 };
 export type HistoryExchange = {
   id: string;

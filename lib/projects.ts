@@ -209,7 +209,7 @@ function normalizeProject(row: Record<string, unknown>, locale: Locale): Project
   };
 }
 
-export async function getProjects(locale: Locale = "id"): Promise<Project[]> {
+export async function getProjects(locale: Locale = "id", signal?: AbortSignal): Promise<Project[]> {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SECRET_KEY;
   if (!url || !key) return fallbackProjects.map((project) => localizeProject(project, locale));
@@ -220,6 +220,7 @@ export async function getProjects(locale: Locale = "id"): Promise<Project[]> {
       {
         headers: { apikey: key, Authorization: `Bearer ${key}` },
         next: { revalidate: 60, tags: ["cms-content"] },
+        ...(signal ? {signal} : {}),
       },
     );
     if (!response.ok) return fallbackProjects.map((project) => localizeProject(project, locale));

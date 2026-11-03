@@ -12,11 +12,21 @@ function authorized(request: Request, mutation = false) {
 export async function listHistory(request: Request) {
   if (!authorized(request)) return json({ error: "Sesi admin diperlukan." }, 401);
   const params = new URL(request.url).searchParams;
-  const input = z.object({ page: z.coerce.number().int().min(1).max(250).default(1) }).strict()
+  const input = z.object({ page: z.coerce.number().int().min(1).max(250).default(1), leads:z.enum(["0","1"]).default("0"),status:z.enum(["all","new","contacted","in_progress","closed"]).default("all") }).strict()
     .safeParse(Object.fromEntries(params));
   if (!input.success || params.getAll("page").length > 1) return json({ error: "Parameter halaman tidak valid." }, 400);
-  try { return json(await historyRpc("assistant_history_list", { p_page: input.data.page })); }
+  try { return json(await historyRpc("assistant_agent_inbox", { p_page: input.data.page,p_leads_only:input.data.leads==="1",p_status:input.data.status==="all"?null:input.data.status })); }
   catch { return json({ error: "Riwayat belum dapat dimuat. Coba lagi." }, 503); }
+}
+export async function updateHistoryStatus(request:Request,id:string) {
+  if(!authorized(request,true))return json({error:"Sesi dan origin admin diperlukan."},401);
+  if(!z.uuid().safeParse(id).success)return json({error:"ID percakapan tidak valid."},400);
+  try {
+    const parsed=z.object({leadStatus:z.enum(["new","contacted","in_progress","closed"])}).strict().safeParse(await boundedJson(request,200));
+    if(!parsed.success)return json({error:"Status follow-up tidak valid."},400);
+    const saved=await historyRpc("assistant_agent_set_status",{p_id:id,p_status:parsed.data.leadStatus});
+    return saved?json({ok:true}):json({error:"Prospek tidak ditemukan atau kedaluwarsa."},404);
+  } catch{return json({error:"Status belum dapat disimpan."},503);}
 }
 export async function detailHistory(request: Request, id: string) {
   if (!authorized(request)) return json({ error: "Sesi admin diperlukan." }, 401);
