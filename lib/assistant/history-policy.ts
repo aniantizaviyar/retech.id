@@ -1,3 +1,5 @@
+import { companyContact } from "../company";
+
 export const HISTORY_RETENTION_DAYS = 7;
 export const HISTORY_PAGE_SIZE = 20;
 
@@ -16,6 +18,17 @@ export function redactHistoryText(value: string, maximum = 6000) {
     .replace(/\b[A-Za-z0-9_-]{40,}\b/g, "[TOKEN DISAMARKAN]")
     .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "")
     .slice(0, maximum);
+}
+
+// Only fixed, already-public RETECH business contacts are exempted in agent
+// answers. Visitor questions and contact profiles never use this allowlist.
+export function redactAgentAnswerText(value: string) {
+  const contacts = [companyContact.email, companyContact.billingEmail, "admin@retech.id", companyContact.whatsappDisplay, companyContact.whatsappE164];
+  let protectedText = value;
+  contacts.forEach((contact, i) => { protectedText = protectedText.replaceAll(contact, `[RDS_PUBLIC_CONTACT_${i}]`); });
+  let masked = redactHistoryText(protectedText);
+  contacts.forEach((contact, i) => { masked = masked.replaceAll(`[RDS_PUBLIC_CONTACT_${i}]`, contact); });
+  return masked;
 }
 
 export type HistoryConversation = {

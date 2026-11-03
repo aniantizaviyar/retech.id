@@ -65,3 +65,13 @@ Capacity remains bounded: 50 exchanges/session, 5,000 retained exchanges and 2,0
 - Admin read/delete/status require existing authorization; no secret or unsafe HTML rendering.
 - Database fixtures check fixed TTL, expiry, cascade deletion, status filters, idempotency and role grants with rollback.
 - Test contact data uses reserved example.invalid addresses; no real customer data is used in test submissions.
+
+## Verified release — 3 November 2026
+
+- 67 automated tests passed; focused ESLint, TypeScript and production webpack build passed.
+- Production commit `ccef70a` reached Ready / Production Current in Vercel (deployment `4oat8monqxf8jJ68JviUvH5rKqJM`).
+- Live form/Turnstile registration, initial migration answer, own-session refresh, workflow and case-study references, and a 20-seat Attendance Pro estimate passed.
+- One clearly named `Uji Internal RETECH` synthetic profile was created using an example.invalid email and a synthetic +999 phone number. Its profile and actual answers appeared in the existing authenticated admin inbox; no email/WhatsApp was sent.
+- Follow-up status changes worked. Permanent-delete confirmation was checked and cancelled; cascade/expiry/access tests used rolled-back database fixtures instead of deleting production data.
+- Mobile layout checked at 390 × 844; no horizontal page overflow. Browser-extension errors were distinguished from application errors; CSP was not weakened to accommodate extensions.
+- Answer masking allows only fixed, published RETECH business contacts; visitor questions still use the unmodified full masking rule. Credentials remain masked even when their value resembles a public business contact.
