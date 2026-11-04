@@ -93,7 +93,7 @@ export default async function ProjectPage({ params }: PageProps) {
         </header>
 
         {project.gallery.length ? (
-          <section className="case-gallery" aria-label={`${en ? "Gallery" : "Galeri"} ${project.title}`}>
+          <section className={`case-gallery${project.gallery.every(image => image.src.startsWith("/privacy-safe/work-20261104/")) ? " case-gallery-reconstructed" : ""}`} aria-label={`${en ? "Gallery" : "Galeri"} ${project.title}`}>
             {project.gallery.map((image, index) => (
               <figure className={index === 0 ? "case-shot case-shot-wide" : "case-shot"} key={image.src}>
                 <div className="browser-frame">
@@ -122,7 +122,7 @@ export default async function ProjectPage({ params }: PageProps) {
 
         <aside className="case-confidentiality">
           <strong>Confidentiality by design</strong>
-          <p>{en ? "This case study has been anonymized. Customer identities, logos, emails, addresses, users, and sensitive infrastructure data are not published." : "Case study ini telah dianonimkan. Identitas customer, logo, email, alamat, user, serta data infrastruktur sensitif tidak dipublikasikan."}</p>
+          <p>{en ? "This case study has been anonymized. Customer identities, logos, emails, addresses, users, and sensitive infrastructure data are not published. Visuals are UI reconstructions with demo data, not original customer screenshots." : "Case study ini telah dianonimkan. Identitas customer, logo, email, alamat, user, serta data infrastruktur sensitif tidak dipublikasikan. Visual merupakan rekonstruksi UI dengan data dummy, bukan screenshot asli customer."}</p>
         </aside>
 
         <section className="case-next">

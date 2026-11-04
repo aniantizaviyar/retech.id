@@ -1,4 +1,5 @@
 import type { Locale } from "./i18n";
+import { withProductVisuals } from "./work-visuals";
 
 export type ProductPlan = {
   name: string;
@@ -191,5 +192,5 @@ export const productSeeds: ProductSeed[] = [
 ];
 
 export function getFallbackProducts(locale: Locale): ProductDefinition[] {
-  return productSeeds.map((seed) => ({ slug: seed.slug, ...(locale === "en" ? seed.dataEn : seed.dataId) }));
+  return withProductVisuals(productSeeds.map((seed) => ({ slug: seed.slug, ...(locale === "en" ? seed.dataEn : seed.dataId) })), locale);
 }

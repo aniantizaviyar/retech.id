@@ -7,6 +7,7 @@ import { fallbackPricing, pricingSeeds, type PricingRecord } from "./pricing";
 import { englishProjectContent } from "./projects";
 import { getFallbackProducts, productSeeds, type ProductDefinition } from "./products";
 import { getSupabaseAdminConfig, supabaseAdminFetch } from "./supabase-admin";
+import { withProductVisuals } from "./work-visuals";
 
 function cmsHeaders() {
   const { key } = getSupabaseAdminConfig();
@@ -54,7 +55,7 @@ export async function getProducts(locale: Locale, signal?: AbortSignal): Promise
     if (!response.ok) return getFallbackProducts(locale);
     const rows = await response.json() as Array<{ slug: string; data_id: Omit<ProductDefinition, "slug">; data_en: Omit<ProductDefinition, "slug"> }>;
     const normalized = rows.map((row) => ({ slug: row.slug, ...(locale === "en" ? row.data_en : row.data_id) })).filter((item) => item.title && Array.isArray(item.plans));
-    return normalized.length ? normalized : getFallbackProducts(locale);
+    return normalized.length ? withProductVisuals(normalized, locale) : getFallbackProducts(locale);
   } catch {
     return getFallbackProducts(locale);
   }

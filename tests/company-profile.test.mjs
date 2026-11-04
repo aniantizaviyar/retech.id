@@ -45,7 +45,7 @@ test("About keeps locale navigation, public PDF download, and secure external li
   assert.match(source, /details\?id=com.absen.project/);
   assert.doesNotMatch(source, /<form|localStorage|SUPABASE_SECRET|api\/admin/);
   assert.equal(profile.revision, "2026-11-04");
-  assert.match(profile.download, /^\/documents\/retech-company-profile\.pdf\?v=20261104$/);
+  assert.match(profile.download, /^\/documents\/retech-company-profile\.pdf\?v=20261104\.2$/);
 });
 
 test("the published brochure is a lightweight PDF identical to the reviewed deliverable", async () => {

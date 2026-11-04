@@ -8,7 +8,6 @@ import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 import { getPageContent } from "@/lib/cms-data";
-import { withWorkVisuals } from "@/lib/work-visuals";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -21,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function WorkPage() {
   const locale = await getLocale();
   const en = locale === "en";
-  const projects = withWorkVisuals(await getProjects(locale), locale);
+  const projects = await getProjects(locale);
   const pageContent = await getPageContent("work", locale);
 
   return (

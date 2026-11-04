@@ -1,8 +1,8 @@
 import type { Locale } from "./i18n";
 import type { Project } from "./projects";
 
-// Approved UI reconstructions. Apply only in /work; do not mutate the shared
-// project catalog used by the homepage and individual case-study pages.
+// Approved UI reconstructions, shared by every public project surface.
+// CMS text and other business metadata remain untouched.
 export const workVisuals: Readonly<Record<string, { src: string; alt: Record<Locale, string> }>> = {
   "logistics-company-website": {
     src: "/privacy-safe/work-20261104/website-landing.webp",
@@ -32,5 +32,28 @@ export function withWorkVisuals(projects: Project[], locale: Locale): Project[] 
     return visual
       ? { ...project, gallery: [{ src: visual.src, alt: visual.alt[locale] }, ...project.gallery.slice(1)] }
       : project;
+  });
+}
+
+export const productVisuals = {
+  attendance: {
+    src: workVisuals["android-attendance-app"].src,
+    alt: workVisuals["android-attendance-app"].alt,
+  },
+  "qr-order-pos": {
+    src: "/privacy-safe/work-20261104/qr-order-pos.webp",
+    alt: {
+      id: "Rekonstruksi UI QR Order dan POS dengan pesanan serta menu cafe dari data demo",
+      en: "Reconstructed QR Order and POS UI with demo cafe menu and orders",
+    },
+  },
+} as const;
+
+export function withProductVisuals<T extends { slug: string; heroImage: string; heroAlt: string }>(products: T[], locale: Locale): T[] {
+  return products.map((product) => {
+    const visual = Object.hasOwn(productVisuals, product.slug)
+      ? productVisuals[product.slug as keyof typeof productVisuals]
+      : undefined;
+    return visual ? { ...product, heroImage: visual.src, heroAlt: visual.alt[locale] } : product;
   });
 }

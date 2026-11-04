@@ -155,7 +155,7 @@ export default async function Home() {
           return (
             <Link href={localePath(locale, `/products/${product.slug}`)} className={styles.productCard} key={product.slug} data-motion-card>
               <div className={styles.productImage}>
-                <Image src={product.heroImage} alt={product.heroAlt} width={1536} height={1024} sizes="(max-width: 720px) 100vw, 50vw" unoptimized />
+                <Image src={product.heroImage} alt={product.heroAlt} width={1600} height={900} sizes="(max-width: 720px) 100vw, 50vw" unoptimized />
                 <span>{en ? "PRIVACY-SAFE PRODUCT VIEW" : "VISUAL PRODUK AMAN"}</span>
               </div>
               <div className={styles.productCopy}>

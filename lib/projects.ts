@@ -14,6 +14,7 @@ export type Project = {
 };
 
 import type { Locale } from "./i18n";
+import { withWorkVisuals } from "./work-visuals";
 
 export const fallbackProjects: Project[] = [
   {
@@ -209,7 +210,7 @@ function normalizeProject(row: Record<string, unknown>, locale: Locale): Project
   };
 }
 
-export async function getProjects(locale: Locale = "id", signal?: AbortSignal): Promise<Project[]> {
+async function readProjects(locale: Locale, signal?: AbortSignal): Promise<Project[]> {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SECRET_KEY;
   if (!url || !key) return fallbackProjects.map((project) => localizeProject(project, locale));
@@ -230,6 +231,10 @@ export async function getProjects(locale: Locale = "id", signal?: AbortSignal): 
   } catch {
     return fallbackProjects.map((project) => localizeProject(project, locale));
   }
+}
+
+export async function getProjects(locale: Locale = "id", signal?: AbortSignal): Promise<Project[]> {
+  return withWorkVisuals(await readProjects(locale, signal), locale);
 }
 
 export async function getProject(slug: string, locale: Locale = "id") {

@@ -19,13 +19,13 @@ for (const locale of ["id", "en"]) {
   assert.match(work, /work-20261104/);
   assert.ok(work.includes(locale === "en" ? "not original customer screenshots" : "bukan screenshot asli customer"));
   const about = await (await get(`${prefix}/about`)).text();
-  assert.match(about, /retech-company-profile\.pdf\?v=20261104/);
+  assert.ok(about.includes(profile.download));
   assert.match(about, /4 November 2026/);
   assert.match(about, /work-20261104/);
   console.log(`${prefix || "/id"}: Work and About revision verified`);
 }
 
-for (const path of [...new Set(profile.id.cases.map((item) => item.image)), profile.download, "/retech-logo.png"]) {
+for (const path of [...new Set([...profile.id.cases.map((item) => item.image), "/privacy-safe/work-20261104/qr-order-pos.webp"]), profile.download, "/retech-logo.png"]) {
   const remote = Buffer.from(await (await get(path)).arrayBuffer());
   const localPath = `../public${path.split("?")[0]}`;
   const local = await readFile(new URL(localPath, import.meta.url));
@@ -33,8 +33,9 @@ for (const path of [...new Set(profile.id.cases.map((item) => item.image)), prof
   console.log(`${path}: SHA-256 match (${remote.length} bytes)`);
 }
 
-for (const path of ["/", "/work/logistics-company-website"]) {
+for (const path of ["/", "/products", "/products/qr-order-pos", "/work/logistics-company-website"]) {
   const html = await (await get(path)).text();
-  assert.doesNotMatch(html, /work-20261104/, `${path}: preserve existing image selection`);
-  console.log(`${path}: existing route remains separate from Work-only visual mapping`);
+  assert.match(html, /work-20261104/, `${path}: use the shared approved visual catalog`);
+  assert.doesNotMatch(html, /%2Fprivacy-safe%2F(?:logistics-platform|operations-cms|hrms-attendance|infrastructure-observability|android-attendance|qr-order-pos)\.png/);
+  console.log(`${path}: shared public visual catalog verified`);
 }

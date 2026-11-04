@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { productVisuals } from "@/lib/work-visuals";
 import Link from "next/link";
 import { ChatWidget } from "../ChatWidget";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -19,8 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
     title: en ? "Subscription Products" : "Produk Berlangganan",
     description,
     alternates: { canonical, languages: languageAlternates("/products") },
-    openGraph: { type: "website", url: canonical, title: en ? "RETECH Subscription Products" : "Produk Berlangganan RETECH", description, images: [{ url: "/privacy-safe/qr-order-pos.png", alt: "RETECH subscription products" }] },
-    twitter: { card: "summary_large_image", title: en ? "RETECH Subscription Products" : "Produk Berlangganan RETECH", description, images: ["/privacy-safe/qr-order-pos.png"] },
+    openGraph: { type: "website", url: canonical, title: en ? "RETECH Subscription Products" : "Produk Berlangganan RETECH", description, images: [{ url: productVisuals["qr-order-pos"].src, alt: productVisuals["qr-order-pos"].alt[locale] }] },
+    twitter: { card: "summary_large_image", title: en ? "RETECH Subscription Products" : "Produk Berlangganan RETECH", description, images: [productVisuals["qr-order-pos"].src] },
   };
 }
 export default async function ProductsPage() {

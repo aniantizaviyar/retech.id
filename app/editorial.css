@@ -192,6 +192,8 @@
 .public-site .work-link{box-shadow:none;border:1px solid var(--line);border-radius:8px;background:#fff;padding:14px 18px;font-size:12px}
 .public-site .project-status,.public-site .product-showcase-media>span,.public-site .product-detail-media>span{background:#102b3ce8;border-color:#ffffff40;color:#f3f8fc}
 .public-site .project-media,.public-site .browser-image,.public-site .product-detail-media,.public-site .product-showcase-media{background:#edf3fa}
+.public-site .case-gallery-reconstructed .browser-image{aspect-ratio:16/9}
+.public-site .product-showcase-media img,.public-site .product-detail-media img{object-fit:contain}
 .public-site .project-media::after,.public-site .product-showcase-media::after,.public-site .product-detail-media::after{background:none}
 .public-site .browser-frame{background:#fff;border-color:var(--line);box-shadow:0 15px 45px #183f6810}
 .public-site .browser-bar{background:#edf3fa}
