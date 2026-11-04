@@ -54,6 +54,7 @@ export default async function AboutPage() {
   const en = locale === "en";
   const localizedPrinciples = en ? englishPrinciples : principles;
   const profile = en ? companyProfile.en : companyProfile.id;
+  const revisionLabel = new Intl.DateTimeFormat(en ? "en-GB" : "id-ID", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${companyProfile.revision}T00:00:00Z`));
   const pageContent = await getPageContent("about", locale);
   const pageUrl = absoluteLocaleUrl(locale, "/about");
   const aboutSchema = {
@@ -182,7 +183,7 @@ export default async function AboutPage() {
         <p>{profile.privacyNote}</p>
         <div className={styles.caseGrid}>
           {profile.cases.map(project => <article className={styles.case} key={project.href}>
-            <Image src={project.image} alt={`${en ? "Conceptual illustration" : "Ilustrasi konseptual"}: ${project.title}`} width={960} height={540} sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 600px" />
+            <Image src={project.image} alt={`${en ? "UI reconstruction with demo data" : "Rekonstruksi UI dengan data dummy"}: ${project.title}`} width={960} height={540} sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 600px" />
             <div className={styles.caseBody}><h3>{project.title}</h3><p>{project.summary}</p><p>{project.outcome}</p><small>{project.tags}</small><Link className={styles.serviceLink} href={localePath(locale, project.href)}>{en ? "Read case study" : "Baca case study"} <span aria-hidden="true">↗</span></Link></div>
           </article>)}
         </div>
@@ -206,7 +207,7 @@ export default async function AboutPage() {
           >
             {en ? "Download company profile" : "Unduh company profile"} <span>↓</span>
           </a>
-          <small className={styles.downloadMeta}>{en ? "Indonesian PDF · Updated 29 October 2026" : "PDF Bahasa Indonesia · Diperbarui 29 Oktober 2026"}</small>
+          <small className={styles.downloadMeta}>{en ? "Indonesian PDF · Updated" : "PDF Bahasa Indonesia · Diperbarui"} {revisionLabel}</small>
         </div>
         <address>
           <a href={companyContact.mapUrl} target="_blank" rel="noopener noreferrer">

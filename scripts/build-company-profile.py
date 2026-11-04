@@ -4,6 +4,7 @@ from shutil import copyfile
 from xml.sax.saxutils import escape
 import json
 import re
+from datetime import date
 from io import BytesIO
 from PIL import Image as RasterImage
 
@@ -32,7 +33,10 @@ def contact(key):
     return match.group(1)
 
 
-OUT = ROOT / "output/pdf/RETECH-Company-Profile-20261029.pdf"
+REVISION = date.fromisoformat(DATA["revision"])
+MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+REVISION_LABEL = f"{REVISION.day} {MONTHS[REVISION.month - 1]} {REVISION.year}"
+OUT = ROOT / f"output/pdf/RETECH-Company-Profile-{REVISION:%Y%m%d}.pdf"
 PUBLIC = ROOT / "public/documents/retech-company-profile.pdf"
 OUT.parent.mkdir(parents=True, exist_ok=True)
 NAVY = colors.HexColor("#102C43")
@@ -140,7 +144,7 @@ def page_chrome(c, doc):
         c.setFillColor(colors.HexColor("#BFD3E2"))
         c.setFont("Profile", 8)
         c.drawString(18 * mm, 20 * mm, "retech.id  |  sales@retech.id  |  Bekasi, Indonesia")
-        c.drawRightString(W - 18 * mm, 12 * mm, "Diperbarui 29 Oktober 2026")
+        c.drawRightString(W - 18 * mm, 12 * mm, f"Diperbarui {REVISION_LABEL}")
     else:
         c.setStrokeColor(LINE)
         c.setLineWidth(0.6)
@@ -159,7 +163,7 @@ def page_chrome(c, doc):
     c.restoreState()
 
 
-doc = BaseDocTemplate(str(OUT), pagesize=A4, title="Company Profile - PT Retech Digital Solution - Oktober 2026", author="PT Retech Digital Solution", subject="Layanan, produk, portofolio, dan informasi perusahaan", pageCompression=1)
+doc = BaseDocTemplate(str(OUT), pagesize=A4, title=f"Company Profile - PT Retech Digital Solution - {REVISION_LABEL}", author="PT Retech Digital Solution", subject="Layanan, produk, portofolio, dan informasi perusahaan", pageCompression=1)
 frame = Frame(18 * mm, 24 * mm, CW, H - 50 * mm, leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
 doc.addPageTemplates(PageTemplate(id="profile", frames=[frame], onPage=page_chrome))
 story = [Spacer(1, 10 * mm), PageBreak()]
@@ -208,9 +212,9 @@ for page_index, items in enumerate([D["cases"][:3], D["cases"][3:]]):
     story += title("05 / SELECTED CASE STUDIES", "Implementasi untuk operasi nyata." if page_index == 0 else "Mobile & infrastructure.", D["privacyNote"])
     for item in items:
         row = Table([[
-            photo(item["image"], 57 * mm, 37 * mm),
+            photo(item["image"], 72 * mm, 40.5 * mm),
             [p(item["title"], "h3"), p(item["summary"]), p(item["outcome"], "small"), p(item["tags"], "label")],
-        ]], colWidths=[67 * mm, CW - 67 * mm])
+        ]], colWidths=[82 * mm, CW - 82 * mm])
         row.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), PALE), ("BOX", (0, 0), (-1, -1), 0.6, LINE), ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 10), ("RIGHTPADDING", (0, 0), (-1, -1), 10), ("TOPPADDING", (0, 0), (-1, -1), 12), ("BOTTOMPADDING", (0, 0), (-1, -1), 10)]))
         story += [KeepTogether([row, Spacer(1, 5 * mm)])]
     if page_index == 1:

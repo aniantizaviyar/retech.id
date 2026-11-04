@@ -19,7 +19,7 @@ test("company profile preserves audited services, product stages, and case-study
     assert.doesNotMatch(JSON.stringify(content.value), /Non-PKP|HRMS|Flutter/i);
     assert.match(content.services.at(-1).scope.join(" "), /Plesk.*cPanel/);
     assert.match(content.services.at(-1).scope.join(" "), /tanpa|no control panel/);
-    assert.match(content.privacyNote, /ilustrasi|illustrations/);
+    assert.match(content.privacyNote, /rekonstruksi UI|UI reconstructions/);
   }
   assert.deepEqual(profile.id.services.map(s => s.href), profile.en.services.map(s => s.href));
   assert.deepEqual(profile.id.cases.map(s => s.href), profile.en.cases.map(s => s.href));
@@ -44,12 +44,13 @@ test("About keeps locale navigation, public PDF download, and secure external li
   assert.match(source, /rel="noopener noreferrer"/);
   assert.match(source, /details\?id=com.absen.project/);
   assert.doesNotMatch(source, /<form|localStorage|SUPABASE_SECRET|api\/admin/);
-  assert.match(profile.download, /^\/documents\/retech-company-profile\.pdf\?v=20261029$/);
+  assert.equal(profile.revision, "2026-11-04");
+  assert.match(profile.download, /^\/documents\/retech-company-profile\.pdf\?v=20261104$/);
 });
 
 test("the published brochure is a lightweight PDF identical to the reviewed deliverable", async () => {
   const liveAsset = await readFile(new URL("public/documents/retech-company-profile.pdf", root));
-  const output = await readFile(new URL("output/pdf/RETECH-Company-Profile-20261029.pdf", root));
+  const output = await readFile(new URL(`output/pdf/RETECH-Company-Profile-${profile.revision.replaceAll("-", "")}.pdf`, root));
   assert.equal(liveAsset.subarray(0, 5).toString(), "%PDF-");
   assert.ok(liveAsset.length < 2_000_000);
   assert.deepEqual(liveAsset, output);

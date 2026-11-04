@@ -8,6 +8,7 @@ import { getProjects } from "@/lib/projects";
 import { languageAlternates, localePath } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 import { getPageContent } from "@/lib/cms-data";
+import { withWorkVisuals } from "@/lib/work-visuals";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function WorkPage() {
   const locale = await getLocale();
   const en = locale === "en";
-  const projects = await getProjects(locale);
+  const projects = withWorkVisuals(await getProjects(locale), locale);
   const pageContent = await getPageContent("work", locale);
 
   return (
@@ -31,7 +32,7 @@ export default async function WorkPage() {
         <h1>{String(pageContent.heroTitle || "Technology in action.")}<br /><em>{String(pageContent.heroTitleAccent || "Built for real work.")}</em></h1>
         <div className="work-hero-copy">
           <p>{String(pageContent.heroIntro || "")}</p>
-          <span className="privacy-note">{String(pageContent.privacyNote || "")}</span>
+          <span className="privacy-note">{String(pageContent.privacyNote || "")} {en ? "Visuals are UI reconstructions with demo data, not original customer screenshots." : "Visual merupakan rekonstruksi UI dengan data dummy, bukan screenshot asli customer."}</span>
         </div>
       </section>
       <section className="work-listing">
