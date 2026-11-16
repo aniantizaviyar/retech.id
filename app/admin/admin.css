@@ -554,6 +554,15 @@
 .admin-delivery-reason { color: #ff8295 !important; }
 .admin-form-success { border-color: rgba(73, 224, 168, 0.32) !important; color: #65e7b5 !important; background: rgba(73, 224, 168, 0.08) !important; }
 .admin-quotation-modal { width: min(1240px, 100%); }
+.admin-quotation-send-modal { width: min(560px, calc(100% - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 0; color: var(--admin-text, #e3f4fc); }
+.admin-quotation-send-modal::backdrop { background: rgba(1, 8, 13, 0.8); }
+.admin-quotation-send-modal > header { position: static; }
+.admin-quotation-send-modal dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 20px; }
+.admin-quotation-send-modal dt, .admin-quotation-cc-hint { color: var(--admin-muted); }
+.admin-quotation-send-modal dd { margin: 0; overflow-wrap: anywhere; }
+.admin-quotation-cc-hint { margin: 8px 0 0; font-size: 12px; line-height: 1.5; }
+.admin-quotation-send-modal button { min-height: 44px; }
+.admin-quotation-send-modal button:focus-visible { outline: 2px solid var(--admin-cyan); outline-offset: 2px; }
 .admin-quote-form-section { margin-bottom: 18px; padding: 19px; border: 1px solid var(--admin-line); border-radius: 17px; background: rgba(5, 19, 29, 0.48); }
 .admin-quote-form-section > .admin-field + .admin-field { margin-top: 13px; }
 .admin-form-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }

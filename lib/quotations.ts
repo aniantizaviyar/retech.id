@@ -1,3 +1,5 @@
+import { isQuotationMailbox } from "./quotation-recipients";
+
 export const quotationStatuses = ["draft", "sent", "accepted", "rejected", "expired"] as const;
 export type QuotationStatus = typeof quotationStatuses[number];
 
@@ -107,7 +109,7 @@ export function normalizeQuotationInput(value: unknown): QuotationInput {
   const status = String(input.status || "draft") as QuotationStatus;
   if (!quotationStatuses.includes(status)) throw new Error("Status quotation tidak valid.");
   const email = text(input.customer_email, "Email customer", 180);
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Email customer tidak valid.");
+  if (email && !isQuotationMailbox(email)) throw new Error("Email PIC harus berisi satu alamat valid, tanpa tanda pemisah. Masukkan tembusan saat mengirim email.");
   return {
     status,
     issue_date: issueDate,
