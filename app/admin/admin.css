@@ -554,9 +554,22 @@
 .admin-delivery-reason { color: #ff8295 !important; }
 .admin-form-success { border-color: rgba(73, 224, 168, 0.32) !important; color: #65e7b5 !important; background: rgba(73, 224, 168, 0.08) !important; }
 .admin-quotation-modal { width: min(1240px, 100%); }
-.admin-quotation-send-modal { width: min(560px, calc(100% - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 0; color: var(--admin-text, #e3f4fc); }
+.admin-quotation-send-modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(560px, calc(100% - 32px));
+  height: fit-content;
+  max-width: none;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  overscroll-behavior: contain;
+  color: var(--admin-text, #e3f4fc);
+}
 .admin-quotation-send-modal::backdrop { background: rgba(1, 8, 13, 0.8); }
 .admin-quotation-send-modal > header { position: static; }
+.admin-quotation-send-modal footer { flex-wrap: wrap; }
 .admin-quotation-send-modal dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 20px; }
 .admin-quotation-send-modal dt, .admin-quotation-cc-hint { color: var(--admin-muted); }
 .admin-quotation-send-modal dd { margin: 0; overflow-wrap: anywhere; }
@@ -684,7 +697,7 @@
   .admin-record-actions { grid-column: 2; }
   .admin-form-grid { grid-template-columns: 1fr; }
   .admin-modal-backdrop { padding: 0; }
-  .admin-modal { max-height: 100vh; min-height: 100vh; border-radius: 0; }
+  .admin-modal:where(:not(.admin-quotation-send-modal)) { max-height: 100vh; min-height: 100vh; border-radius: 0; }
   .admin-modal form,
   .admin-modal > header { padding-left: 18px; padding-right: 18px; }
   .admin-editor-section-title { align-items: stretch; flex-direction: column; }
