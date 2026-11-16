@@ -1,4 +1,4 @@
-import { isQuotationMailbox } from "./quotation-recipients";
+import { isQuotationMailbox, normalizeQuotationCc } from "./quotation-recipients";
 
 export const quotationStatuses = ["draft", "sent", "accepted", "rejected", "expired"] as const;
 export type QuotationStatus = typeof quotationStatuses[number];
@@ -23,6 +23,7 @@ export type Quotation = {
   customer_company: string;
   customer_name: string;
   customer_email: string;
+  customer_cc?: string[];
   customer_phone: string;
   customer_address: string;
   subject: string;
@@ -117,6 +118,7 @@ export function normalizeQuotationInput(value: unknown): QuotationInput {
     customer_company: text(input.customer_company, "Nama perusahaan customer", 180, true),
     customer_name: text(input.customer_name, "Nama PIC", 140, true),
     customer_email: email,
+    ...(input.customer_cc !== undefined ? { customer_cc: normalizeQuotationCc(input.customer_cc, email) } : {}),
     customer_phone: text(input.customer_phone, "Telepon customer", 40),
     customer_address: text(input.customer_address, "Alamat customer", 500),
     subject: text(input.subject, "Perihal", 220, true),

@@ -3,8 +3,10 @@ import test from "node:test";
 import nodemailer, { type SendMailOptions } from "nodemailer";
 import { ADMIN_COOKIE, createAdminSession } from "../lib/admin-auth";
 import { isQuotationMailbox, parseQuotationCc } from "../lib/quotation-recipients";
-import { type Quotation } from "../lib/quotations";
+import { normalizeQuotationInput, type Quotation } from "../lib/quotations";
 import { POST } from "../app/api/admin/business/quotations/[id]/send/route";
+import { POST as createQuotation } from "../app/api/admin/business/quotations/route";
+import { PATCH as editQuotation } from "../app/api/admin/business/quotations/[id]/route";
 
 const primary = "pic@example.com";
 const context = { params: Promise.resolve({ id: "e4569075-3220-460b-ae73-a73f83c1c088" }) };
@@ -29,23 +31,32 @@ test("Send route keeps To fixed and renders a real Cc header, without sending or
     process.env[key] = value;
     t.after(() => { if (previous === undefined) delete process.env[key]; else process.env[key] = previous; });
   }
-  const request = (body?: unknown, authenticated = true, origin = "https://admin.retech.id") => new Request("https://admin.retech.id/api/admin/business/quotations/test/send", {
-    method: "POST",
+  const request = (body?: unknown, authenticated = true, origin = "https://admin.retech.id", method = "POST") => new Request("https://admin.retech.id/api/admin/business/quotations/test/send", {
+    method,
     headers: { host: "admin.retech.id", origin, "Content-Type": "application/json", ...(authenticated ? { cookie: `${ADMIN_COOKIE}=${createAdminSession().value}` } : {}) },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
   const record: Quotation = {
     id: (await context.params).id, quote_number: "RTD/QTN/2026/0099", status: "draft", issue_date: "2026-11-16", valid_until: "2026-12-16",
-    customer_company: "Example Co", customer_name: "Example PIC", customer_email: primary, customer_address: "", customer_phone: "", subject: "Example Backup NAS",
+    customer_company: "Example Co", customer_name: "Example PIC", customer_email: primary, customer_cc: ["finance@example.com"], customer_address: "", customer_phone: "", subject: "Example Backup NAS",
     items: [{ name: "Example service", description: "Example only", quantity: 1, unit: "paket", unitPrice: 1000 }],
     discount_amount: 0, timeline: "", payment_terms: "", scope_included: [], scope_excluded: [], notes: "",
   };
   const updates: Record<string, unknown>[] = [];
+  const savedCc: unknown[] = [];
   let failNextTrackingWrite = false;
   const database = t.mock.method(globalThis, "fetch", async (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
     const url = new URL(String(input));
     assert.equal(url.host, "db.test.invalid");
     if (!init?.method) return Response.json([record]);
+    if (url.pathname.endsWith("/rpc/next_quotation_number")) return Response.json(record.quote_number);
+    if (url.pathname.endsWith("/business_quotations")) {
+      const data = JSON.parse(String(init.body));
+      if ("customer_cc" in data) {
+        savedCc.push(data.customer_cc);
+        return Response.json([{ ...record, ...data }]);
+      }
+    }
     if (init.method === "PATCH") {
       const update = JSON.parse(String(init.body));
       updates.push(update);
@@ -68,16 +79,19 @@ test("Send route keeps To fixed and renders a real Cc header, without sending or
     },
   }));
 
-  assert.equal((await POST(request({cc:"",expectedTo:primary}, false), context)).status, 401);
-  assert.equal((await POST(request({cc:"",expectedTo:primary}, true, "https://example.com"), context)).status, 401);
-  assert.equal((await POST(request({cc:"",expectedTo:primary,bcc:"x@example.com"}), context)).status, 400);
-  assert.equal((await POST(request({cc:"x".repeat(5000),expectedTo:primary}), context)).status, 413);
+  const confirmed = { expectedTo: primary, expectedCc: ["finance@example.com"] };
+  assert.equal((await POST(request(confirmed, false), context)).status, 401);
+  assert.equal((await POST(request(confirmed, true, "https://example.com"), context)).status, 401);
+  assert.equal((await POST(request({ ...confirmed, cc: "other@example.com" }), context)).status, 400);
+  assert.equal((await POST(request({ ...confirmed, expectedCc: ["x".repeat(5000)] }), context)).status, 413);
+  assert.equal((await POST(request(), context)).status, 400);
   assert.equal(database.mock.callCount(), 0);
-  assert.equal((await POST(request({cc:"",expectedTo:"other@example.com"}), context)).status, 409);
-  assert.equal((await POST(request({cc:"broken",expectedTo:primary}), context)).status, 400);
+  assert.equal((await POST(request({ ...confirmed, expectedTo: "other@example.com" }), context)).status, 409);
+  assert.equal((await POST(request({ ...confirmed, expectedCc: ["other@example.com"] }), context)).status, 409);
+  assert.equal((await POST(request({ ...confirmed, expectedCc: [] }), context)).status, 409);
   assert.equal(transport.mock.callCount(), 0);
 
-  const success = await POST(request({cc:"finance@example.com; PIC@example.com",expectedTo:primary}), context);
+  const success = await POST(request(confirmed), context);
   assert.equal(success.status, 200);
   assert.equal((await success.json()).ok, true);
   assert.match(messages[0], /^To: Example PIC <pic@example\.com>/mi);
@@ -87,12 +101,12 @@ test("Send route keeps To fixed and renders a real Cc header, without sending or
   assert.equal(updates[0].last_email_recipient, primary);
 
   accepted = [primary];
-  const partial = await POST(request({cc:"finance@example.com",expectedTo:primary}), context);
+  const partial = await POST(request(confirmed), context);
   assert.match((await partial.json()).message, /CC tidak diterima SMTP/);
   assert.equal(updates[1].delivery_status, "submitted");
 
   accepted = ["finance@example.com"];
-  const rejected = await POST(request({cc:"finance@example.com",expectedTo:primary}), context);
+  const rejected = await POST(request(confirmed), context);
   const result = await rejected.json();
   assert.equal(result.ok, false);
   assert.equal(result.warning, true);
@@ -100,14 +114,23 @@ test("Send route keeps To fixed and renders a real Cc header, without sending or
   assert.equal(updates[2].status, undefined);
 
   accepted = [primary];
-  const legacy = await POST(request(), context);
+  delete record.customer_cc;
+  const legacy = await POST(request({ expectedTo: primary, expectedCc: [] }), context);
   assert.equal((await legacy.json()).ok, true);
   assert.doesNotMatch(messages[3], /^Cc:/mi);
 
   failNextTrackingWrite = true;
   t.mock.method(console, "error", () => {});
-  const trackingFailed = await POST(request({cc:"",expectedTo:primary}), context);
+  const trackingFailed = await POST(request({ expectedTo: primary, expectedCc: [] }), context);
   assert.equal(trackingFailed.status, 200);
   assert.match((await trackingFailed.json()).message, /sudah diserahkan ke Brevo/);
   assert.equal(updates.length, 5, "An accepted send must not be overwritten as failed if tracking breaks");
+
+  assert.equal(normalizeQuotationInput(record).customer_cc, undefined, "Omitted field preserves an existing CC on a legacy edit");
+  const input = { ...record, customer_cc: ["finance@example.com", primary, "Finance@example.com"] };
+  const invalid = { ...input, customer_cc: ["attacker@example.com,finance@example.com"] };
+  assert.equal((await createQuotation(request(invalid))).status, 400);
+  assert.equal((await createQuotation(request(input))).status, 200);
+  assert.equal((await editQuotation(request({ ...input, customer_cc: [] }, true, "https://admin.retech.id", "PATCH"), context)).status, 200);
+  assert.deepEqual(savedCc, [["finance@example.com"], []]);
 });

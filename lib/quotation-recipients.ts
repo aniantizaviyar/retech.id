@@ -14,10 +14,16 @@ export function parseQuotationCc(value: string, primary: string): string[] {
     throw new Error("Kolom CC terlalu panjang atau mengandung karakter yang tidak diizinkan.");
   }
   const entries = value.split(/[,;]/).map((entry) => entry.trim()).filter(Boolean);
+  return normalizeQuotationCc(entries, primary);
+}
+
+export function normalizeQuotationCc(value: unknown, primary: string): string[] {
+  if (!Array.isArray(value)) throw new Error("Format alamat CC tidak valid.");
+  const entries: unknown[] = value;
   if (entries.length > MAX_QUOTATION_CC) throw new Error(`Maksimal ${MAX_QUOTATION_CC} alamat CC.`);
   const seen = new Set([primary.trim().toLowerCase()]);
-  return entries.filter((entry, index) => {
-    if (!isQuotationMailbox(entry)) throw new Error(`Alamat CC ke-${index + 1} tidak valid.`);
+  return entries.filter((entry, index): entry is string => {
+    if (typeof entry !== "string" || !isQuotationMailbox(entry)) throw new Error(`Alamat CC ke-${index + 1} tidak valid.`);
     const key = entry.toLowerCase();
     if (seen.has(key)) return false;
     seen.add(key);

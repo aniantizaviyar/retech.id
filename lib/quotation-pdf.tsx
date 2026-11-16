@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   twoColumns: { flexDirection: "row", gap: 10 },
   infoBox: { flex: 1, minHeight: 48, padding: 7, borderWidth: 1, borderColor: colors.line, borderRadius: 5 },
   infoTitle: { marginBottom: 4, fontFamily: "Helvetica-Bold", color: colors.blue, fontSize: 6.8, letterSpacing: 0.7 },
+  infoBody: { color: colors.muted, flexShrink: 0 },
   listItem: { marginBottom: 1.5, flexDirection: "row" },
   bullet: { width: 10, color: colors.blue, fontFamily: "Helvetica-Bold" },
   listText: { flex: 1, color: colors.muted },
@@ -138,8 +139,11 @@ export function QuotationPdf({ quotation, logoSrc, signatureSrc, stampSrc }: { q
         <View style={styles.infoBox}><Text style={styles.infoTitle}>TIDAK TERMASUK</Text><List entries={quotation.scope_excluded} /></View>
       </View>}
 
-      {(quotation.timeline || quotation.payment_terms) && <View style={[styles.section, styles.twoColumns]} wrap={false}>{quotation.timeline && <View style={styles.infoBox}><Text style={styles.infoTitle}>ESTIMASI PELAKSANAAN</Text><Text style={styles.listText}>{quotation.timeline}</Text></View>}{quotation.payment_terms && <View style={styles.infoBox}><Text style={styles.infoTitle}>SYARAT PEMBAYARAN</Text><Text style={styles.listText}>{quotation.payment_terms}</Text></View>}</View>}
-      {quotation.notes && <View style={styles.section} wrap={false}><Text style={styles.sectionTitle}>Catatan dan ketentuan</Text><Text style={styles.terms}>{quotation.notes}</Text></View>}
+      {(quotation.timeline || quotation.payment_terms) && <View style={[styles.section, styles.twoColumns]} wrap={false} minPresenceAhead={quotation.notes ? 0 : 75}>
+        {quotation.timeline && <View style={styles.infoBox}><Text style={styles.infoTitle}>ESTIMASI PELAKSANAAN</Text><Text style={styles.infoBody}>{quotation.timeline}</Text></View>}
+        {quotation.payment_terms && <View style={styles.infoBox}><Text style={styles.infoTitle}>SYARAT PEMBAYARAN</Text><Text style={styles.infoBody}>{quotation.payment_terms}</Text></View>}
+      </View>}
+      {quotation.notes && <View style={styles.section} wrap={false} minPresenceAhead={75}><Text style={styles.sectionTitle}>Catatan dan ketentuan</Text><Text style={styles.terms}>{quotation.notes}</Text></View>}
 
       <View style={styles.signatureRow} wrap={false}>
         <View style={styles.signature}><Text>Hormat kami,</Text>{signatureSrc && stampSrc ? <View style={styles.signatureArtwork}><Image style={styles.signatureStamp} src={stampSrc} /><Image style={styles.signatureInk} src={signatureSrc} /></View> : <View style={styles.signaturePlaceholder} />}<Text style={styles.signatureLine}>PT RETECH DIGITAL SOLUTION</Text><Text style={styles.clientText}>Authorized Representative</Text></View>

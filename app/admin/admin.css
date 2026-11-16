@@ -561,6 +561,9 @@
 .admin-quotation-send-modal dt, .admin-quotation-cc-hint { color: var(--admin-muted); }
 .admin-quotation-send-modal dd { margin: 0; overflow-wrap: anywhere; }
 .admin-quotation-cc-hint { margin: 8px 0 0; font-size: 12px; line-height: 1.5; }
+.admin-quotation-cc-field { grid-column: 1 / -1; min-width: 0; }
+.admin-quotation-cc-field .admin-quotation-cc-hint { margin: 0; }
+.admin-quotation-cc-field input[aria-invalid="true"] { border-color: var(--admin-danger); }
 .admin-quotation-send-modal button { min-height: 44px; }
 .admin-quotation-send-modal button:focus-visible { outline: 2px solid var(--admin-cyan); outline-offset: 2px; }
 .admin-quote-form-section { margin-bottom: 18px; padding: 19px; border: 1px solid var(--admin-line); border-radius: 17px; background: rgba(5, 19, 29, 0.48); }

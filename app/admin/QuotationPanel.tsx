@@ -49,19 +49,36 @@ function TextArea({ label, value, onChange, rows = 4, placeholder = "" }: { labe
 function QuotationEditor({ quotation, customers, products, onClose, onSaved }: { quotation: Quotation | null; customers: Customer[]; products: Product[]; onClose: () => void; onSaved: () => void }) {
   const isNew = quotation == null;
   const [draft, setDraft] = useState<QuotationInput>(() => quotation ? coerceQuotation(quotation) : emptyQuotation());
+  const ccRef = useRef<HTMLInputElement>(null);
+  const [ccText, setCcText] = useState(() => (quotation?.customer_cc ?? []).join("; "));
+  const [ccError, setCcError] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const subtotal = useMemo(() => quotationSubtotal(draft), [draft]);
   const total = useMemo(() => quotationTotal(draft), [draft]);
   const set = <K extends keyof QuotationInput>(key: K, value: QuotationInput[K]) => setDraft((current) => ({ ...current, [key]: value }));
   const updateItem = (index: number, key: keyof QuotationItem, value: string | number) => set("items", draft.items.map((item, itemIndex) => itemIndex === index ? { ...item, [key]: value } : item));
-  function applyCustomer(id: string) { const customer = customers.find((record) => record.id === id); if (!customer) return; setDraft((current) => ({ ...current, customer_company: customer.company_name, customer_name: customer.contact_name, customer_email: customer.email || "", customer_phone: customer.phone || "", customer_address: customer.address || "" })); }
+  function applyCustomer(id: string) { const customer = customers.find((record) => record.id === id); if (!customer) return; setDraft((current) => ({ ...current, customer_company: customer.company_name, customer_name: customer.contact_name, customer_email: customer.email || "", customer_phone: customer.phone || "", customer_address: customer.address || "" })); setCcText(""); setCcError(""); }
   function addProduct(id: string) { const product = products.find((record) => record.id === id); if (!product) return; set("items", [...draft.items, { name: product.name, description: product.description || "", quantity: 1, unit: product.unit, unitPrice: Number(product.unit_price) }]); }
 
-  async function save(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setSaving(true); setError("");
+  function validateCc() {
     try {
-      const response = await fetch(isNew ? "/api/admin/business/quotations" : `/api/admin/business/quotations/${quotation.id}`, { method: isNew ? "POST" : "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(draft) });
+      const cc = parseQuotationCc(ccText, draft.customer_email);
+      setCcError("");
+      return cc;
+    } catch (validationError) {
+      setCcError(validationError instanceof Error ? validationError.message : "Alamat CC tidak valid.");
+      return null;
+    }
+  }
+
+  async function save(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const cc = validateCc();
+    if (!cc) { ccRef.current?.focus(); return; }
+    setSaving(true); setError("");
+    try {
+      const response = await fetch(isNew ? "/api/admin/business/quotations" : `/api/admin/business/quotations/${quotation.id}`, { method: isNew ? "POST" : "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...draft, customer_cc: cc }) });
       const result = await response.json() as QuotationResponse & { ok?: boolean };
       if (!response.ok || !result.ok) throw new Error(result.error || "Quotation belum dapat disimpan.");
       onSaved();
@@ -73,7 +90,23 @@ function QuotationEditor({ quotation, customers, products, onClose, onSaved }: {
     <form onSubmit={save}>
       <section className="admin-quote-form-section"><div className="admin-editor-section-title"><div><h3>Dokumen</h3><p>Nomor quotation dibuat otomatis ketika dokumen pertama kali disimpan.</p></div><span className="admin-non-pkp-badge">NON-PKP / TANPA PPN</span></div><div className="admin-form-grid admin-form-grid-3"><label className="admin-field"><span>Status</span><select value={draft.status} onChange={(event) => set("status", event.target.value as QuotationInput["status"])}>{quotationStatuses.map((status) => <option value={status} key={status}>{statusLabels[status]}</option>)}</select></label><TextField label="Tanggal quotation" type="date" value={draft.issue_date} onChange={(value) => set("issue_date", value)} required /><TextField label="Berlaku hingga" type="date" value={draft.valid_until} onChange={(value) => set("valid_until", value)} required /></div><TextField label="Perihal / nama project" value={draft.subject} onChange={(value) => set("subject", value)} placeholder="Contoh: Pengembangan Website Company Profile" required /></section>
 
-      <section className="admin-quote-form-section"><div className="admin-editor-section-title"><div><h3>Customer</h3><p>Data disalin dari master sebagai snapshot agar PDF lama tidak ikut berubah.</p></div></div>{customers.length > 0 && <label className="admin-field admin-field-wide"><span>Ambil dari customer master</span><select defaultValue="" onChange={(event) => { applyCustomer(event.target.value); event.currentTarget.value = ""; }}><option value="">Pilih customer untuk mengisi data</option>{customers.filter((customer) => customer.is_active).map((customer) => <option value={customer.id} key={customer.id}>{customer.company_name} - {customer.contact_name}</option>)}</select></label>}<div className="admin-form-grid"><TextField label="Nama perusahaan" value={draft.customer_company} onChange={(value) => set("customer_company", value)} required /><TextField label="Nama PIC" value={draft.customer_name} onChange={(value) => set("customer_name", value)} required /><TextField label="Email PIC" type="email" value={draft.customer_email} onChange={(value) => set("customer_email", value)} /><TextField label="Telepon / WhatsApp" value={draft.customer_phone} onChange={(value) => set("customer_phone", value)} /></div><TextArea label="Alamat customer" value={draft.customer_address} onChange={(value) => set("customer_address", value)} rows={3} /></section>
+      <section className="admin-quote-form-section">
+        <div className="admin-editor-section-title"><div><h3>Customer</h3><p>Data disalin dari master sebagai snapshot agar PDF lama tidak ikut berubah.</p></div></div>
+        {customers.length > 0 && <label className="admin-field admin-field-wide"><span>Ambil dari customer master</span><select defaultValue="" onChange={(event) => { applyCustomer(event.target.value); event.currentTarget.value = ""; }}><option value="">Pilih customer untuk mengisi data</option>{customers.filter((customer) => customer.is_active).map((customer) => <option value={customer.id} key={customer.id}>{customer.company_name} - {customer.contact_name}</option>)}</select></label>}
+        <div className="admin-form-grid">
+          <TextField label="Nama perusahaan" value={draft.customer_company} onChange={(value) => set("customer_company", value)} required />
+          <TextField label="Nama PIC" value={draft.customer_name} onChange={(value) => set("customer_name", value)} required />
+          <TextField label="Email PIC" type="email" value={draft.customer_email} onChange={(value) => set("customer_email", value)} />
+          <TextField label="Telepon / WhatsApp" value={draft.customer_phone} onChange={(value) => set("customer_phone", value)} />
+          <label className="admin-field admin-quotation-cc-field">
+            <span>CC email (opsional)</span>
+            <input ref={ccRef} type="text" inputMode="email" autoComplete="off" spellCheck={false} value={ccText} maxLength={MAX_QUOTATION_CC_LENGTH} placeholder="finance@example.com; purchasing@example.com" onChange={(event) => { setCcText(event.target.value); setCcError(""); }} onBlur={validateCc} aria-invalid={Boolean(ccError) || undefined} aria-describedby={ccError ? "quotation-cc-hint quotation-cc-error" : "quotation-cc-hint"} />
+            <small id="quotation-cc-hint" className="admin-quotation-cc-hint">Maksimal {MAX_QUOTATION_CC} alamat, pisahkan dengan koma atau titik koma. Tersimpan untuk quotation ini; tidak dicetak di PDF.</small>
+            {ccError && <small id="quotation-cc-error" className="admin-form-message" role="alert">{ccError}</small>}
+          </label>
+        </div>
+        <TextArea label="Alamat customer" value={draft.customer_address} onChange={(value) => set("customer_address", value)} rows={3} />
+      </section>
 
       <section className="admin-quote-form-section"><div className="admin-editor-section-title"><div><h3>Item penawaran</h3><p>Gunakan satu item untuk setiap layanan atau milestone agar scope dan harga mudah dipahami.</p></div><div className="admin-inline-actions">{products.length > 0 && <select defaultValue="" onChange={(event) => { addProduct(event.target.value); event.currentTarget.value = ""; }}><option value="">+ Dari price book</option>{products.filter((product) => product.is_active).map((product) => <option value={product.id} key={product.id}>{product.code} - {product.name}</option>)}</select>}<button className="admin-button-quiet" type="button" onClick={() => set("items", [...draft.items, emptyItem()])}>+ Item manual</button></div></div><div className="admin-quotation-items">{draft.items.map((item, index) => <article key={index}><div className="admin-quotation-item-number">{String(index + 1).padStart(2, "0")}</div><div className="admin-quotation-item-fields"><TextField label="Nama layanan" value={item.name} onChange={(value) => updateItem(index, "name", value)} required /><TextArea label="Deskripsi / deliverables" value={item.description} onChange={(value) => updateItem(index, "description", value)} rows={3} /><div className="admin-form-grid admin-form-grid-3"><TextField label="Qty" type="number" value={item.quantity} onChange={(value) => updateItem(index, "quantity", Number(value))} required /><TextField label="Satuan" value={item.unit} onChange={(value) => updateItem(index, "unit", value)} required /><TextField label="Harga satuan" type="number" value={item.unitPrice} onChange={(value) => updateItem(index, "unitPrice", Number(value))} required /></div></div><div className="admin-quotation-item-total"><span>Jumlah</span><strong>{formatRupiah(item.quantity * item.unitPrice)}</strong>{draft.items.length > 1 && <button type="button" className="danger" onClick={() => set("items", draft.items.filter((_, itemIndex) => itemIndex !== index))}>Hapus</button>}</div></article>)}</div><div className="admin-quotation-totals"><div><span>Subtotal</span><strong>{formatRupiah(subtotal)}</strong></div><label><span>Diskon</span><input type="number" min="0" max={subtotal} value={draft.discount_amount} onChange={(event) => set("discount_amount", Number(event.target.value))} /></label><div className="grand"><span>Total penawaran</span><strong>{formatRupiah(total)}</strong></div><small>PPN tidak dikenakan karena RETECH saat ini Non-PKP.</small></div></section>
 
@@ -87,12 +120,10 @@ function QuotationEditor({ quotation, customers, products, onClose, onSaved }: {
 
 function QuotationSendDialog({ record, onClose, onComplete }: { record: Quotation; onClose: () => void; onComplete: (message: string, warning: boolean) => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const ccRef = useRef<HTMLInputElement>(null);
   const inFlight = useRef(false);
-  const [cc, setCc] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [ccInvalid, setCcInvalid] = useState(false);
+  const cc = record.customer_cc ?? [];
   const action = Number(record.email_attempts || 0) > 0 ? "Kirim ulang quotation" : "Kirim quotation";
 
   useEffect(() => {
@@ -109,18 +140,8 @@ function QuotationSendDialog({ record, onClose, onComplete }: { record: Quotatio
     event.preventDefault();
     if (inFlight.current) return;
     setError("");
-    setCcInvalid(false);
     if (!isQuotationMailbox(record.customer_email)) {
       setError("Edit quotation dan isi satu alamat Email PIC yang valid.");
-      return;
-    }
-    let normalizedCc: string[];
-    try {
-      normalizedCc = parseQuotationCc(cc, record.customer_email);
-    } catch (validationError) {
-      setCcInvalid(true);
-      setError(validationError instanceof Error ? validationError.message : "Alamat CC tidak valid.");
-      ccRef.current?.focus();
       return;
     }
     inFlight.current = true;
@@ -129,7 +150,7 @@ function QuotationSendDialog({ record, onClose, onComplete }: { record: Quotatio
       const response = await fetch(`/api/admin/business/quotations/${record.id}/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cc: normalizedCc.join(","), expectedTo: record.customer_email }),
+        body: JSON.stringify({ expectedCc: cc, expectedTo: record.customer_email }),
       });
       const result = await response.json() as { error?: string; message?: string; warning?: boolean };
       if (!response.ok) throw new Error(result.error || "Email quotation belum dapat dikirim.");
@@ -145,11 +166,10 @@ function QuotationSendDialog({ record, onClose, onComplete }: { record: Quotatio
   return <dialog ref={dialogRef} className="admin-modal admin-quotation-send-modal" aria-labelledby="quotation-send-title" onCancel={(event) => { event.preventDefault(); close(); }}>
     <header><div><span className="admin-kicker">BUSINESS / QUOTATION / EMAIL</span><h2 id="quotation-send-title">{action}</h2></div><button type="button" onClick={close} disabled={pending} aria-label="Tutup pengiriman">×</button></header>
     <form onSubmit={submit} aria-busy={pending}>
-      <dl><dt>Dokumen</dt><dd>{record.quote_number} · PDF terlampir</dd><dt>Dari</dt><dd>sales@retech.id</dd><dt>Kepada</dt><dd>{record.customer_email}</dd></dl>
-      <label className="admin-field"><span>CC (opsional)</span><input ref={ccRef} autoFocus type="text" inputMode="email" autoComplete="off" spellCheck={false} value={cc} maxLength={MAX_QUOTATION_CC_LENGTH} onChange={(event) => { setCc(event.target.value); if (ccInvalid) { setCcInvalid(false); setError(""); } }} placeholder="finance@example.com; purchasing@example.com" aria-describedby={`quotation-cc-hint${ccInvalid ? " quotation-send-error" : ""}`} aria-invalid={ccInvalid || undefined} readOnly={pending} /></label>
-      <p id="quotation-cc-hint" className="admin-quotation-cc-hint">Maksimal {MAX_QUOTATION_CC} alamat, pisahkan dengan koma atau titik koma. Tembusan menerima PDF yang sama dan alamat CC terlihat oleh penerima lain.</p>
+      <dl><dt>Dokumen</dt><dd>{record.quote_number} · PDF terlampir</dd><dt>Dari</dt><dd>sales@retech.id</dd><dt>Kepada</dt><dd>{record.customer_email}</dd><dt>CC</dt><dd>{cc.length ? cc.join(", ") : "Tidak ada"}</dd></dl>
+      <p className="admin-quotation-cc-hint">Untuk mengubah CC, edit bagian Customer dan simpan quotation. Penerima tembusan menerima PDF yang sama dan alamatnya terlihat oleh penerima lain.</p>
       {error && <p id="quotation-send-error" className="admin-form-message" role="alert">{error}</p>}
-      <footer><button type="button" className="admin-button-quiet" disabled={pending} onClick={close}>Batal</button><button type="submit" className="admin-save-button" disabled={pending}>{pending ? "Mengirim…" : action}</button></footer>
+      <footer><button type="button" className="admin-button-quiet" autoFocus disabled={pending} onClick={close}>Batal</button><button type="submit" className="admin-save-button" disabled={pending}>{pending ? "Mengirim…" : action}</button></footer>
     </form>
   </dialog>;
 }

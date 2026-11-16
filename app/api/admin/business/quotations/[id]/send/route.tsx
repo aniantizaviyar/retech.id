@@ -2,17 +2,21 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import nodemailer from "nodemailer";
 import { renderToBuffer } from "@react-pdf/renderer";
+import { z } from "zod";
 import { readAdminSessionFromRequest } from "@/lib/admin-auth";
 import { AssistantError, boundedJson } from "@/lib/assistant/security";
 import { companyContact } from "@/lib/company";
 import { quotationEmailHtml, quotationEmailSubject, quotationEmailText } from "@/lib/quotation-email";
 import { QuotationPdf } from "@/lib/quotation-pdf";
-import { isQuotationMailbox, parseQuotationCc } from "@/lib/quotation-recipients";
+import { isQuotationMailbox, MAX_QUOTATION_CC, normalizeQuotationCc } from "@/lib/quotation-recipients";
 import type { Quotation } from "@/lib/quotations";
 import { supabaseAdminFetch } from "@/lib/supabase-admin";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
+
+const mailbox = z.string().max(254).refine(isQuotationMailbox);
+const sendInput = z.strictObject({ expectedTo: mailbox, expectedCc: z.array(mailbox).max(MAX_QUOTATION_CC) });
 
 function coerceQuotation(record: Quotation): Quotation {
   return { ...record, discount_amount: Number(record.discount_amount || 0), items: (record.items || []).map((item) => ({ ...item, quantity: Number(item.quantity), unitPrice: Number(item.unitPrice) })) };
@@ -24,19 +28,13 @@ async function recordEvent(quotationId: string, event: string, recipient: string
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   if (!readAdminSessionFromRequest(request, true)) return Response.json({ error: "Unauthorized" }, { status: 401 });
-  let ccInput = "";
-  let expectedTo: string | undefined;
-  if (request.body) {
-    try {
-      const input = await boundedJson(request, 4096);
-      if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).some((key) => key !== "cc" && key !== "expectedTo") || !("cc" in input) || typeof input.cc !== "string" || !("expectedTo" in input) || typeof input.expectedTo !== "string" || !isQuotationMailbox(input.expectedTo)) {
-        return Response.json({ error: "Format CC tidak valid." }, { status: 400 });
-      }
-      ccInput = input.cc;
-      expectedTo = input.expectedTo;
-    } catch (error) {
-      return Response.json({ error: "Data pengiriman tidak valid atau terlalu panjang." }, { status: error instanceof AssistantError ? error.status : 400 });
-    }
+  let recipients: z.infer<typeof sendInput>;
+  try {
+    const parsed = sendInput.safeParse(await boundedJson(request, 4096));
+    if (!parsed.success) return Response.json({ error: "Muat ulang dashboard dan konfirmasi penerima sebelum mengirim quotation." }, { status: 400 });
+    recipients = parsed.data;
+  } catch (error) {
+    return Response.json({ error: "Data pengiriman tidak valid. Muat ulang dashboard sebelum mengirim." }, { status: error instanceof AssistantError ? error.status : 400 });
   }
   const { id } = await context.params;
   const response = await supabaseAdminFetch(`/rest/v1/business_quotations?select=*&id=eq.${encodeURIComponent(id)}&limit=1`);
@@ -45,13 +43,15 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   if (!records.length) return Response.json({ error: "Quotation tidak ditemukan." }, { status: 404 });
   const quotation = coerceQuotation(records[0]);
   if (!isQuotationMailbox(quotation.customer_email || "")) return Response.json({ error: "Isi satu alamat Email PIC yang valid, tanpa koma atau titik koma." }, { status: 400 });
-  if (expectedTo !== undefined && expectedTo !== quotation.customer_email) return Response.json({ error: "Email PIC berubah. Tutup dialog dan muat ulang daftar sebelum mengirim." }, { status: 409 });
   if (["accepted", "rejected", "expired"].includes(quotation.status)) return Response.json({ error: `Quotation berstatus ${quotation.status} tidak dapat dikirim ulang.` }, { status: 409 });
   let cc: string[];
   try {
-    cc = parseQuotationCc(ccInput, quotation.customer_email);
+    cc = normalizeQuotationCc(quotation.customer_cc ?? [], quotation.customer_email);
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Alamat CC tidak valid." }, { status: 400 });
+  }
+  if (recipients.expectedTo !== quotation.customer_email || cc.length !== recipients.expectedCc.length || cc.some((address, index) => address !== recipients.expectedCc[index])) {
+    return Response.json({ error: "Email PIC atau CC berubah. Tutup dialog dan muat ulang daftar sebelum mengirim." }, { status: 409 });
   }
 
   const host = process.env.SMTP_HOST;
